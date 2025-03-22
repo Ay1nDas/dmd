@@ -23,13 +23,17 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y make gcc curl
-          curl -fsS https://dlang.org/install.sh | bash -s dmd
-          echo 'source ~/dlang/dmd-*/activate' >> ~/.bashrc
-          echo 'export PATH=~/dlang/dmd-*/linux/bin64:$PATH' >> ~/.bashrc
-          source ~/.bashrc
+          sudo apt install -y make gcc
+      
+      - name: Install D compiler
+        uses: dlang-community/setup-dlang@v1
+        with:
+          compiler: dmd-latest # This ensures `dmd` and `rdmd` are available
+      - name: Show D compiler versions
+        run: |
           dmd --version
           rdmd --version
+          
 
       - name: Build DMD (Main Branch)
         run: |
