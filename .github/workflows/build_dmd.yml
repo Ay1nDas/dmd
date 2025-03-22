@@ -40,14 +40,19 @@ jobs:
           cd dmd
           git checkout master
           rdmd compiler/src/build.d BUILD=debug
-          mv generated/linux/debug/64/dmd dmd-main
 
       - name: Build Phobos
         run: |
           cd phobos
           make -f posix.mak BUILD=debug
+      
+      - name: Move DMD (PR Branch)
+        run: |
+          cd dmd
+          mv generated/linux/debug/64/dmd dmd-main
 
-      - name: Build DMD (PR Branch)
+
+      - name: Build and Move DMD (PR Branch)
         run: |
           cd dmd
           git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-branch
