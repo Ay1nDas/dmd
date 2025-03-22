@@ -48,7 +48,7 @@ jobs:
           mv dmd/generated/linux/debug/64/dmd dmd-pr
 
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: built-dmd
           path: |
