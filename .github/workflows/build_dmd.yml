@@ -40,7 +40,7 @@ jobs:
           cd dmd
           git checkout master
           rdmd compiler/src/build.d BUILD=debug
-          mv dmd/generated/linux/debug/64/dmd dmd-main
+          mv generated/linux/debug/64/dmd dmd-main
 
       - name: Build Phobos
         run: |
@@ -53,7 +53,7 @@ jobs:
           git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-branch
           git checkout pr-branch
           rdmd compiler/src/build.d BUILD=debug
-          mv dmd/generated/linux/debug/64/dmd dmd-pr
+          mv generated/linux/debug/64/dmd dmd-pr
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
