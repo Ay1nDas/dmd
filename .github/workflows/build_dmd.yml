@@ -1,0 +1,56 @@
+name: Build DMD Versions
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    # branches:
+    #   - main   # Uncomment to build on main branch changes
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          path: dmd
+          fetch-depth: 0 # Ensures full history for PR checkout
+
+      - name: Checkout Phobos repository
+        run: git clone https://github.com/dlang/phobos.git phobos # Clones into ./phobos
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y make gcc libcurl4-openssl-dev
+          curl -fsS https://dlang.org/install.sh | bash -s dmd
+          source ~/dlang/dmd-*/activate
+
+      - name: Build DMD (Main Branch)
+        run: |
+          cd dmd
+          git checkout main
+          rdmd compiler/src/build.d BUILD=debug
+          mv dmd/generated/linux/debug/64/dmd dmd-main
+
+      - name: Build PR Phobos
+        run: |
+          cd ../phobos
+          make -f posix.mak BUILD=debug
+
+      - name: Build DMD (PR Branch)
+        run: |
+          cd ../dmd
+          git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-branch
+          git checkout pr-branch
+          rdmd compiler/src/build.d BUILD=debug
+          mv dmd/generated/linux/debug/64/dmd dmd-pr
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: built-dmd
+          path: |
+            dmd-main
+            dmd-pr
