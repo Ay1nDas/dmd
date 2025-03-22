@@ -44,12 +44,12 @@ jobs:
 
       - name: Build Phobos
         run: |
-          cd ../phobos
+          cd phobos
           make -f posix.mak BUILD=debug
 
       - name: Build DMD (PR Branch)
         run: |
-          cd ../dmd
+          cd dmd
           git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-branch
           git checkout pr-branch
           rdmd compiler/src/build.d BUILD=debug
