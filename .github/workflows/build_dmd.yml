@@ -30,11 +30,11 @@ jobs:
       - name: Build DMD (Main Branch)
         run: |
           cd dmd
-          git checkout main
+          git checkout master
           rdmd compiler/src/build.d BUILD=debug
           mv dmd/generated/linux/debug/64/dmd dmd-main
 
-      - name: Build PR Phobos
+      - name: Build Phobos
         run: |
           cd ../phobos
           make -f posix.mak BUILD=debug
