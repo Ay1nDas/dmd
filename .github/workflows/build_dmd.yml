@@ -25,7 +25,11 @@ jobs:
           sudo apt update
           sudo apt install -y make gcc curl
           curl -fsS https://dlang.org/install.sh | bash -s dmd
-          source ~/dlang/dmd-*/activate
+          echo 'source ~/dlang/dmd-*/activate' >> ~/.bashrc
+          echo 'export PATH=~/dlang/dmd-*/linux/bin64:$PATH' >> ~/.bashrc
+          source ~/.bashrc
+          dmd --version
+          rdmd --version
 
       - name: Build DMD (Main Branch)
         run: |
