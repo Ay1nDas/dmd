@@ -65,5 +65,5 @@ jobs:
         with:
           name: built-dmd
           path: |
-            dmd-main
-            dmd-pr
+            dmd/dmd-main
+            dmd/dmd-pr
