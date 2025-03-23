@@ -46,7 +46,15 @@ jobs:
           cd phobos
           make -f posix.mak BUILD=debug
       
-      - name: Build hello.d with DMD (Main Branch)
+      - name: List Files
+        run: 
+          ls
+          cd dmd
+          ls
+          cd generated/linux/debug/64
+          ls
+
+      - name: Run hello.d with DMD (Main Branch)
         run: |
           dmd/generated/linux/debug/64/dmd -run dmd/compiler/performance_test/hello.d
 
@@ -58,7 +66,7 @@ jobs:
           git checkout pr-branch
           rdmd compiler/src/build.d BUILD=debug
       
-      - name: Build hello.d with DMD (PR Branch)
+      - name: Run hello.d with DMD (PR Branch)
         run: |
           cd dmd
           ./generated/linux/debug/64/dmd -run ./compiler/performance_test/hello.d
