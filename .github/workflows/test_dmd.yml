@@ -48,8 +48,7 @@ jobs:
       
       - name: Build hello.d with DMD (Main Branch)
         run: |
-          cd dmd
-          ./generated/linux/debug/64/dmd -run ./compiler/performance_test/hello.d
+          dmd/generated/linux/debug/64/dmd -run dmd/compiler/performance_test/hello.d
 
 
       - name: Build DMD (PR Branch)
