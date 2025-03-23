@@ -19,7 +19,8 @@ jobs:
 
       - name: Checkout Phobos repository
         run: git clone https://github.com/dlang/phobos.git phobos # Clones into ./phobos
-
+        
+# Dependencies may already be installed
       - name: Install dependencies
         run: |
           sudo apt update
