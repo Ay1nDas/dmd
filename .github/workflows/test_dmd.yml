@@ -64,9 +64,8 @@ jobs:
 
       - name: Test Performance (Main Branch)
         run: |
-          /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d
-          
-
+          /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d 2>&1 | tee main-time.txt
+        
 
       - name: Build DMD (PR Branch)
         run: |
@@ -82,7 +81,7 @@ jobs:
 
       - name: Test Performance (PR Branch)
         run: |
-          /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d
+          /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d 2>&1 | tee pr-time.txt
 
 
       - name: Compare Performance Results
