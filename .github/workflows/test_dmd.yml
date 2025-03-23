@@ -24,6 +24,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y make gcc
+          sudo apt-get update && sudo apt-get install -y time
       
       - name: Install D compiler
         uses: dlang-community/setup-dlang@v1
@@ -60,6 +61,11 @@ jobs:
         run: |
           dmd/generated/linux/debug/64/dmd -run dmd/compiler/performance_test/hello.d
 
+      - name: Test Performance (Main Branch)
+        run: |
+          /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d
+          
+
 
       - name: Build DMD (PR Branch)
         run: |
@@ -72,6 +78,10 @@ jobs:
         run: |
           cd dmd
           ./generated/linux/debug/64/dmd -run ./compiler/performance_test/hello.d
+
+      - name: Test Performance (PR Branch)
+        run: |
+          /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d
 
 
       # - name: Upload Build Artifacts
