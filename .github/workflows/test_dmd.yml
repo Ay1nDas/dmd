@@ -46,15 +46,15 @@ jobs:
           cd phobos
           make -f posix.mak BUILD=debug
       
-      - name: List Files
-        run: |
-          ls
-          cd dmd
-          ls
-          cd compiler/performance_test
-          ls
-          cd generated/linux/debug/64
-          ls
+      # - name: List Files
+      #   run: |
+      #     ls
+      #     cd dmd
+      #     ls
+      #     cd compiler/performance_test
+      #     ls
+      #     cd generated/linux/debug/64
+      #     ls
 
       - name: Run hello.d with DMD (Main Branch)
         run: |
