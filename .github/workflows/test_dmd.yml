@@ -47,9 +47,11 @@ jobs:
           make -f posix.mak BUILD=debug
       
       - name: List Files
-        run: 
+        run: |
           ls
           cd dmd
+          ls
+          cd compiler/performance_test
           ls
           cd generated/linux/debug/64
           ls
