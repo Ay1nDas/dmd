@@ -19,7 +19,7 @@ jobs:
 
       - name: Checkout Phobos repository
         run: git clone https://github.com/dlang/phobos.git phobos # Clones into ./phobos
-        
+
 # Dependencies may already be installed
       - name: Install dependencies
         run: |
@@ -83,6 +83,59 @@ jobs:
       - name: Test Performance (PR Branch)
         run: |
           /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d
+
+
+      - name: Compare Performance Results
+        run: |
+          echo "### Performance Comparison" > comment.md
+          echo "" >> comment.md
+
+
+          # Extracting values
+
+          main_user_time=$(grep "User time (seconds)" main-time.txt | awk '{print $NF}')
+          pr_user_time=$(grep "User time (seconds)" pr-time.txt | awk '{print $NF}')
+          user_time_diff=$(echo "$pr_user_time - $main_user_time" | bc)
+
+          main_sys_time=$(grep "System time (seconds)" main-time.txt | awk '{print $NF}')
+          pr_sys_time=$(grep "System time (seconds)" pr-time.txt | awk '{print $NF}')
+          sys_time_diff=$(echo "$pr_sys_time - $main_sys_time" | bc)
+
+          main_mem=$(grep "Maximum resident set size" main-time.txt | awk '{print $NF}')
+          pr_mem=$(grep "Maximum resident set size" pr-time.txt | awk '{print $NF}')
+          mem_diff=$(($pr_mem - $main_mem))
+
+          echo "**Main Branch Execution:**" >> comment.md
+          echo "- User time: ${main_user_time}s" >> comment.md
+          echo "- System time: ${main_sys_time}s" >> comment.md
+          echo "- Max resident memory: ${main_mem} KB" >> comment.md
+          echo "" >> comment.md
+
+          echo "**PR Branch Execution:**" >> comment.md
+          echo "- User time: ${pr_user_time}s" >> comment.md
+          echo "- System time: ${pr_sys_time}s" >> comment.md
+          echo "- Max resident memory: ${pr_mem} KB" >> comment.md
+          echo "" >> comment.md
+
+          echo "### 🚀 Performance Impact" >> comment.md
+          echo "- **User time difference:** ${user_time_diff}s" >> comment.md
+          echo "- **System time difference:** ${sys_time_diff}s" >> comment.md
+          echo "- **Memory difference:** ${mem_diff} KB" >> comment.md
+
+
+      - name: Post Comment on PR
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const comment = fs.readFileSync('comment.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
 
 
       # - name: Upload Build Artifacts
