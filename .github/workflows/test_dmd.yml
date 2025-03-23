@@ -46,30 +46,35 @@ jobs:
           cd phobos
           make -f posix.mak BUILD=debug
       
-      - name: Move DMD (PR Branch)
+      - name: Build hello.d with DMD (Main Branch)
         run: |
           cd dmd
-          mv generated/linux/debug/64/dmd dmd-main
+          ./generated/linux/debug/64/dmd -run ./compiler/performance_test/hello.d
 
 
-      - name: Build and Move DMD (PR Branch)
+      - name: Build DMD (PR Branch)
         run: |
           cd dmd
           git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-branch
           git checkout pr-branch
           rdmd compiler/src/build.d BUILD=debug
-          mv generated/linux/debug/64/dmd dmd-pr
-
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: built-dmd
-          path: |
-            dmd/dmd-main
-            dmd/dmd-pr
       
-      - name: build hello.d
+      - name: Build hello.d with DMD (PR Branch)
         run: |
           cd dmd
-          ./dmd-main -run ./compiler/performance_test/hello.d
-          ./dmd-pr -run ./compiler/performance_test/hello.d
+          ./generated/linux/debug/64/dmd -run ./compiler/performance_test/hello.d
+
+
+      # - name: Upload Build Artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: built-dmd
+      #     path: |
+      #       dmd/dmd-main
+      #       dmd/dmd-pr
+      
+      # - name: build hello.d
+      #   run: |
+      #     cd dmd
+      #     ./dmd-main -run ./compiler/performance_test/hello.d
+      #     ./dmd-pr -run ./compiler/performance_test/hello.d
