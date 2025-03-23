@@ -67,3 +67,9 @@ jobs:
           path: |
             dmd/dmd-main
             dmd/dmd-pr
+      
+      - name: build hello.d
+        run: |
+          cd dmd
+          ./dmd-main -run ./compiler/performance_test/hello.d
+          ./dmd-pr -run ./compiler/performance_test/hello.d
