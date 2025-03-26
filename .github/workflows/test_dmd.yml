@@ -69,23 +69,24 @@ jobs:
 
       - name: Add results to main.json
         run: |
-            # Extract relevant data
-            PR_NUMBER=${{ github.event.pull_request.number }}
-            USER_TIME=$(grep "User time (seconds)" main-time.txt | awk '{print $NF}')
-            SYSTEM_TIME=$(grep "System time (seconds)" main-time.txt | awk '{print $NF}')
-            CPU_PERC=$(grep "Percent of CPU this job got" main-time.txt | awk '{print $NF}')
-            MAX_MEMORY=$(grep "Maximum resident set size (kbytes)" main-time.txt | awk '{print $NF}')
-            PAGE_SIZE=$(grep "Page size (bytes)" main-time.txt | awk '{print $NF}')
+          # Extract relevant data
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          USER_TIME=$(grep "User time (seconds)" main-time.txt | awk '{print $NF}')
+          SYSTEM_TIME=$(grep "System time (seconds)" main-time.txt | awk '{print $NF}')
+          CPU_PERC=$(grep "Percent of CPU this job got" main-time.txt | awk '{print $NF}')
+          MAX_MEMORY=$(grep "Maximum resident set size (kbytes)" main-time.txt | awk '{print $NF}')
+          PAGE_SIZE=$(grep "Page size (bytes)" main-time.txt | awk '{print $NF}')
 
-            #Append to JSON
-            NEW_ENTRY=$(jq -n --arg pr "$PR_NUMBER" \
-                  --arg user "$USER_TIME" \
-                  --arg system "$SYSTEM_TIME" \
-                  --arg cpu "$CPU_USAGE" \
-                  --arg mem "$MAX_MEMORY" \
-                  --arg page "PAGE_SIZE" \
-                  '{pr: $pr, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
-            jq ". += [$NEW_ENTRY]" dmd/data/mainData.json > temp.json && mv temp.json dmd/data/mainData.json
+          #Append to JSON
+          NEW_ENTRY=$(jq -n --arg pr "$PR_NUMBER" \
+                --arg user "$USER_TIME" \
+                --arg system "$SYSTEM_TIME" \
+                --arg cpu "$CPU_USAGE" \
+                --arg mem "$MAX_MEMORY" \
+                --arg page "PAGE_SIZE" \
+                '{pr: $pr, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
+          jq ". += [$NEW_ENTRY]" dmd/data/mainData.json > temp.json && mv temp.json dmd/data/mainData.json
+          cat dmd/data/mainData.json
 
       - name: Commit and Push JSON
         run: |
