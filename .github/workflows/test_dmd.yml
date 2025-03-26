@@ -70,6 +70,7 @@ jobs:
           PAGE_SIZE=$(grep "Page size (bytes)" main-time.txt | awk '{print $NF}')
 
           #Append to JSON
+          [ ! -s dmd/data/mainData.json ] && echo "[]" > dmd/data/mainData.json
           NEW_ENTRY=$(jq -n --arg pr "$PR_NUMBER" \
                 --arg user "$USER_TIME" \
                 --arg system "$SYSTEM_TIME" \
