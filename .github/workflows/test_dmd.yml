@@ -141,7 +141,7 @@ jobs:
         #   run: |
         #     cat dmd/data/mainData.json
   
-      - name: Commit and Push prData.json
+      - name: Commit prData.json to PR-Branch
         run: |
           cd dmd
           git config --global user.name "GitHub Actions"
@@ -150,8 +150,14 @@ jobs:
           git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
           git push
 
-      - name: Bring prData to main branch
+      - name: copy and Push prData to main branch
         run: |
+          cd dmd
+          git checkout master
+          git checkout $GITHUB_HEAD_REF -- data/prData.json
+          git add data/prData.json
+          git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
+          git push
           
 # ....................................................
 
