@@ -153,7 +153,7 @@ jobs:
         run: |
           cd dmd
           git checkout master
-          git checkout $GITHUB_HEAD_REF -- data/prData.json
+          git checkout pr-branch -- data/prData.json
           git add data/prData.json
           git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
           git push
