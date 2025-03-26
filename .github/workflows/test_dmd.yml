@@ -66,6 +66,27 @@ jobs:
         run: |
           /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d 2>&1 | tee main-time.txt
         
+      - name: Save as JSON
+        run: |
+          awk -F': ' '
+            BEGIN { print "{" }
+            {
+              gsub(/^[ \t]+|[ \t]+$/, "", $1);  # Trim spaces
+              gsub(/^[ \t]+|[ \t]+$/, "", $2);  # Trim spaces
+              if (NR > 1) print ",";
+              printf "  \"%s\": \"%s\"", $1, $2
+            }
+            END { print "\n}" }
+          ' main-time.txt > dmd/data/main-data/main${{ github.event.pull_request.number }}-time.json
+
+      - name: Commit and Push JSON
+        run: |
+            git config --global user.name 'github-actions'
+            git config --global user.email 'github-actions@github.com'
+            git add dmd/data/main-data/main${{ github.event.pull_request.number }}-time.json
+            git commit -m "Add performance results"
+            git push
+
 
       - name: Build DMD (PR Branch)
         run: |
@@ -82,6 +103,27 @@ jobs:
       - name: Test Performance (PR Branch)
         run: |
           /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d 2>&1 | tee pr-time.txt
+ 
+      - name: Save as JSON
+        run: |
+          awk -F': ' '
+            BEGIN { print "{" }
+            {
+              gsub(/^[ \t]+|[ \t]+$/, "", $1);  # Trim spaces
+              gsub(/^[ \t]+|[ \t]+$/, "", $2);  # Trim spaces
+              if (NR > 1) print ",";
+              printf "  \"%s\": \"%s\"", $1, $2
+            }
+            END { print "\n}" }
+          ' pr-time.txt > dmd/data/pr-data/pr${{ github.event.pull_request.number }}-time.json
+
+      - name: Commit and Push JSON
+        run: |
+            git config --global user.name 'github-actions'
+            git config --global user.email 'github-actions@github.com'
+            git add dmd/data/pr-data/pr${{ github.event.pull_request.number }}-time.json
+            git commit -m "Add performance results"
+            git push
 
 
       - name: Compare Performance Results
@@ -135,7 +177,7 @@ jobs:
               repo: context.repo.repo,
               body: comment
             });
-
+        
 
       # - name: Upload Build Artifacts
       #   uses: actions/upload-artifact@v4
