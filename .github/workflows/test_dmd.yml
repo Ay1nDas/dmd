@@ -59,7 +59,7 @@ jobs:
           /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d 2>&1 | tee main-time.txt
       
 
-      - name: Add results to main.json
+      - name: Add results to mainData.json
         run: |
           # Extract relevant data
           PR_NUMBER=${{ github.event.pull_request.number }}
@@ -80,18 +80,18 @@ jobs:
                 '{pr: $pr, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
           jq ". += [$NEW_ENTRY]" dmd/data/mainData.json > temp.json && mv temp.json dmd/data/mainData.json
       
-      - name: print mainData.json
-        run: |
-          cat dmd/data/mainData.json
+      # - name: print mainData.json
+      #   run: |
+      #     cat dmd/data/mainData.json
 
-      - name: Commit and Push JSON
-        run: |
-          cd dmd
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add data/mainData.json
-          git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
-          git push
+      # - name: Commit and Push mainData.json
+      #   run: |
+      #     cd dmd
+      #     git config --global user.name "GitHub Actions"
+      #     git config --global user.email "actions@github.com"
+      #     git add data/mainData.json
+      #     git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
+      #     git push
 
       - name: Build DMD (PR Branch)
         run: |
@@ -109,6 +109,48 @@ jobs:
         run: |
           /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d 2>&1 | tee pr-time.txt
 
+
+      - name: Add results to prData.json
+        run: |
+          # #Change Branch
+          # cd dmd
+          # git checkout master
+          # cd ../
+
+          # Extract relevant data
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          USER_TIME=$(grep "User time (seconds)" pr-time.txt | awk '{print $NF}')
+          SYSTEM_TIME=$(grep "System time (seconds)" pr-time.txt | awk '{print $NF}')
+          CPU_USAGE=$(grep "Percent of CPU this job got" pr-time.txt | awk '{print $NF}')
+          MAX_MEMORY=$(grep "Maximum resident set size (kbytes)" pr-time.txt | awk '{print $NF}')
+          PAGE_SIZE=$(grep "Page size (bytes)" pr-time.txt | awk '{print $NF}')
+
+          #Append to JSON
+          [ ! -s dmd/data/mainData.json ] && echo "[]" > dmd/data/prData.json
+          NEW_ENTRY=$(jq -n --arg pr "$PR_NUMBER" \
+                --arg user "$USER_TIME" \
+                --arg system "$SYSTEM_TIME" \
+                --arg cpu "$CPU_USAGE" \
+                --arg mem "$MAX_MEMORY" \
+                --arg page "$PAGE_SIZE" \
+                '{pr: $pr, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
+          jq ". += [$NEW_ENTRY]" dmd/data/prData.json > temp.json && mv temp.json dmd/data/mainData.json
+          
+        # - name: print mainData.json
+        #   run: |
+        #     cat dmd/data/mainData.json
+  
+      - name: Commit and Push JSON
+        run: |
+          cd dmd
+          git checkout master
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add data/mainData.json
+          git add data/prData.json
+          git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
+          git push
+# ....................................................
 
       - name: Compare Performance Results
         run: |
