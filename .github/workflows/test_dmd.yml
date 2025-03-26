@@ -86,6 +86,9 @@ jobs:
                 --arg page "PAGE_SIZE" \
                 '{pr: $pr, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
           jq ". += [$NEW_ENTRY]" dmd/data/mainData.json > temp.json && mv temp.json dmd/data/mainData.json
+      
+      - name: Commit and Push JSON
+        run: |
           cat dmd/data/mainData.json
 
       - name: Commit and Push JSON
