@@ -80,24 +80,19 @@ jobs:
                 '{pr: $pr, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
           jq ". += [$NEW_ENTRY]" dmd/data/mainData.json > temp.json && mv temp.json dmd/data/mainData.json
       
-      - name: add files to git
-        run: |
-          cd dmd
-          git add data/mainData.json
-          git commit -m "Update performance data (Main Branch) for PR #${{ github.event.pull_request.number }}"
-          git push
       # - name: print mainData.json
       #   run: |
       #     cat dmd/data/mainData.json
 
-      # - name: Commit and Push mainData.json
-      #   run: |
-      #     cd dmd
-      #     git config --global user.name "GitHub Actions"
-      #     git config --global user.email "actions@github.com"
-      #     git add data/mainData.json
-      #     git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
-      #     git push
+      - name: Commit and Push mainData.json
+        run: |
+          cd dmd
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add data/mainData.json
+          git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
+          git push
+
 
       - name: Build DMD (PR Branch)
         run: |
@@ -146,7 +141,7 @@ jobs:
         #   run: |
         #     cat dmd/data/mainData.json
   
-      - name: Commit and Push JSON
+      - name: Commit and Push prData.json
         run: |
           cd dmd
           git checkout master
