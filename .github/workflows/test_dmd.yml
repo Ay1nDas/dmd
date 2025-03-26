@@ -126,7 +126,7 @@ jobs:
           PAGE_SIZE=$(grep "Page size (bytes)" pr-time.txt | awk '{print $NF}')
 
           #Append to JSON
-          [ ! -s dmd/data/mainData.json ] && echo "[]" > dmd/data/prData.json
+          [ ! -s dmd/data/prData.json ] && echo "[]" > dmd/data/prData.json
           NEW_ENTRY=$(jq -n --arg pr "$PR_NUMBER" \
                 --arg user "$USER_TIME" \
                 --arg system "$SYSTEM_TIME" \
@@ -134,7 +134,7 @@ jobs:
                 --arg mem "$MAX_MEMORY" \
                 --arg page "$PAGE_SIZE" \
                 '{pr: $pr, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
-          jq ". += [$NEW_ENTRY]" dmd/data/prData.json > temp.json && mv temp.json dmd/data/mainData.json
+          jq ". += [$NEW_ENTRY]" dmd/data/prData.json > temp.json && mv temp.json dmd/data/prData.json
           
         # - name: print mainData.json
         #   run: |
