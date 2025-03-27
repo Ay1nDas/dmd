@@ -6,5 +6,13 @@
     "cpu_usage": "99%",
     "max_memory": "319528",
     "page_size": "4096"
+  },
+  {
+    "pr": "40",
+    "user_time": "7.15",
+    "system_time": "0.34",
+    "cpu_usage": "99%",
+    "max_memory": "319552",
+    "page_size": "4096"
   }
 ]
