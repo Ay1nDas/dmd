@@ -1,3 +1,5 @@
+module dmd.compiler.performance_test.test1;
+
 import std.stdio;
 import std.traits;
 import std.meta;

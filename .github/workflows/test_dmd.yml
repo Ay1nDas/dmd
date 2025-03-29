@@ -56,42 +56,44 @@ jobs:
 
       - name: Test Performance (Main Branch)
         run: |
-          /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d 2>&1 | tee main-time.txt
+          for file in dmd/compiler/performance_test/*.d; do
+          echo "Running test on $file" /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a main-time.txt
+          done
       
 
-      - name: Add results to mainData.json
-        run: |
-          # Extract relevant data
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          USER_TIME=$(grep "User time (seconds)" main-time.txt | awk '{print $NF}')
-          SYSTEM_TIME=$(grep "System time (seconds)" main-time.txt | awk '{print $NF}')
-          CPU_USAGE=$(grep "Percent of CPU this job got" main-time.txt | awk '{print $NF}')
-          MAX_MEMORY=$(grep "Maximum resident set size (kbytes)" main-time.txt | awk '{print $NF}')
-          PAGE_SIZE=$(grep "Page size (bytes)" main-time.txt | awk '{print $NF}')
-
-          #Append to JSON
-          [ ! -s dmd/data/mainData.json ] && echo "[]" > dmd/data/mainData.json
-          NEW_ENTRY=$(jq -n --arg pr "$PR_NUMBER" \
-                --arg user "$USER_TIME" \
-                --arg system "$SYSTEM_TIME" \
-                --arg cpu "$CPU_USAGE" \
-                --arg mem "$MAX_MEMORY" \
-                --arg page "$PAGE_SIZE" \
-                '{pr: $pr, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
-          jq ". += [$NEW_ENTRY]" dmd/data/mainData.json > temp.json && mv temp.json dmd/data/mainData.json
-      
-      # - name: print mainData.json
+      # - name: Add results to mainData.json
       #   run: |
-      #     cat dmd/data/mainData.json
+      #     # Extract relevant data
+      #     PR_NUMBER=${{ github.event.pull_request.number }}
+      #     USER_TIME=$(grep "User time (seconds)" main-time.txt | awk '{print $NF}')
+      #     SYSTEM_TIME=$(grep "System time (seconds)" main-time.txt | awk '{print $NF}')
+      #     CPU_USAGE=$(grep "Percent of CPU this job got" main-time.txt | awk '{print $NF}')
+      #     MAX_MEMORY=$(grep "Maximum resident set size (kbytes)" main-time.txt | awk '{print $NF}')
+      #     PAGE_SIZE=$(grep "Page size (bytes)" main-time.txt | awk '{print $NF}')
 
-      - name: Commit and Push mainData.json
-        run: |
-          cd dmd
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add data/mainData.json
-          git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
-          git push
+      #     #Append to JSON
+      #     [ ! -s dmd/data/mainData.json ] && echo "[]" > dmd/data/mainData.json
+      #     NEW_ENTRY=$(jq -n --arg pr "$PR_NUMBER" \
+      #           --arg user "$USER_TIME" \
+      #           --arg system "$SYSTEM_TIME" \
+      #           --arg cpu "$CPU_USAGE" \
+      #           --arg mem "$MAX_MEMORY" \
+      #           --arg page "$PAGE_SIZE" \
+      #           '{pr: $pr, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
+      #     jq ". += [$NEW_ENTRY]" dmd/data/mainData.json > temp.json && mv temp.json dmd/data/mainData.json
+      
+      # # - name: print mainData.json
+      # #   run: |
+      # #     cat dmd/data/mainData.json
+
+      # - name: Commit and Push mainData.json
+      #   run: |
+      #     cd dmd
+      #     git config --global user.name "GitHub Actions"
+      #     git config --global user.email "actions@github.com"
+      #     git add data/mainData.json
+      #     git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
+      #     git push
 
 
       - name: Build DMD (PR Branch)
@@ -106,78 +108,95 @@ jobs:
           cd dmd
           ./generated/linux/debug/64/dmd -run ./compiler/performance_test/hello.d
 
+      # - name: Test Performance (PR Branch)
+        # run: |
+        #   /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d 2>&1 | tee pr-time.txt
+
       - name: Test Performance (PR Branch)
         run: |
-          /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d 2>&1 | tee pr-time.txt
+          for file in dmd/compiler/performance_test/*.d; do
+            echo "Running test on $file" /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a pr-time.txt
+          done
 
 
-      - name: Add results to prData.json
-        run: |
-          # #Change Branch
-          # cd dmd
-          # git checkout master
-          # cd ../
+      # - name: Add results to prData.json
+      #   run: |
+      #     # #Change Branch
+      #     # cd dmd
+      #     # git checkout master
+      #     # cd ../
 
-          # Extract relevant data
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          USER_TIME=$(grep "User time (seconds)" pr-time.txt | awk '{print $NF}')
-          SYSTEM_TIME=$(grep "System time (seconds)" pr-time.txt | awk '{print $NF}')
-          CPU_USAGE=$(grep "Percent of CPU this job got" pr-time.txt | awk '{print $NF}')
-          MAX_MEMORY=$(grep "Maximum resident set size (kbytes)" pr-time.txt | awk '{print $NF}')
-          PAGE_SIZE=$(grep "Page size (bytes)" pr-time.txt | awk '{print $NF}')
+      #     # Extract relevant data
+      #     PR_NUMBER=${{ github.event.pull_request.number }}
+      #     USER_TIME=$(grep "User time (seconds)" pr-time.txt | awk '{print $NF}')
+      #     SYSTEM_TIME=$(grep "System time (seconds)" pr-time.txt | awk '{print $NF}')
+      #     CPU_USAGE=$(grep "Percent of CPU this job got" pr-time.txt | awk '{print $NF}')
+      #     MAX_MEMORY=$(grep "Maximum resident set size (kbytes)" pr-time.txt | awk '{print $NF}')
+      #     PAGE_SIZE=$(grep "Page size (bytes)" pr-time.txt | awk '{print $NF}')
 
-          #Append to JSON
-          [ ! -s dmd/data/prData.json ] && echo "[]" > dmd/data/prData.json
-          NEW_ENTRY=$(jq -n --arg pr "$PR_NUMBER" \
-                --arg user "$USER_TIME" \
-                --arg system "$SYSTEM_TIME" \
-                --arg cpu "$CPU_USAGE" \
-                --arg mem "$MAX_MEMORY" \
-                --arg page "$PAGE_SIZE" \
-                '{pr: $pr, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
-          jq ". += [$NEW_ENTRY]" dmd/data/prData.json > temp.json && mv temp.json dmd/data/prData.json
+      #     #Append to JSON
+      #     [ ! -s dmd/data/prData.json ] && echo "[]" > dmd/data/prData.json
+      #     NEW_ENTRY=$(jq -n --arg pr "$PR_NUMBER" \
+      #           --arg user "$USER_TIME" \
+      #           --arg system "$SYSTEM_TIME" \
+      #           --arg cpu "$CPU_USAGE" \
+      #           --arg mem "$MAX_MEMORY" \
+      #           --arg page "$PAGE_SIZE" \
+      #           '{pr: $pr, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
+      #     jq ". += [$NEW_ENTRY]" dmd/data/prData.json > temp.json && mv temp.json dmd/data/prData.json
           
-        # - name: print mainData.json
-        #   run: |
-        #     cat dmd/data/mainData.json
+      #   # - name: print mainData.json
+      #   #   run: |
+      #   #     cat dmd/data/mainData.json
   
-      - name: Commit prData.json to PR-Branch
-        run: |
-          cd dmd
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add data/prData.json
-          git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
+      # - name: Commit prData.json to PR-Branch
+      #   run: |
+      #     cd dmd
+      #     git config --global user.name "GitHub Actions"
+      #     git config --global user.email "actions@github.com"
+      #     git add data/prData.json
+      #     git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
 
-      - name: copy and Push prData to main branch
-        run: |
-          cd dmd
-          git checkout master
-          git checkout pr-branch -- data/prData.json
-          git add data/prData.json
-          git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
-          git push
-          
-# ....................................................
+      # - name: copy and Push prData to main branch
+      #   run: |
+      #     cd dmd
+      #     git checkout master
+      #     git checkout pr-branch -- data/prData.json
+      #     git add data/prData.json
+      #     git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
+      #     git push
 
       - name: Compare Performance Results
         run: |
           echo "### Performance Comparison" > comment.md
           echo "" >> comment.md
 
+          #initialize variables
+          main_user_time=0
+          pr_user_time=0
+          user_time_diff=0
+
+          main_sys_time=0
+          pr_sys_time=0
+          sys_time_diff=0
+
+          main_mem=0
+          pr_mem=0
+          mem_diff=0
+
 
           # Extracting values
 
-          main_user_time=$(grep "User time (seconds)" main-time.txt | awk '{print $NF}')
-          pr_user_time=$(grep "User time (seconds)" pr-time.txt | awk '{print $NF}')
+          main_user_time=$(grep "User time (seconds)" main-time.txt | awk '{sum += $NF} END {print sum}')
+          pr_user_time=$(grep "User time (seconds)" pr-time.txt | awk '{sum += $NF} END {print sum}')
           user_time_diff=$(echo "$pr_user_time - $main_user_time" | bc)
 
-          main_sys_time=$(grep "System time (seconds)" main-time.txt | awk '{print $NF}')
-          pr_sys_time=$(grep "System time (seconds)" pr-time.txt | awk '{print $NF}')
+          main_sys_time=$(grep "System time (seconds)" main-time.txt | awk '{sum += $NF} END {print sum}')
+          pr_sys_time=$(grep "System time (seconds)" pr-time.txt | awk '{sum += $NF} END {print sum}')
           sys_time_diff=$(echo "$pr_sys_time - $main_sys_time" | bc)
 
-          main_mem=$(grep "Maximum resident set size" main-time.txt | awk '{print $NF}')
-          pr_mem=$(grep "Maximum resident set size" pr-time.txt | awk '{print $NF}')
+          main_mem=$(grep "Maximum resident set size" main-time.txt | '{if ($NF > max) max = $NF} END {print max}')
+          pr_mem=$(grep "Maximum resident set size" pr-time.txt | '{if ($NF > max) max = $NF} END {print max}')
           mem_diff=$(($pr_mem - $main_mem))
 
           echo "**Main Branch Execution:**" >> comment.md
