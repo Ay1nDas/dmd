@@ -195,8 +195,8 @@ jobs:
           pr_sys_time=$(grep "System time (seconds)" pr-time.txt | awk '{sum += $NF} END {print sum}')
           sys_time_diff=$(echo "$pr_sys_time - $main_sys_time" | bc)
 
-          main_mem=$(grep "Maximum resident set size" main-time.txt | '{if ($NF > max) max = $NF} END {print max}')
-          pr_mem=$(grep "Maximum resident set size" pr-time.txt | '{if ($NF > max) max = $NF} END {print max}')
+          main_mem=$(grep "Maximum resident set size" main-time.txt | awk 'BEGIN {max=0} {if ($NF > max) max = $NF} END {print max}')
+          pr_mem=$(grep "Maximum resident set size" pr-time.txt | awk 'BEGIN {max=0} {if ($NF > max) max = $NF} END {print max}')
           mem_diff=$(($pr_mem - $main_mem))
 
           echo "**Main Branch Execution:**" >> comment.md
