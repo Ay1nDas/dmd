@@ -57,7 +57,8 @@ jobs:
       - name: Test Performance (Main Branch)
         run: |
           for file in dmd/compiler/performance_test/*.d; do
-          echo "Running test on $file" /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a main-time.txt
+          echo "Running test on $file"
+          /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a main-time.txt
           done
       
 
@@ -115,7 +116,8 @@ jobs:
       - name: Test Performance (PR Branch)
         run: |
           for file in dmd/compiler/performance_test/*.d; do
-            echo "Running test on $file" /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a pr-time.txt
+            echo "Running test on $file"
+            /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a pr-time.txt
           done
 
 
