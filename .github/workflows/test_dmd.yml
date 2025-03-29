@@ -170,7 +170,13 @@ jobs:
 
       - name: Compare Performance Results
         run: |
-          echo "### Performance Comparison" > comment.md
+          #Counting the number of test files
+          total_files = 0
+          for file in dmd/compiler/performance_test/*.d; do
+            total_files=$((total_files + 1))
+          done
+
+          echo "### Performance Comparison on ${total_files} Test" > comment.md
           echo "" >> comment.md
 
           #initialize variables
@@ -185,8 +191,7 @@ jobs:
           main_mem=0
           pr_mem=0
           mem_diff=0
-
-
+          
           # Extracting values
 
           main_user_time=$(grep "User time (seconds)" main-time.txt | awk '{sum += $NF} END {print sum}')
