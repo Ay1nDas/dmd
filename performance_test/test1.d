@@ -1,4 +1,4 @@
-module dmd.compiler.performance_test.test_small;
+module dmd.performance_test.test1;
 
 import std.stdio;
 import std.traits;
