@@ -54,6 +54,16 @@ import dmd.visitor;
 
 enum LOGSEMANTIC = false;
 
+import core.thread; // Needed for sleep
+import std.stdio;
+
+void artificialSlowdown()
+{
+    // writeln("Introducing artificial slowdown2...");
+    // // foreach (i; 0 .. 1_000_000_000) {} // Useless loop
+    Thread.sleep(1.usecs);  // 1 microsecond
+}
+
 /****************************************
  * Find the last non-comma expression.
  * Params:
@@ -88,6 +98,7 @@ inout(Expression) lastComma(inout Expression e)
  */
 void expandTuples(Expressions* exps, Identifiers* names = null)
 {
+    artificialSlowdown();
     //printf("expandTuples()\n");
     if (exps is null)
         return;
