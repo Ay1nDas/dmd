@@ -65,7 +65,6 @@ jobs:
       # - name: Add results to mainData.json
       #   run: |
       #     # Extract relevant data
-      #     PR_NUMBER=${{ github.event.pull_request.number }}
       #     USER_TIME=$(grep "User time (seconds)" main-time.txt | awk '{print $NF}')
       #     SYSTEM_TIME=$(grep "System time (seconds)" main-time.txt | awk '{print $NF}')
       #     CPU_USAGE=$(grep "Percent of CPU this job got" main-time.txt | awk '{print $NF}')
@@ -74,13 +73,13 @@ jobs:
 
       #     #Append to JSON
       #     [ ! -s dmd/data/mainData.json ] && echo "[]" > dmd/data/mainData.json
-      #     NEW_ENTRY=$(jq -n --arg pr "$PR_NUMBER" \
-      #           --arg user "$USER_TIME" \
-      #           --arg system "$SYSTEM_TIME" \
+      #     NEW_ENTRY=$(jq -n --arg test "test \
+      #           --arg user $USER_TIME \
+      #           --arg system $SYSTEM_TIME \
       #           --arg cpu "$CPU_USAGE" \
-      #           --arg mem "$MAX_MEMORY" \
-      #           --arg page "$PAGE_SIZE" \
-      #           '{pr: $pr, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
+      #           --arg mem $MAX_MEMORY \
+      #           --arg page $PAGE_SIZE \
+      #           '{test: $test, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
       #     jq ". += [$NEW_ENTRY]" dmd/data/mainData.json > temp.json && mv temp.json dmd/data/mainData.json
       
       # # - name: print mainData.json
