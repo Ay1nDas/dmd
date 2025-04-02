@@ -55,16 +55,6 @@ import dmd.dsymbolsem;
 
 import dmd.common.outbuffer;
 
-import core.thread; // Needed for sleep
-import std.stdio;
-
-void artificialSlowdown()
-{
-    // writeln("Introducing artificial slowdown1...");
-    // foreach (i; 0 .. 1_000_000_000) {} // Useless loop
-    // Thread.sleep(1.msecs); // Force a 1-second delay
-}
-
 /***************************************
  * Calls dg(Dsymbol* sym) for each Dsymbol.
  * If dg returns !=0, stops and returns that value else returns 0.
@@ -78,7 +68,6 @@ void artificialSlowdown()
  */
 int foreachDsymbol(Dsymbols* symbols, scope int delegate(Dsymbol) dg)
 {
-    artificialSlowdown();
     assert(dg);
     if (symbols)
     {

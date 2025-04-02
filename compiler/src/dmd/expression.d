@@ -55,12 +55,9 @@ import dmd.visitor;
 enum LOGSEMANTIC = false;
 
 import core.thread; // Needed for sleep
-import std.stdio;
 
 void artificialSlowdown()
 {
-    // writeln("Introducing artificial slowdown2...");
-    // // foreach (i; 0 .. 1_000_000_000) {} // Useless loop
     Thread.sleep(1.usecs);  // 1 microsecond
 }
 
