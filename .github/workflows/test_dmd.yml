@@ -7,7 +7,7 @@ on:
     #   - main   # Uncomment to build on main branch changes
 
 jobs:
-  build:
+  build_and_run:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout Phobos repository
         run: git clone https://github.com/dlang/phobos.git phobos # Clones into ./phobos
 
-# Dependencies may already be installed
+      # Dependencies may already be installed
       - name: Install dependencies
         run: |
           sudo apt update
@@ -52,11 +52,11 @@ jobs:
 
       - name: Run hello.d with DMD (Main Branch)
         run: |
-          dmd/generated/linux/debug/64/dmd -run dmd/compiler/performance_test/hello.d
+          dmd/generated/linux/debug/64/dmd -run dmd/compiler/performance_test/simple_codes/hello.d
 
       - name: Test Performance (Main Branch)
         run: |
-          for file in dmd/compiler/performance_test/*.d; do
+          for file in dmd/compiler/performance_test/compile_time/*.d; do
           echo "Running test on $file"
           /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a main-time.txt
           done
@@ -106,7 +106,7 @@ jobs:
       - name: Run hello.d with DMD (PR Branch)
         run: |
           cd dmd
-          ./generated/linux/debug/64/dmd -run ./compiler/performance_test/hello.d
+          ./generated/linux/debug/64/dmd -run ./compiler/performance_test/simple_codes/hello.d
 
       # - name: Test Performance (PR Branch)
         # run: |
@@ -114,7 +114,7 @@ jobs:
 
       - name: Test Performance (PR Branch)
         run: |
-          for file in dmd/compiler/performance_test/*.d; do
+          for file in dmd/compiler/performance_test/compile_time*.d; do
             echo "Running test on $file"
             /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a pr-time.txt
           done
