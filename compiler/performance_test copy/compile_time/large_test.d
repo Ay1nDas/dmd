@@ -1,4 +1,4 @@
-module dmd.compiler.performance_test.compile_time.large_test_2;
+module dmd.compiler.performance_test.compile_time.large_test;
 
 import std.stdio;
 import std.meta;
