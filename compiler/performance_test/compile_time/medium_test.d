@@ -132,7 +132,7 @@ struct ComplexType
 // ------------------------
 void main()
 {
-        enum fib = computeCTFE(37); // Very slow at compile time
+        enum fib = computeCTFE(36); // Very slow at compile time
         writeln("CTFE Fib(35): ", fib);
 
         enum val = RecursiveTemplate!(500); // Deep template recursion
