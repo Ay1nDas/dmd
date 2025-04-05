@@ -1,4 +1,4 @@
-module dmd.performance_test.hello;
+module dmd.compiler.performance_test.hello;
 
 import std.stdio;
 
