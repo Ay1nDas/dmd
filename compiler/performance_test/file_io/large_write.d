@@ -17,8 +17,6 @@ int main(){
   file.close(); // Close file (system call)
 
 
-
-
   file = File("test.txt", "w"); // Open file (system call)
   file.writefln("This is a test line.");
   file.close(); // Close file (system call)
