@@ -67,7 +67,7 @@ jobs:
           done
       
 
-      - name: Add results to mainData.json
+      - name: Add results to mainData-${{ github.event.pull_request.number }}.json
         run: |
           
           INPUT_FILE="main-time.txt"
@@ -106,16 +106,16 @@ jobs:
           echo "" >> "$OUTPUT_FILE"
           echo "]" >> "$OUTPUT_FILE"
       
-      - name: print mainData.json
+      - name: print mainData-${{ github.event.pull_request.number }}.json
         run: |
-          cat dmd/data/mainData.json
+          cat dmd/data/mainData-${{ github.event.pull_request.number }}.json
 
-      - name: Commit and Push mainData.json
+      - name: Commit and Push mainData-${{ github.event.pull_request.number }}.json
         run: |
           cd dmd
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add data/mainData.json
+          git add data/mainData-${{ github.event.pull_request.number }}.json
           git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
           git push
 
