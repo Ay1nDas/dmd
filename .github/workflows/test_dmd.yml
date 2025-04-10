@@ -62,12 +62,12 @@ jobs:
           for file in "$folder"*.d; do
           echo "Running test on $file"
           # Run the test and append the output to main-time.txt
-          /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a main-time.txt
+          # /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a main-time.txt
           done
 
           for child_folder in "$folder"*/; do
           echo "Running test for $child_folder"
-          /usr/bin/time -v dmd/generated/linux/debug/64/dmd "${child_folder}/main.d" 2>&1 | tee -a main-time.txt
+          # /usr/bin/time -v dmd/generated/linux/debug/64/dmd "${child_folder}/main.d" 2>&1 | tee -a main-time.txt
           done
           done
 
@@ -149,14 +149,14 @@ jobs:
           for file in "$folder"*.d; do
           echo "Running test on $file"
           # Run the test and append the output to pr-time.txt
-          /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a pr-time.txt
+          # /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a pr-time.txt
           done
           
           # For Multi-file tests.
           # Folder must contain a main.d file to run the test
           for child_folder in "$folder"*/; do
           echo "Running test for $child_folder"
-          /usr/bin/time -v dmd/generated/linux/debug/64/dmd "${child_folder}/main.d" 2>&1 | tee -a pr-time.txt
+          # /usr/bin/time -v dmd/generated/linux/debug/64/dmd "${child_folder}/main.d" 2>&1 | tee -a pr-time.txt
           done
           done
 
@@ -206,11 +206,15 @@ jobs:
       - name: copy and Push prData to main branch
         run: |
           cd dmd
-          git checkout master
-          git checkout pr-branch -- data/prData-${{ github.event.pull_request.number }}.json
-          git add data/prData.json
+          git add data/prData-${{ github.event.pull_request.number }}.json
           git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
-          git push
+          git push https://github.com/Ay1nDas/dmd.git master
+
+          # git checkout master
+          # git checkout pr-branch -- data/prData-${{ github.event.pull_request.number }}.json
+          # git add data/prData.json
+          # git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
+          # git push
 
       - name: Compare Performance Results
         run: |
