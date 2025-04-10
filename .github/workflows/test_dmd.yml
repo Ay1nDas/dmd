@@ -69,6 +69,7 @@ jobs:
           echo "Running test for $child_folder"
           /usr/bin/time -v dmd/generated/linux/debug/64/dmd "${child_folder}/main.d" 2>&1 | tee -a main-time.txt
           done
+          done
 
       - name: Display main-time.txt
         run: |
@@ -156,6 +157,7 @@ jobs:
           for child_folder in "$folder"*/; do
           echo "Running test for $child_folder"
           /usr/bin/time -v dmd/generated/linux/debug/64/dmd "${child_folder}/main.d" 2>&1 | tee -a pr-time.txt
+          done
           done
 
       - name: Display pr-time.txt
