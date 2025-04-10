@@ -64,12 +64,12 @@ jobs:
           for file in "$folder"*.d; do
           echo "Running test on $file"
           # Run the test and append the output to main-time.txt
-          # /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a main-time.txt
+          /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a main-time.txt
           done
 
           for child_folder in "$folder"*/; do
           echo "Running test for $child_folder"
-          # /usr/bin/time -v dmd/generated/linux/debug/64/dmd "${child_folder}/main.d" 2>&1 | tee -a main-time.txt
+          /usr/bin/time -v dmd/generated/linux/debug/64/dmd "${child_folder}/main.d" 2>&1 | tee -a main-time.txt
           done
           done
 
@@ -153,14 +153,14 @@ jobs:
           for file in "$folder"*.d; do
           echo "Running test on $file"
           # Run the test and append the output to pr-time.txt
-          # /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a pr-time.txt
+          /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a pr-time.txt
           done
           
           # For Multi-file tests.
           # Folder must contain a main.d file to run the test
           for child_folder in "$folder"*/; do
           echo "Running test for $child_folder"
-          # /usr/bin/time -v dmd/generated/linux/debug/64/dmd "${child_folder}/main.d" 2>&1 | tee -a pr-time.txt
+          /usr/bin/time -v dmd/generated/linux/debug/64/dmd "${child_folder}/main.d" 2>&1 | tee -a pr-time.txt
           done
           done
 
