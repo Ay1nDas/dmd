@@ -65,9 +65,9 @@ jobs:
           /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a main-time.txt
           done
 
-          for child_folder in "$folder"*/; do
+          for child_folder in ${folder}*/; do
           echo "Running test for $child_folder"
-          /usr/bin/time -v dmd/generated/linux/debug/64/dmd "${child_folder}/main.d" 2>&1 | tee -a main-time.txt
+          /usr/bin/time -v dmd/generated/linux/debug/64/dmd -I${child_folder} "${child_folder}/main.d" 2>&1 | tee -a main-time.txt
           done
           done
 
