@@ -207,6 +207,10 @@ jobs:
           echo "" >> "$OUTPUT_FILE"
           echo "]" >> "$OUTPUT_FILE"
 
+      - name: print prData-${{ github.event.pull_request.number }}.json
+        run: |
+          cat prData-${{ github.event.pull_request.number }}.json
+
       - name: Push all data to main branch
         run: |
           cd dmd
