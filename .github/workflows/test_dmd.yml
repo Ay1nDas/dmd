@@ -216,7 +216,7 @@ jobs:
           cd dmd
           git checkout master
           mv ../mainData-${{ github.event.pull_request.number }}.json data/
-          mv ../prData-${{ github.event.pull_request.number }}.json dmd/data/
+          mv ../prData-${{ github.event.pull_request.number }}.json data/
 
           git add data/
           git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
