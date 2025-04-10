@@ -56,6 +56,8 @@ jobs:
 
       - name: Test Performance (Main Branch)
         run: |
+          echo "Yay" > main-time.txt
+
           for folder in dmd/compiler/performance_test/*/; do
           echo "Running test from $folder"
 
@@ -143,6 +145,8 @@ jobs:
 
       - name: Test Performance (PR Branch)
         run: |
+          echo ":(" >> pr-time.txt
+
           for folder in dmd/compiler/performance_test/*/; do
           echo "Running test from $folder"
 
