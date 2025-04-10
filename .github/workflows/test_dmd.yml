@@ -126,7 +126,7 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add data/mainData-${{ github.event.pull_request.number }}.json
-          git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
+          git commit -m "Update main performance data for PR #${{ github.event.pull_request.number }}"
           git push
 
 
@@ -207,11 +207,11 @@ jobs:
           echo "" >> "$OUTPUT_FILE"
           echo "]" >> "$OUTPUT_FILE"
 
-      - name: copy and Push prData to main branch
+      - name: Push prData to main branch
         run: |
           cd dmd
           git add data/prData-${{ github.event.pull_request.number }}.json
-          git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
+          git commit -m "Update PR performance data for PR #${{ github.event.pull_request.number }}"
           git push https://github.com/Ay1nDas/dmd.git master
 
           # git checkout master
