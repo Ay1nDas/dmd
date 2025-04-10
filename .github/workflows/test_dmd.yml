@@ -78,7 +78,7 @@ jobs:
           TEST_COUNT=1;
 
           while read -r line; do
-            if [[ "$line" =~ Command\ being\ timed:\ \"dmd\ (.+\.d)\" ]]; then
+            if [[ "$line" =~ Command\ being\ timed:\ \"dmd/generated/linux/debug/64/dmd\ (.+\.d)\" ]]; then
               testpath=${BASH_REMATCH[1]}
 
               USER_TIME=$(grep 'User time' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
@@ -91,7 +91,7 @@ jobs:
                 echo "," >> "$OUTPUT_FILE"
               fi
               echo "  {" >> "$OUTPUT_FILE"
-              echo "    \"test\": \"test$testpath\"," >> "$OUTPUT_FILE"
+              echo "    \"test\": \"$testpath\"," >> "$OUTPUT_FILE"
               echo "    \"userTime\": $USER_TIME," >> "$OUTPUT_FILE"
               echo "    \"sysTime\": $SYSTEM_TIME," >> "$OUTPUT_FILE"
               echo "    \"cpuUse\": \"${CPU_USE}\"," >> "$OUTPUT_FILE"
