@@ -1,4 +1,4 @@
-module dmd.compiler.performance_test.compile_time.large_test_2;
+module dmd.compiler.performance_test.compile_time.large_test;
 
 import std.stdio;
 import std.meta;
@@ -133,7 +133,7 @@ struct ComplexType
 void main()
 {
     {
-        enum fib = computeCTFE(100); // Very slow at compile time
+        enum fib = computeCTFE(38); // Very slow at compile time
         writeln("CTFE Fib(35): ", fib);
 
         enum val = RecursiveTemplate!(100); // Deep template recursion
