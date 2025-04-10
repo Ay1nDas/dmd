@@ -7,7 +7,7 @@ on:
     #   - main   # Uncomment to build on main branch changes
 
 jobs:
-  build_and_run:
+  build_and_test:
     runs-on: ubuntu-latest
 
     steps:
@@ -58,14 +58,21 @@ jobs:
         run: |
           for folder in dmd/compiler/performance_test/*/; do
           echo "Running test from $folder"
+
           for file in "$folder"*.d; do
           echo "Running test on $file"
           # Run the test and append the output to main-time.txt
           /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a main-time.txt
           done
-          echo ""
+
+          for child_folder in "$folder"*/; do
+          echo "Running test for $child_folder"
+          /usr/bin/time -v dmd/generated/linux/debug/64/dmd "${child_folder}/main.d" 2>&1 | tee -a main-time.txt
           done
-      
+
+      - name: Display main-time.txt
+        run: |
+          cat main-time.txt
 
       - name: Add results to mainData-${{ github.event.pull_request.number }}.json
         run: |
@@ -132,64 +139,76 @@ jobs:
           cd dmd
           ./generated/linux/debug/64/dmd -run ./compiler/performance_test/simple_codes/hello.d
 
-      # - name: Test Performance (PR Branch)
-        # run: |
-        #   /usr/bin/time -v dmd/generated/linux/debug/64/dmd dmd/compiler/performance_test/test_small.d 2>&1 | tee pr-time.txt
 
       - name: Test Performance (PR Branch)
         run: |
-          for file in dmd/compiler/performance_test/compile_time/*.d; do
-            echo "Running test on $file"
-            /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a pr-time.txt
+          for folder in dmd/compiler/performance_test/*/; do
+          echo "Running test from $folder"
+
+          for file in "$folder"*.d; do
+          echo "Running test on $file"
+          # Run the test and append the output to pr-time.txt
+          /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a pr-time.txt
+          done
+          
+          # For Multi-file tests.
+          # Folder must contain a main.d file to run the test
+          for child_folder in "$folder"*/; do
+          echo "Running test for $child_folder"
+          /usr/bin/time -v dmd/generated/linux/debug/64/dmd "${child_folder}/main.d" 2>&1 | tee -a pr-time.txt
           done
 
+      - name: Display pr-time.txt
+        run: |
+          cat pr-time.txt
 
-      # - name: Add results to prData.json
-      #   run: |
-      #     # #Change Branch
-      #     # cd dmd
-      #     # git checkout master
-      #     # cd ../
 
-      #     # Extract relevant data
-      #     PR_NUMBER=${{ github.event.pull_request.number }}
-      #     USER_TIME=$(grep "User time (seconds)" pr-time.txt | awk '{print $NF}')
-      #     SYSTEM_TIME=$(grep "System time (seconds)" pr-time.txt | awk '{print $NF}')
-      #     CPU_USAGE=$(grep "Percent of CPU this job got" pr-time.txt | awk '{print $NF}')
-      #     MAX_MEMORY=$(grep "Maximum resident set size (kbytes)" pr-time.txt | awk '{print $NF}')
-      #     PAGE_SIZE=$(grep "Page size (bytes)" pr-time.txt | awk '{print $NF}')
+      - name: Add results to prData-${{ github.event.pull_request.number }}.json
+        run: |
+          INPUT_FILE="pr-time.txt"
+          OUTPUT_FILE="dmd/data/prData-${{ github.event.pull_request.number }}.json"
 
-      #     #Append to JSON
-      #     [ ! -s dmd/data/prData.json ] && echo "[]" > dmd/data/prData.json
-      #     NEW_ENTRY=$(jq -n --arg pr "$PR_NUMBER" \
-      #           --arg user "$USER_TIME" \
-      #           --arg system "$SYSTEM_TIME" \
-      #           --arg cpu "$CPU_USAGE" \
-      #           --arg mem "$MAX_MEMORY" \
-      #           --arg page "$PAGE_SIZE" \
-      #           '{pr: $pr, user_time: $user, system_time: $system, cpu_usage: $cpu, max_memory: $mem, page_size: $page}')
-      #     jq ". += [$NEW_ENTRY]" dmd/data/prData.json > temp.json && mv temp.json dmd/data/prData.json
-          
-      #   # - name: print mainData.json
-      #   #   run: |
-      #   #     cat dmd/data/mainData.json
-  
-      # - name: Commit prData.json to PR-Branch
-      #   run: |
-      #     cd dmd
-      #     git config --global user.name "GitHub Actions"
-      #     git config --global user.email "actions@github.com"
-      #     git add data/prData.json
-      #     git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
+          echo "[" > "$OUTPUT_FILE"
+          first=1
+          TEST_COUNT=1;
 
-      # - name: copy and Push prData to main branch
-      #   run: |
-      #     cd dmd
-      #     git checkout master
-      #     git checkout pr-branch -- data/prData.json
-      #     git add data/prData.json
-      #     git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
-      #     git push
+          while read -r line; do
+            if [[ "$line" =~ Command\ being\ timed:\ \"dmd/generated/linux/debug/64/dmd\ (.+\.d)\" ]]; then
+              testpath=${BASH_REMATCH[1]}
+
+              USER_TIME=$(grep 'User time' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
+              SYSTEM_TIME=$(grep 'System time' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
+              CPU_USE=$(grep 'User time' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
+              MAX_RAM=$(grep 'Maximum resident set size' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
+
+
+              if [[ $first -eq 0 ]]; then
+                echo "," >> "$OUTPUT_FILE"
+              fi
+              echo "  {" >> "$OUTPUT_FILE"
+              echo "    \"test\": \"$testpath\"," >> "$OUTPUT_FILE"
+              echo "    \"userTime\": $USER_TIME," >> "$OUTPUT_FILE"
+              echo "    \"sysTime\": $SYSTEM_TIME," >> "$OUTPUT_FILE"
+              echo "    \"cpuUse\": \"${CPU_USE}\"," >> "$OUTPUT_FILE"
+              echo "    \"maxRam\": $MAX_RAM" >> "$OUTPUT_FILE"
+              echo "  }" >> "$OUTPUT_FILE"
+              TEST_COUNT=$((TEST_COUNT + 1))
+
+              first=0
+            fi
+          done < "$INPUT_FILE"
+
+          echo "" >> "$OUTPUT_FILE"
+          echo "]" >> "$OUTPUT_FILE"
+
+      - name: copy and Push prData to main branch
+        run: |
+          cd dmd
+          git checkout master
+          git checkout pr-branch -- data/prData-${{ github.event.pull_request.number }}.json
+          git add data/prData.json
+          git commit -m "Update performance data for PR #${{ github.event.pull_request.number }}"
+          git push
 
       - name: Compare Performance Results
         run: |
