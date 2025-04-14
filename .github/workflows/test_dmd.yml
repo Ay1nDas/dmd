@@ -27,7 +27,7 @@ jobs:
           sudo apt install -y make gcc
           sudo apt-get update && sudo apt-get install -y time
           sudo apt-get install jq
-      
+
       - name: Install D compiler
         uses: dlang-community/setup-dlang@v1
         with:
@@ -36,7 +36,6 @@ jobs:
       #   run: |
       #     dmd --version
       #     rdmd --version
-
 
       - name: Build DMD (Main Branch)
         run: |
@@ -48,7 +47,6 @@ jobs:
         run: |
           cd phobos
           make -f posix.mak BUILD=debug
-
 
       - name: Run hello.d with DMD (Main Branch)
         run: |
@@ -77,7 +75,7 @@ jobs:
 
       - name: Add results to mainData-${{ github.event.pull_request.number }}.json
         run: |
-          
+
           INPUT_FILE="main-time.txt"
           OUTPUT_FILE="mainData-${{ github.event.pull_request.number }}.json"
 
@@ -91,7 +89,7 @@ jobs:
 
               USER_TIME=$(grep 'User time' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
               SYSTEM_TIME=$(grep 'System time' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
-              CPU_USE=$(grep 'User time' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
+              CPU_USE=$(grep 'Percent of CPU' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
               MAX_RAM=$(grep 'Maximum resident set size' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
 
 
@@ -113,7 +111,7 @@ jobs:
 
           echo "" >> "$OUTPUT_FILE"
           echo "]" >> "$OUTPUT_FILE"
-      
+
       - name: print mainData-${{ github.event.pull_request.number }}.json
         run: |
           cat mainData-${{ github.event.pull_request.number }}.json
@@ -127,19 +125,17 @@ jobs:
       #     git commit -m "Update main performance data for PR #${{ github.event.pull_request.number }}"
       #     git push
 
-
       - name: Build DMD (PR Branch)
         run: |
           cd dmd
           git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-branch
           git checkout pr-branch
           rdmd compiler/src/build.d BUILD=debug
-      
+
       - name: Run hello.d with DMD (PR Branch)
         run: |
           cd dmd
           ./generated/linux/debug/64/dmd -run ./compiler/performance_test/simple_codes/hello.d
-
 
       - name: Test Performance (PR Branch)
         run: |
@@ -151,7 +147,7 @@ jobs:
           # Run the test and append the output to pr-time.txt
           /usr/bin/time -v dmd/generated/linux/debug/64/dmd "$file" 2>&1 | tee -a pr-time.txt
           done
-          
+
           # For Multi-file tests.
           # Folder must contain a main.d file to run the test
           for child_folder in "$folder"*/; do
@@ -163,7 +159,6 @@ jobs:
       - name: Display pr-time.txt
         run: |
           cat pr-time.txt
-
 
       - name: Add results to prData-${{ github.event.pull_request.number }}.json
         run: |
@@ -180,7 +175,7 @@ jobs:
 
               USER_TIME=$(grep 'User time' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
               SYSTEM_TIME=$(grep 'System time' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
-              CPU_USE=$(grep 'User time' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
+              CPU_USE=$(grep 'Percent of CPU' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
               MAX_RAM=$(grep 'Maximum resident set size' "$INPUT_FILE" | sed -n "${TEST_COUNT}p" | awk '{print $NF}')
 
 
@@ -247,7 +242,7 @@ jobs:
           main_mem=0
           pr_mem=0
           mem_diff=0
-          
+
           # Extracting values
 
           main_user_time=$(grep "User time (seconds)" main-time.txt | awk '{sum += $NF} END {print sum}')
@@ -279,7 +274,6 @@ jobs:
           echo "- **System time difference:** ${sys_time_diff}s" >> comment.md
           echo "- **Memory difference:** ${mem_diff} KB" >> comment.md
 
-
       - name: Post Comment on PR
         uses: actions/github-script@v6
         with:
@@ -293,7 +287,6 @@ jobs:
               repo: context.repo.repo,
               body: comment
             });
-        
 
       # - name: Upload Build Artifacts
       #   uses: actions/upload-artifact@v4
@@ -302,7 +295,7 @@ jobs:
       #     path: |
       #       dmd/dmd-main
       #       dmd/dmd-pr
-      
+
       # - name: build hello.d
       #   run: |
       #     cd dmd
