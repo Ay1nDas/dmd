@@ -1,0 +1,12 @@
+name: Release Build Comment
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  comment-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add release build comment
+        run: echo "This is a release build."

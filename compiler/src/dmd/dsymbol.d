@@ -333,6 +333,9 @@ enum DSYM : ubyte
  */
 extern (C++) class Dsymbol : ASTNode
 {
+     
+     ubyte[64] dummy; // Artificially increases memory usage
+    
     Identifier ident;
     Dsymbol parent;
     Symbol* csym;           // symbol for code generator
