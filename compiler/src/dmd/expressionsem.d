@@ -14,6 +14,7 @@
 module dmd.expressionsem;
 
 import core.stdc.stdio;
+import std.stdio;
 
 import dmd.access;
 import dmd.aggregate;
@@ -5298,6 +5299,7 @@ private extern (C++) final class ExpressionSemanticVisitor : Visitor
                         exp.names ? (*exp.names)[] : null,
                         (size_t i, Type t) => (*exp.arguments)[i],
                         i => (*exp.arguments)[i].loc
+
                     );
                     if (!exp.arguments)
                         return setError();
@@ -6273,9 +6275,11 @@ private extern (C++) final class ExpressionSemanticVisitor : Visitor
 
                 if (exp.argLabels)
                 {
+                    // writeln("Here");
                     resolvedArgs = resolveStructLiteralNamedArgs(sd, exp.e1.type, sc, exp.loc,
                         (*expNames)[],
                         (size_t i, Type t) => (*exp.arguments)[i],
+                        i => (*exp.arguments)[i].loc,
                         i => exp.argLabels[i].loc
                     );
                     if (!resolvedArgs)

@@ -15,6 +15,7 @@ module dmd.parse;
 
 import core.stdc.stdio;
 import core.stdc.string;
+import std.stdio;
 
 import dmd.astenums;
 import dmd.errorsink;
@@ -9455,6 +9456,7 @@ class Parser(AST, Lexer = dmd.lexer.Lexer) : Lexer
      */
     private void parseNamedArguments(AST.Expressions* arguments, AST.Identifiers* names, ArgumentLabel[]* argLabels)
     {
+        // writeln("Hi");
         assert(arguments);
 
         const endtok = token.value == TOK.leftBracket ? TOK.rightBracket : TOK.rightParenthesis;

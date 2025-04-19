@@ -11,23 +11,25 @@
 #define _d_dynamicArray CUSTOM_D_ARRAY_TYPE
 #else
 /// Represents a D [] array
-template<typename T>
+template <typename T>
 struct _d_dynamicArray final
 {
     size_t length;
     T *ptr;
 
-    _d_dynamicArray() : length(0), ptr(NULL) { }
+    _d_dynamicArray() : length(0), ptr(NULL) {}
 
     _d_dynamicArray(size_t length_in, T *ptr_in)
-        : length(length_in), ptr(ptr_in) { }
+        : length(length_in), ptr(ptr_in) {}
 
-    T& operator[](const size_t idx) {
+    T &operator[](const size_t idx)
+    {
         assert(idx < length);
         return ptr[idx];
     }
 
-    const T& operator[](const size_t idx) const {
+    const T &operator[](const size_t idx) const
+    {
         assert(idx < length);
         return ptr[idx];
     }
@@ -355,10 +357,12 @@ class RootObject
 {
 public:
     RootObject();
-    virtual bool equals(const RootObject* const o) const;
-    virtual const char* toChars() const;
+    virtual bool equals(const RootObject *const o) const;
+    virtual const char *toChars() const;
+
 private:
     virtual void __vtable_slot_0();
+
 public:
     virtual DYNCAST dyncast() const;
 };
@@ -366,7 +370,7 @@ public:
 class ASTNode : public RootObject
 {
 public:
-    virtual void accept(Visitor* v) = 0;
+    virtual void accept(Visitor *v) = 0;
     ASTNode();
 };
 
@@ -379,18 +383,17 @@ enum class MessageStyle : uint8_t
 
 struct SourceLoc final
 {
-    _d_dynamicArray< const char > filename;
+    _d_dynamicArray<const char> filename;
     uint32_t line;
     uint32_t column;
     uint32_t fileOffset;
-    _d_dynamicArray< const char > fileContent;
-    const char* toChars(bool showColumns = Loc::showColumns, MessageStyle messageStyle = Loc::messageStyle) const;
-    SourceLoc() :
-        filename(),
-        line(),
-        column(),
-        fileOffset(),
-        fileContent()
+    _d_dynamicArray<const char> fileContent;
+    const char *toChars(bool showColumns = Loc::showColumns, MessageStyle messageStyle = Loc::messageStyle) const;
+    SourceLoc() : filename(),
+                  line(),
+                  column(),
+                  fileOffset(),
+                  fileContent()
     {
     }
 };
@@ -399,24 +402,24 @@ struct Loc final
 {
 private:
     uint32_t index;
+
 public:
     static bool showColumns;
     static MessageStyle messageStyle;
     static void set(bool showColumns, MessageStyle messageStyle);
-    static Loc singleFilename(const char* const filename);
+    static Loc singleFilename(const char *const filename);
     uint32_t charnum() const;
     uint32_t linnum() const;
-    const char* filename() const;
-    const char* toChars(bool showColumns = Loc::showColumns, MessageStyle messageStyle = Loc::messageStyle) const;
+    const char *filename() const;
+    const char *toChars(bool showColumns = Loc::showColumns, MessageStyle messageStyle = Loc::messageStyle) const;
     SourceLoc toSourceLoc() const;
     bool equals(Loc loc) const;
-    Loc() :
-        index(0u)
+    Loc() : index(0u)
     {
     }
-    Loc(uint32_t index) :
-        index(index)
-        {}
+    Loc(uint32_t index) : index(index)
+    {
+    }
 };
 
 enum class PASS : uint8_t
@@ -507,8 +510,7 @@ struct Ungag final
 {
     uint32_t oldgag;
     ~Ungag();
-    Ungag() :
-        oldgag()
+    Ungag() : oldgag()
     {
     }
 };
@@ -529,10 +531,9 @@ struct Visibility final
     };
 
     Kind kind;
-    Package* pkg;
-    Visibility(Kind kind, Package* pkg = nullptr);
-    Visibility() :
-        pkg()
+    Package *pkg;
+    Visibility(Kind kind, Package *pkg = nullptr);
+    Visibility() : pkg()
     {
     }
 };
@@ -540,12 +541,14 @@ struct Visibility final
 class Dsymbol : public ASTNode
 {
 public:
-    Identifier* ident;
-    Dsymbol* parent;
-    Symbol* csym;
-    Scope* _scope;
+    Identifier *ident;
+    Dsymbol *parent;
+    Symbol *csym;
+    Scope *_scope;
+
 private:
-    DsymbolAttributes* atts;
+    DsymbolAttributes *atts;
+
 public:
     const Loc loc;
     uint16_t localNum;
@@ -553,184 +556,193 @@ public:
     {
         bool errors;
         PASS semanticRun;
-        BitFields() :
-            errors(),
-            semanticRun((PASS)0u)
+        BitFields() : errors(),
+                      semanticRun((PASS)0u)
         {
         }
-        BitFields(bool errors, PASS semanticRun = (PASS)0u) :
-            errors(errors),
-            semanticRun(semanticRun)
-            {}
+        BitFields(bool errors, PASS semanticRun = (PASS)0u) : errors(errors),
+                                                              semanticRun(semanticRun)
+        {
+        }
     };
 
     bool errors() const;
     bool errors(bool v);
     PASS semanticRun() const;
     PASS semanticRun(PASS v);
+
 private:
     uint8_t bitFields;
+
 public:
     DSYM dsym;
-    static Dsymbol* create(Identifier* ident);
-    const char* toChars() const final override;
-    DeprecatedDeclaration* depdecl();
-    CPPNamespaceDeclaration* cppnamespace();
-    UserAttributeDeclaration* userAttribDecl();
-    DeprecatedDeclaration* depdecl(DeprecatedDeclaration* dd);
-    CPPNamespaceDeclaration* cppnamespace(CPPNamespaceDeclaration* ns);
-    UserAttributeDeclaration* userAttribDecl(UserAttributeDeclaration* uad);
-    virtual const char* toPrettyCharsHelper();
-    bool equals(const RootObject* const o) const override;
+    static Dsymbol *create(Identifier *ident);
+    const char *toChars() const final override;
+    DeprecatedDeclaration *depdecl();
+    CPPNamespaceDeclaration *cppnamespace();
+    UserAttributeDeclaration *userAttribDecl();
+    DeprecatedDeclaration *depdecl(DeprecatedDeclaration *dd);
+    CPPNamespaceDeclaration *cppnamespace(CPPNamespaceDeclaration *ns);
+    UserAttributeDeclaration *userAttribDecl(UserAttributeDeclaration *uad);
+    virtual const char *toPrettyCharsHelper();
+    bool equals(const RootObject *const o) const override;
     bool isAnonymous() const;
-    Module* getModule();
+    Module *getModule();
     bool isCsymbol();
-    Module* getAccessModule();
-    Dsymbol* pastMixin();
-    Dsymbol* toParent();
-    Dsymbol* toParent2();
-    Dsymbol* toParentDecl();
-    Dsymbol* toParentLocal();
-    Dsymbol* toParentP(Dsymbol* p1, Dsymbol* p2 = nullptr);
-    TemplateInstance* isInstantiated();
-    bool followInstantiationContext(Dsymbol* p1, Dsymbol* p2 = nullptr);
-    TemplateInstance* isSpeculative();
+    Module *getAccessModule();
+    Dsymbol *pastMixin();
+    Dsymbol *toParent();
+    Dsymbol *toParent2();
+    Dsymbol *toParentDecl();
+    Dsymbol *toParentLocal();
+    Dsymbol *toParentP(Dsymbol *p1, Dsymbol *p2 = nullptr);
+    TemplateInstance *isInstantiated();
+    bool followInstantiationContext(Dsymbol *p1, Dsymbol *p2 = nullptr);
+    TemplateInstance *isSpeculative();
     Ungag ungagSpeculative() const;
     DYNCAST dyncast() const final override;
-    virtual Identifier* getIdent();
-    virtual const char* toPrettyChars(bool QualifyTypes = false);
-    virtual const char* kind() const;
-    virtual Dsymbol* toAlias();
-    virtual Dsymbol* toAlias2();
-    virtual bool overloadInsert(Dsymbol* s);
+    virtual Identifier *getIdent();
+    virtual const char *toPrettyChars(bool QualifyTypes = false);
+    virtual const char *kind() const;
+    virtual Dsymbol *toAlias();
+    virtual Dsymbol *toAlias2();
+    virtual bool overloadInsert(Dsymbol *s);
     virtual uinteger_t size(Loc loc);
     virtual bool isforwardRef();
-    virtual AggregateDeclaration* isThis();
+    virtual AggregateDeclaration *isThis();
     virtual bool isExport() const;
     virtual bool isImportedSymbol() const;
     virtual bool isDeprecated() const;
     virtual bool isOverloadable() const;
-    virtual LabelDsymbol* isLabel();
-    AggregateDeclaration* isMember();
-    AggregateDeclaration* isMember2();
-    AggregateDeclaration* isMemberDecl();
-    AggregateDeclaration* isMemberLocal();
-    ClassDeclaration* isClassMember();
-    virtual Type* getType();
+    virtual LabelDsymbol *isLabel();
+    AggregateDeclaration *isMember();
+    AggregateDeclaration *isMember2();
+    AggregateDeclaration *isMemberDecl();
+    AggregateDeclaration *isMemberLocal();
+    ClassDeclaration *isClassMember();
+    virtual Type *getType();
     virtual bool needThis();
     virtual Visibility visible();
-    virtual Dsymbol* syntaxCopy(Dsymbol* s);
+    virtual Dsymbol *syntaxCopy(Dsymbol *s);
     virtual bool hasPointers();
-    virtual void addObjcSymbols(Array<ClassDeclaration* >* classes, Array<ClassDeclaration* >* categories);
-    virtual void addComment(const char* comment);
-    const char* comment();
-    void comment(const char* comment);
-    UnitTestDeclaration* ddocUnittest();
-    void ddocUnittest(UnitTestDeclaration* utd);
+    virtual void addObjcSymbols(Array<ClassDeclaration *> *classes, Array<ClassDeclaration *> *categories);
+    virtual void addComment(const char *comment);
+    const char *comment();
+    void comment(const char *comment);
+    UnitTestDeclaration *ddocUnittest();
+    void ddocUnittest(UnitTestDeclaration *utd);
     bool inNonRoot();
     static void deinitialize();
-    void accept(Visitor* v) override;
-    Package* isPackage();
-    Module* isModule();
-    EnumMember* isEnumMember();
-    TemplateDeclaration* isTemplateDeclaration();
-    TemplateInstance* isTemplateInstance();
-    TemplateMixin* isTemplateMixin();
-    ForwardingAttribDeclaration* isForwardingAttribDeclaration();
-    Nspace* isNspace();
-    Declaration* isDeclaration();
-    StorageClassDeclaration* isStorageClassDeclaration();
-    ExpressionDsymbol* isExpressionDsymbol();
-    AliasAssign* isAliasAssign();
-    ThisDeclaration* isThisDeclaration();
-    BitFieldDeclaration* isBitFieldDeclaration();
-    TypeInfoDeclaration* isTypeInfoDeclaration();
-    TupleDeclaration* isTupleDeclaration();
-    AliasDeclaration* isAliasDeclaration();
-    AggregateDeclaration* isAggregateDeclaration();
-    FuncDeclaration* isFuncDeclaration();
-    FuncAliasDeclaration* isFuncAliasDeclaration();
-    OverDeclaration* isOverDeclaration();
-    FuncLiteralDeclaration* isFuncLiteralDeclaration();
-    CtorDeclaration* isCtorDeclaration();
-    PostBlitDeclaration* isPostBlitDeclaration();
-    DtorDeclaration* isDtorDeclaration();
-    StaticCtorDeclaration* isStaticCtorDeclaration();
-    StaticDtorDeclaration* isStaticDtorDeclaration();
-    SharedStaticCtorDeclaration* isSharedStaticCtorDeclaration();
-    SharedStaticDtorDeclaration* isSharedStaticDtorDeclaration();
-    InvariantDeclaration* isInvariantDeclaration();
-    UnitTestDeclaration* isUnitTestDeclaration();
-    NewDeclaration* isNewDeclaration();
-    VarDeclaration* isVarDeclaration();
-    VersionSymbol* isVersionSymbol();
-    DebugSymbol* isDebugSymbol();
-    ClassDeclaration* isClassDeclaration();
-    StructDeclaration* isStructDeclaration();
-    UnionDeclaration* isUnionDeclaration();
-    InterfaceDeclaration* isInterfaceDeclaration();
-    ScopeDsymbol* isScopeDsymbol();
-    ForwardingScopeDsymbol* isForwardingScopeDsymbol();
-    WithScopeSymbol* isWithScopeSymbol();
-    ArrayScopeSymbol* isArrayScopeSymbol();
-    Import* isImport();
-    EnumDeclaration* isEnumDeclaration();
-    SymbolDeclaration* isSymbolDeclaration();
-    AttribDeclaration* isAttribDeclaration();
-    AnonDeclaration* isAnonDeclaration();
-    CPPNamespaceDeclaration* isCPPNamespaceDeclaration();
-    VisibilityDeclaration* isVisibilityDeclaration();
-    OverloadSet* isOverloadSet();
-    MixinDeclaration* isMixinDeclaration();
-    StaticAssert* isStaticAssert();
-    StaticIfDeclaration* isStaticIfDeclaration();
-    CAsmDeclaration* isCAsmDeclaration();
+    void accept(Visitor *v) override;
+    Package *isPackage();
+    Module *isModule();
+    EnumMember *isEnumMember();
+    TemplateDeclaration *isTemplateDeclaration();
+    TemplateInstance *isTemplateInstance();
+    TemplateMixin *isTemplateMixin();
+    ForwardingAttribDeclaration *isForwardingAttribDeclaration();
+    Nspace *isNspace();
+    Declaration *isDeclaration();
+    StorageClassDeclaration *isStorageClassDeclaration();
+    ExpressionDsymbol *isExpressionDsymbol();
+    AliasAssign *isAliasAssign();
+    ThisDeclaration *isThisDeclaration();
+    BitFieldDeclaration *isBitFieldDeclaration();
+    TypeInfoDeclaration *isTypeInfoDeclaration();
+    TupleDeclaration *isTupleDeclaration();
+    AliasDeclaration *isAliasDeclaration();
+    AggregateDeclaration *isAggregateDeclaration();
+    FuncDeclaration *isFuncDeclaration();
+    FuncAliasDeclaration *isFuncAliasDeclaration();
+    OverDeclaration *isOverDeclaration();
+    FuncLiteralDeclaration *isFuncLiteralDeclaration();
+    CtorDeclaration *isCtorDeclaration();
+    PostBlitDeclaration *isPostBlitDeclaration();
+    DtorDeclaration *isDtorDeclaration();
+    StaticCtorDeclaration *isStaticCtorDeclaration();
+    StaticDtorDeclaration *isStaticDtorDeclaration();
+    SharedStaticCtorDeclaration *isSharedStaticCtorDeclaration();
+    SharedStaticDtorDeclaration *isSharedStaticDtorDeclaration();
+    InvariantDeclaration *isInvariantDeclaration();
+    UnitTestDeclaration *isUnitTestDeclaration();
+    NewDeclaration *isNewDeclaration();
+    VarDeclaration *isVarDeclaration();
+    VersionSymbol *isVersionSymbol();
+    DebugSymbol *isDebugSymbol();
+    ClassDeclaration *isClassDeclaration();
+    StructDeclaration *isStructDeclaration();
+    UnionDeclaration *isUnionDeclaration();
+    InterfaceDeclaration *isInterfaceDeclaration();
+    ScopeDsymbol *isScopeDsymbol();
+    ForwardingScopeDsymbol *isForwardingScopeDsymbol();
+    WithScopeSymbol *isWithScopeSymbol();
+    ArrayScopeSymbol *isArrayScopeSymbol();
+    Import *isImport();
+    EnumDeclaration *isEnumDeclaration();
+    SymbolDeclaration *isSymbolDeclaration();
+    AttribDeclaration *isAttribDeclaration();
+    AnonDeclaration *isAnonDeclaration();
+    CPPNamespaceDeclaration *isCPPNamespaceDeclaration();
+    VisibilityDeclaration *isVisibilityDeclaration();
+    OverloadSet *isOverloadSet();
+    MixinDeclaration *isMixinDeclaration();
+    StaticAssert *isStaticAssert();
+    StaticIfDeclaration *isStaticIfDeclaration();
+    CAsmDeclaration *isCAsmDeclaration();
 };
 
 struct BitArray final
 {
     typedef uint64_t Chunk_t;
-    enum : uint64_t { ChunkSize = 8LLU };
+    enum : uint64_t
+    {
+        ChunkSize = 8LLU
+    };
 
-    enum : uint64_t { BitsPerChunk = 64LLU };
+    enum : uint64_t
+    {
+        BitsPerChunk = 64LLU
+    };
 
 private:
     ~BitArray();
     size_t len;
-    uint64_t* ptr;
+    uint64_t *ptr;
+
 public:
-    BitArray() :
-        len(),
-        ptr()
+    BitArray() : len(),
+                 ptr()
     {
     }
-    BitArray(uint64_t len, uint64_t* ptr = nullptr) :
-        len(len),
-        ptr(ptr)
-        {}
+    BitArray(uint64_t len, uint64_t *ptr = nullptr) : len(len),
+                                                      ptr(ptr)
+    {
+    }
 };
 
 class ScopeDsymbol : public Dsymbol
 {
 public:
-    Array<Dsymbol* >* members;
-    DsymbolTable* symtab;
+    Array<Dsymbol *> *members;
+    DsymbolTable *symtab;
     uint32_t endlinnum;
-    Array<Dsymbol* >* importedScopes;
-    Visibility::Kind* visibilities;
+    Array<Dsymbol *> *importedScopes;
+    Visibility::Kind *visibilities;
+
 private:
     BitArray accessiblePackages;
     BitArray privateAccessiblePackages;
+
 public:
-    ScopeDsymbol* syntaxCopy(Dsymbol* s) override;
-    virtual void importScope(Dsymbol* s, Visibility visibility);
-    virtual bool isPackageAccessible(Package* p, Visibility visibility, uint32_t flags = 0u);
+    ScopeDsymbol *syntaxCopy(Dsymbol *s) override;
+    virtual void importScope(Dsymbol *s, Visibility visibility);
+    virtual bool isPackageAccessible(Package *p, Visibility visibility, uint32_t flags = 0u);
     bool isforwardRef() final override;
-    static void multiplyDefined(Loc loc, Dsymbol* s1, Dsymbol* s2);
-    const char* kind() const override;
-    virtual Dsymbol* symtabInsert(Dsymbol* s);
-    virtual Dsymbol* symtabLookup(Dsymbol* s, Identifier* id);
-    void accept(Visitor* v) override;
+    static void multiplyDefined(Loc loc, Dsymbol *s1, Dsymbol *s2);
+    const char *kind() const override;
+    virtual Dsymbol *symtabInsert(Dsymbol *s);
+    virtual Dsymbol *symtabLookup(Dsymbol *s, Identifier *id);
+    void accept(Visitor *v) override;
 };
 
 enum class STC : uint64_t
@@ -802,26 +814,29 @@ template <typename T>
 struct Array final
 {
     size_t length;
-    _d_dynamicArray< T > data;
-    enum : int32_t { SMALLARRAYCAP = 1 };
+    _d_dynamicArray<T> data;
+    enum : int32_t
+    {
+        SMALLARRAYCAP = 1
+    };
 
     T smallarray[SMALLARRAYCAP];
     Array(size_t dim);
     ~Array();
-    const char* toChars() const;
-    Array& push(T ptr);
-    Array& append(Array* a);
+    const char *toChars() const;
+    Array &push(T ptr);
+    Array &append(Array *a);
     void reserve(size_t nentries);
     void remove(size_t i);
-    void insert(size_t index, Array* a);
+    void insert(size_t index, Array *a);
     void insert(size_t index, T ptr);
     void insert(size_t index, size_t count, T value);
     void setDim(size_t newdim);
     size_t find(T ptr) const;
     bool contains(T ptr) const;
-    T& opIndex(size_t i);
-    T* tdata();
-    Array<T >* copy() const;
+    T &opIndex(size_t i);
+    T *tdata();
+    Array<T> *copy() const;
     void shift(T ptr);
     void zero();
     T pop();
@@ -916,32 +931,32 @@ enum class Include : uint8_t
 struct FileName final
 {
 private:
-    _d_dynamicArray< const char > str;
+    _d_dynamicArray<const char> str;
+
 public:
-    static FileName create(const char* name);
-    static bool equals(const char* name1, const char* name2);
-    static bool absolute(const char* name);
-    static const char* toAbsolute(const char* name, const char* base = nullptr);
-    static const char* ext(const char* str);
-    const char* ext() const;
-    static const char* removeExt(const char* str);
-    static const char* name(const char* str);
-    const char* name() const;
-    static const char* path(const char* str);
-    static const char* combine(const char* path, const char* name);
-    static void appendSplitPath(const char* path, Array<const char* >& array);
-    static const char* defaultExt(const char* name, const char* ext);
-    static const char* forceExt(const char* name, const char* ext);
-    static bool equalsExt(const char* name, const char* ext);
-    bool equalsExt(const char* ext) const;
-    static const char* searchPath(const Array<const char* >& path, const char* name, bool cwd);
-    static int32_t exists(const char* name);
-    static bool ensurePathExists(const char* path);
-    static const char* canonicalName(const char* name);
-    static void free(const char* str);
-    const char* toChars() const;
-    FileName() :
-        str()
+    static FileName create(const char *name);
+    static bool equals(const char *name1, const char *name2);
+    static bool absolute(const char *name);
+    static const char *toAbsolute(const char *name, const char *base = nullptr);
+    static const char *ext(const char *str);
+    const char *ext() const;
+    static const char *removeExt(const char *str);
+    static const char *name(const char *str);
+    const char *name() const;
+    static const char *path(const char *str);
+    static const char *combine(const char *path, const char *name);
+    static void appendSplitPath(const char *path, Array<const char *> &array);
+    static const char *defaultExt(const char *name, const char *ext);
+    static const char *forceExt(const char *name, const char *ext);
+    static bool equalsExt(const char *name, const char *ext);
+    bool equalsExt(const char *ext) const;
+    static const char *searchPath(const Array<const char *> &path, const char *name, bool cwd);
+    static int32_t exists(const char *name);
+    static bool ensurePathExists(const char *path);
+    static const char *canonicalName(const char *name);
+    static void free(const char *str);
+    const char *toChars() const;
+    FileName() : str()
     {
     }
 };
@@ -965,18 +980,17 @@ struct ObjcClassDeclaration final
 {
     bool isMeta;
     bool isExtern;
-    Identifier* identifier;
-    ClassDeclaration* classDeclaration;
-    ClassDeclaration* metaclass;
-    _d_dynamicArray< FuncDeclaration* > methodList;
+    Identifier *identifier;
+    ClassDeclaration *classDeclaration;
+    ClassDeclaration *metaclass;
+    _d_dynamicArray<FuncDeclaration *> methodList;
     bool isRootClass() const;
-    ObjcClassDeclaration() :
-        isMeta(false),
-        isExtern(false),
-        identifier(),
-        classDeclaration(),
-        metaclass(),
-        methodList()
+    ObjcClassDeclaration() : isMeta(false),
+                             isExtern(false),
+                             identifier(),
+                             classDeclaration(),
+                             metaclass(),
+                             methodList()
     {
     }
 };
@@ -1009,10 +1023,11 @@ enum class Edition : uint8_t
 struct OutBuffer final
 {
 private:
-    _d_dynamicArray< uint8_t > data;
+    _d_dynamicArray<uint8_t> data;
     size_t offset;
     bool notlinehead;
-    FileMapping<uint8_t >* fileMapping;
+    FileMapping<uint8_t> *fileMapping;
+
 public:
     bool doindent;
     bool spaces;
@@ -1020,14 +1035,14 @@ public:
     void dtor();
     ~OutBuffer();
     size_t length() const;
-    char* extractData();
+    char *extractData();
     void destroy();
     void reserve(size_t nbytes);
     void setsize(size_t size);
     void reset();
-    void write(const void* data, size_t nbytes);
-    void writestring(const char* s);
-    void prependstring(const char* string);
+    void write(const void *data, size_t nbytes);
+    void writestring(const char *s);
+    void prependstring(const char *string);
     void writenl();
     void writeByten(int32_t b);
     void writeByte(uint32_t b);
@@ -1037,42 +1052,43 @@ public:
     void writeword(uint32_t w);
     void writeUTF16(uint32_t w);
     void write4(uint32_t w);
-    void write(const OutBuffer* const buf);
+    void write(const OutBuffer *const buf);
     void fill0(size_t nbytes);
-    void vprintf(const char* format, va_list args);
-    void printf(const char* format, ...);
+    void vprintf(const char *format, va_list args);
+    void printf(const char *format, ...);
     void print(uint64_t u);
     void bracket(char left, char right);
-    size_t bracket(size_t i, const char* left, size_t j, const char* right);
+    size_t bracket(size_t i, const char *left, size_t j, const char *right);
     void spread(size_t offset, size_t nbytes);
-    size_t insert(size_t offset, const void* p, size_t nbytes);
+    size_t insert(size_t offset, const void *p, size_t nbytes);
     void remove(size_t offset, size_t nbytes);
-    char* peekChars();
-    char* extractChars();
-    OutBuffer() :
-        data(),
-        offset(),
-        notlinehead(),
-        fileMapping(),
-        doindent(),
-        spaces(),
-        level()
+    char *peekChars();
+    char *extractChars();
+    OutBuffer() : data(),
+                  offset(),
+                  notlinehead(),
+                  fileMapping(),
+                  doindent(),
+                  spaces(),
+                  level()
     {
     }
 };
 
 struct MacroTable final
 {
-    typedef bool(*fp_t)(const char* p);
+    typedef bool (*fp_t)(const char *p);
+
 private:
-    void* mactab;
+    void *mactab;
+
 public:
     MacroTable()
     {
     }
-    MacroTable(void* mactab) :
-        mactab(mactab)
-        {}
+    MacroTable(void *mactab) : mactab(mactab)
+    {
+    }
 };
 
 enum class CSX : uint16_t
@@ -1090,28 +1106,26 @@ struct FieldInit final
 {
     CSX csx;
     Loc loc;
-    FieldInit() :
-        loc()
+    FieldInit() : loc()
     {
     }
-    FieldInit(CSX csx, Loc loc = Loc()) :
-        csx(csx),
-        loc(loc)
-        {}
+    FieldInit(CSX csx, Loc loc = Loc()) : csx(csx),
+                                          loc(loc)
+    {
+    }
 };
 
 struct CtorFlow final
 {
     CSX callSuper;
-    _d_dynamicArray< FieldInit > fieldinit;
-    CtorFlow() :
-        fieldinit()
+    _d_dynamicArray<FieldInit> fieldinit;
+    CtorFlow() : fieldinit()
     {
     }
-    CtorFlow(CSX callSuper, _d_dynamicArray< FieldInit > fieldinit = {}) :
-        callSuper(callSuper),
-        fieldinit(fieldinit)
-        {}
+    CtorFlow(CSX callSuper, _d_dynamicArray<FieldInit> fieldinit = {}) : callSuper(callSuper),
+                                                                         fieldinit(fieldinit)
+    {
+    }
 };
 
 enum class Contract : uint8_t
@@ -1148,38 +1162,37 @@ private:
         bool rvalueRefParam;
         bool safer;
         FeatureState systemVariables;
-        BitFields() :
-            bitfields(),
-            dip1000(),
-            dip1008(),
-            dip1021(),
-            dip25(),
-            fieldwise(),
-            fixAliasThis(),
-            fixImmutableConv(),
-            in_(),
-            inclusiveInContracts(),
-            noSharedAccess(),
-            rvalueRefParam(),
-            safer()
+        BitFields() : bitfields(),
+                      dip1000(),
+                      dip1008(),
+                      dip1021(),
+                      dip25(),
+                      fieldwise(),
+                      fixAliasThis(),
+                      fixImmutableConv(),
+                      in_(),
+                      inclusiveInContracts(),
+                      noSharedAccess(),
+                      rvalueRefParam(),
+                      safer()
         {
         }
-        BitFields(bool bitfields, bool dip1000 = false, bool dip1008 = false, bool dip1021 = false, bool dip25 = false, bool fieldwise = false, bool fixAliasThis = false, bool fixImmutableConv = false, bool in_ = false, bool inclusiveInContracts = false, bool noSharedAccess = false, bool rvalueRefParam = false, bool safer = false, FeatureState systemVariables = (FeatureState)0u) :
-            bitfields(bitfields),
-            dip1000(dip1000),
-            dip1008(dip1008),
-            dip1021(dip1021),
-            dip25(dip25),
-            fieldwise(fieldwise),
-            fixAliasThis(fixAliasThis),
-            fixImmutableConv(fixImmutableConv),
-            in_(in_),
-            inclusiveInContracts(inclusiveInContracts),
-            noSharedAccess(noSharedAccess),
-            rvalueRefParam(rvalueRefParam),
-            safer(safer),
-            systemVariables(systemVariables)
-            {}
+        BitFields(bool bitfields, bool dip1000 = false, bool dip1008 = false, bool dip1021 = false, bool dip25 = false, bool fieldwise = false, bool fixAliasThis = false, bool fixImmutableConv = false, bool in_ = false, bool inclusiveInContracts = false, bool noSharedAccess = false, bool rvalueRefParam = false, bool safer = false, FeatureState systemVariables = (FeatureState)0u) : bitfields(bitfields),
+                                                                                                                                                                                                                                                                                                                                                                                                dip1000(dip1000),
+                                                                                                                                                                                                                                                                                                                                                                                                dip1008(dip1008),
+                                                                                                                                                                                                                                                                                                                                                                                                dip1021(dip1021),
+                                                                                                                                                                                                                                                                                                                                                                                                dip25(dip25),
+                                                                                                                                                                                                                                                                                                                                                                                                fieldwise(fieldwise),
+                                                                                                                                                                                                                                                                                                                                                                                                fixAliasThis(fixAliasThis),
+                                                                                                                                                                                                                                                                                                                                                                                                fixImmutableConv(fixImmutableConv),
+                                                                                                                                                                                                                                                                                                                                                                                                in_(in_),
+                                                                                                                                                                                                                                                                                                                                                                                                inclusiveInContracts(inclusiveInContracts),
+                                                                                                                                                                                                                                                                                                                                                                                                noSharedAccess(noSharedAccess),
+                                                                                                                                                                                                                                                                                                                                                                                                rvalueRefParam(rvalueRefParam),
+                                                                                                                                                                                                                                                                                                                                                                                                safer(safer),
+                                                                                                                                                                                                                                                                                                                                                                                                systemVariables(systemVariables)
+        {
+        }
     };
 
 public:
@@ -1211,22 +1224,23 @@ public:
     bool safer(bool v);
     FeatureState systemVariables() const;
     FeatureState systemVariables(FeatureState v);
+
 private:
     uint16_t bitFields;
+
 public:
-    Previews() :
-        bitFields(0u)
+    Previews() : bitFields(0u)
     {
     }
-    Previews(uint16_t bitFields) :
-        bitFields(bitFields)
-        {}
+    Previews(uint16_t bitFields) : bitFields(bitFields)
+    {
+    }
 };
 
 template <typename K, typename V>
 struct AssocArray final
 {
-    AA* aa;
+    AA *aa;
     AssocArray()
     {
     }
@@ -1236,14 +1250,14 @@ template <typename AST>
 class ParseTimeVisitor
 {
 public:
-    virtual void visit(typename AST::Dsymbol );
-    virtual void visit(typename AST::Parameter );
-    virtual void visit(typename AST::Statement );
-    virtual void visit(typename AST::Type );
-    virtual void visit(typename AST::Expression );
-    virtual void visit(typename AST::TemplateParameter );
-    virtual void visit(typename AST::Condition );
-    virtual void visit(typename AST::Initializer );
+    virtual void visit(typename AST::Dsymbol);
+    virtual void visit(typename AST::Parameter);
+    virtual void visit(typename AST::Statement);
+    virtual void visit(typename AST::Type);
+    virtual void visit(typename AST::Expression);
+    virtual void visit(typename AST::TemplateParameter);
+    virtual void visit(typename AST::Condition);
+    virtual void visit(typename AST::Initializer);
     virtual void visit(typename AST::AliasThis s);
     virtual void visit(typename AST::Declaration s);
     virtual void visit(typename AST::ScopeDsymbol s);
@@ -1470,119 +1484,115 @@ public:
 
 struct MangleOverride final
 {
-    Dsymbol* agg;
-    Identifier* id;
-    MangleOverride() :
-        agg(),
-        id()
+    Dsymbol *agg;
+    Identifier *id;
+    MangleOverride() : agg(),
+                       id()
     {
     }
-    MangleOverride(Dsymbol* agg, Identifier* id = nullptr) :
-        agg(agg),
-        id(id)
-        {}
+    MangleOverride(Dsymbol *agg, Identifier *id = nullptr) : agg(agg),
+                                                             id(id)
+    {
+    }
 };
 
-typedef Array<AliasDeclaration* > AliasDeclarations;
+typedef Array<AliasDeclaration *> AliasDeclarations;
 
-typedef Array<BaseClass* > BaseClasses;
+typedef Array<BaseClass *> BaseClasses;
 
-typedef Array<CaseStatement* > CaseStatements;
+typedef Array<CaseStatement *> CaseStatements;
 
-typedef Array<Catch* > Catches;
+typedef Array<Catch *> Catches;
 
-typedef Array<ClassDeclaration* > ClassDeclarations;
+typedef Array<ClassDeclaration *> ClassDeclarations;
 
 struct DesigInit final
 {
-    Array<Designator >* designatorList;
-    Initializer* initializer;
-    DesigInit() :
-        designatorList(),
-        initializer()
+    Array<Designator> *designatorList;
+    Initializer *initializer;
+    DesigInit() : designatorList(),
+                  initializer()
     {
     }
-    DesigInit(Array<Designator >* designatorList, Initializer* initializer = nullptr) :
-        designatorList(designatorList),
-        initializer(initializer)
-        {}
+    DesigInit(Array<Designator> *designatorList, Initializer *initializer = nullptr) : designatorList(designatorList),
+                                                                                       initializer(initializer)
+    {
+    }
 };
 
-typedef Array<DesigInit > DesigInits;
+typedef Array<DesigInit> DesigInits;
 
 struct Designator final
 {
-    Expression* exp;
-    Identifier* ident;
-    Designator() :
-        exp(),
-        ident()
+    Expression *exp;
+    Identifier *ident;
+    Designator() : exp(),
+                   ident()
     {
     }
 };
 
-typedef Array<Designator > Designators;
+typedef Array<Designator> Designators;
 
-typedef Array<Dsymbol* > Dsymbols;
+typedef Array<Dsymbol *> Dsymbols;
 
-typedef Array<DtorDeclaration* > DtorDeclarations;
+typedef Array<DtorDeclaration *> DtorDeclarations;
 
 struct Ensure final
 {
-    Identifier* id;
-    Statement* ensure;
+    Identifier *id;
+    Statement *ensure;
     Ensure syntaxCopy();
-    static Array<Ensure >* arraySyntaxCopy(Array<Ensure >* a);
-    Ensure() :
-        id(),
-        ensure()
+    static Array<Ensure> *arraySyntaxCopy(Array<Ensure> *a);
+    Ensure() : id(),
+               ensure()
     {
     }
-    Ensure(Identifier* id, Statement* ensure = nullptr) :
-        id(id),
-        ensure(ensure)
-        {}
+    Ensure(Identifier *id, Statement *ensure = nullptr) : id(id),
+                                                          ensure(ensure)
+    {
+    }
 };
 
-typedef Array<Ensure > Ensures;
+typedef Array<Ensure> Ensures;
 
-typedef Array<Expression* > Expressions;
+typedef Array<Expression *> Expressions;
 
-typedef Array<FuncDeclaration* > FuncDeclarations;
+typedef Array<FuncDeclaration *> FuncDeclarations;
 
-typedef Array<GotoCaseStatement* > GotoCaseStatements;
+typedef Array<GotoCaseStatement *> GotoCaseStatements;
 
-typedef Array<GotoStatement* > GotoStatements;
+typedef Array<GotoStatement *> GotoStatements;
 
-typedef Array<Identifier* > Identifiers;
+typedef Array<Identifier *> Identifiers;
 
-typedef Array<Initializer* > Initializers;
+typedef Array<Initializer *> Initializers;
 
-typedef Array<Module* > Modules;
+typedef Array<Module *> Modules;
 
-typedef Array<RootObject* > Objects;
+typedef Array<RootObject *> Objects;
 
-typedef Array<Parameter* > Parameters;
+typedef Array<Parameter *> Parameters;
 
-typedef Array<ReturnStatement* > ReturnStatements;
+typedef Array<ReturnStatement *> ReturnStatements;
 
-typedef Array<ScopeStatement* > ScopeStatements;
+typedef Array<ScopeStatement *> ScopeStatements;
 
-typedef Array<SharedStaticDtorDeclaration* > SharedStaticDtorDeclarations;
+typedef Array<SharedStaticDtorDeclaration *> SharedStaticDtorDeclarations;
 
-typedef Array<Statement* > Statements;
+typedef Array<Statement *> Statements;
 
-typedef Array<StaticDtorDeclaration* > StaticDtorDeclarations;
+typedef Array<StaticDtorDeclaration *> StaticDtorDeclarations;
 
-typedef Array<const char* > Strings;
+typedef Array<const char *> Strings;
 
-typedef Array<TemplateInstance* > TemplateInstances;
+typedef Array<TemplateInstance *> TemplateInstances;
 
-typedef Array<TemplateParameter* > TemplateParameters;
+typedef Array<TemplateParameter *> TemplateParameters;
 
-typedef Array<Type* > Types;
+typedef Array<Type *> Types;
 
-typedef Array<VarDeclaration* > VarDeclarations;
+typedef Array<VarDeclaration *> VarDeclarations;
 
 enum class ClassFlags : uint32_t
 {
@@ -1611,24 +1621,26 @@ struct MatchAccumulator final
 {
     int32_t count;
     MATCH last;
-    FuncDeclaration* lastf;
-    FuncDeclaration* nextf;
-    MatchAccumulator() :
-        count(),
-        last((MATCH)0),
-        lastf(),
-        nextf()
+    FuncDeclaration *lastf;
+    FuncDeclaration *nextf;
+    MatchAccumulator() : count(),
+                         last((MATCH)0),
+                         lastf(),
+                         nextf()
     {
     }
-    MatchAccumulator(int32_t count, MATCH last = (MATCH)0, FuncDeclaration* lastf = nullptr, FuncDeclaration* nextf = nullptr) :
-        count(count),
-        last(last),
-        lastf(lastf),
-        nextf(nextf)
-        {}
+    MatchAccumulator(int32_t count, MATCH last = (MATCH)0, FuncDeclaration *lastf = nullptr, FuncDeclaration *nextf = nullptr) : count(count),
+                                                                                                                                 last(last),
+                                                                                                                                 lastf(lastf),
+                                                                                                                                 nextf(nextf)
+    {
+    }
 };
 
-enum : char { PathSeparator = '/' };
+enum : char
+{
+    PathSeparator = '/'
+};
 
 enum class StructFlags
 {
@@ -1644,23 +1656,22 @@ struct FieldState final
     uint32_t fieldAlign;
     uint32_t bitOffset;
     bool inFlight;
-    FieldState() :
-        offset(),
-        fieldOffset(),
-        fieldSize(),
-        fieldAlign(),
-        bitOffset(),
-        inFlight()
+    FieldState() : offset(),
+                   fieldOffset(),
+                   fieldSize(),
+                   fieldAlign(),
+                   bitOffset(),
+                   inFlight()
     {
     }
-    FieldState(uint32_t offset, uint32_t fieldOffset = 0u, uint32_t fieldSize = 0u, uint32_t fieldAlign = 0u, uint32_t bitOffset = 0u, bool inFlight = false) :
-        offset(offset),
-        fieldOffset(fieldOffset),
-        fieldSize(fieldSize),
-        fieldAlign(fieldAlign),
-        bitOffset(bitOffset),
-        inFlight(inFlight)
-        {}
+    FieldState(uint32_t offset, uint32_t fieldOffset = 0u, uint32_t fieldSize = 0u, uint32_t fieldAlign = 0u, uint32_t bitOffset = 0u, bool inFlight = false) : offset(offset),
+                                                                                                                                                                fieldOffset(fieldOffset),
+                                                                                                                                                                fieldSize(fieldSize),
+                                                                                                                                                                fieldAlign(fieldAlign),
+                                                                                                                                                                bitOffset(bitOffset),
+                                                                                                                                                                inFlight(inFlight)
+    {
+    }
 };
 
 enum class SearchOpt : uint32_t
@@ -1678,7 +1689,10 @@ enum class SearchOpt : uint32_t
 
 typedef uint32_t SearchOptFlags;
 
-enum : int32_t { IDX_NOTFOUND = 305419896 };
+enum : int32_t
+{
+    IDX_NOTFOUND = 305419896
+};
 
 struct MATCHpair final
 {
@@ -1687,61 +1701,61 @@ struct MATCHpair final
     MATCHpair()
     {
     }
-    MATCHpair(MATCH mta, MATCH mfa = (MATCH)0) :
-        mta(mta),
-        mfa(mfa)
-        {}
+    MATCHpair(MATCH mta, MATCH mfa = (MATCH)0) : mta(mta),
+                                                 mfa(mfa)
+    {
+    }
 };
 
 class TemplateParameter : public ASTNode
 {
 public:
     Loc loc;
-    Identifier* ident;
+    Identifier *ident;
     bool dependent;
-    virtual TemplateTypeParameter* isTemplateTypeParameter();
-    virtual TemplateValueParameter* isTemplateValueParameter();
-    virtual TemplateAliasParameter* isTemplateAliasParameter();
-    virtual TemplateThisParameter* isTemplateThisParameter();
-    virtual TemplateTupleParameter* isTemplateTupleParameter();
-    virtual TemplateParameter* syntaxCopy() = 0;
-    virtual bool declareParameter(Scope* sc) = 0;
-    virtual void print(RootObject* oarg, RootObject* oded) = 0;
-    virtual RootObject* specialization() = 0;
-    virtual RootObject* defaultArg(Loc instLoc, Scope* sc) = 0;
+    virtual TemplateTypeParameter *isTemplateTypeParameter();
+    virtual TemplateValueParameter *isTemplateValueParameter();
+    virtual TemplateAliasParameter *isTemplateAliasParameter();
+    virtual TemplateThisParameter *isTemplateThisParameter();
+    virtual TemplateTupleParameter *isTemplateTupleParameter();
+    virtual TemplateParameter *syntaxCopy() = 0;
+    virtual bool declareParameter(Scope *sc) = 0;
+    virtual void print(RootObject *oarg, RootObject *oded) = 0;
+    virtual RootObject *specialization() = 0;
+    virtual RootObject *defaultArg(Loc instLoc, Scope *sc) = 0;
     virtual bool hasDefaultArg() = 0;
-    const char* toChars() const override;
+    const char *toChars() const override;
     DYNCAST dyncast() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TemplateAliasParameter final : public TemplateParameter
 {
 public:
-    Type* specType;
-    RootObject* specAlias;
-    RootObject* defaultAlias;
-    TemplateAliasParameter* isTemplateAliasParameter() override;
-    TemplateAliasParameter* syntaxCopy() override;
-    bool declareParameter(Scope* sc) override;
-    void print(RootObject* oarg, RootObject* oded) override;
-    RootObject* specialization() override;
-    RootObject* defaultArg(Loc instLoc, Scope* sc) override;
+    Type *specType;
+    RootObject *specAlias;
+    RootObject *defaultAlias;
+    TemplateAliasParameter *isTemplateAliasParameter() override;
+    TemplateAliasParameter *syntaxCopy() override;
+    bool declareParameter(Scope *sc) override;
+    void print(RootObject *oarg, RootObject *oded) override;
+    RootObject *specialization() override;
+    RootObject *defaultArg(Loc instLoc, Scope *sc) override;
     bool hasDefaultArg() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TemplateDeclaration final : public ScopeDsymbol
 {
 public:
-    Array<TemplateParameter* >* parameters;
-    Array<TemplateParameter* >* origParameters;
-    Expression* constraint;
-    void* instances;
-    TemplateDeclaration* overnext;
-    TemplateDeclaration* overroot;
-    FuncDeclaration* funcroot;
-    Dsymbol* onemember;
+    Array<TemplateParameter *> *parameters;
+    Array<TemplateParameter *> *origParameters;
+    Expression *constraint;
+    void *instances;
+    TemplateDeclaration *overnext;
+    TemplateDeclaration *overroot;
+    FuncDeclaration *funcroot;
+    Dsymbol *onemember;
     bool literal;
     bool ismixin;
     bool isstatic;
@@ -1749,45 +1763,48 @@ public:
     bool isTrivialAlias;
     bool deprecated_;
     Visibility visibility;
-    TemplatePrevious* previous;
-    Expression* lastConstraint;
-    Array<Expression* > lastConstraintNegs;
-    Array<RootObject* >* lastConstraintTiargs;
-    TemplateDeclaration* syntaxCopy(Dsymbol* __param_0_) override;
-    bool overloadInsert(Dsymbol* s) override;
-    const char* kind() const override;
-    const char* toCharsNoConstraints() const;
+    TemplatePrevious *previous;
+    Expression *lastConstraint;
+    Array<Expression *> lastConstraintNegs;
+    Array<RootObject *> *lastConstraintTiargs;
+    TemplateDeclaration *syntaxCopy(Dsymbol *__param_0_) override;
+    bool overloadInsert(Dsymbol *s) override;
+    const char *kind() const override;
+    const char *toCharsNoConstraints() const;
     Visibility visible() override;
-    const char* getConstraintEvalError(const char*& tip);
+    const char *getConstraintEvalError(const char *&tip);
     bool isDeprecated() const override;
     bool isOverloadable() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TemplateInstance : public ScopeDsymbol
 {
 public:
-    Identifier* name;
-    Array<RootObject* >* tiargs;
-    Array<RootObject* > tdtypes;
-    Array<Module* > importedModules;
-    Dsymbol* tempdecl;
-    Dsymbol* enclosing;
-    Dsymbol* aliasdecl;
-    TemplateInstance* inst;
-    ScopeDsymbol* argsym;
+    Identifier *name;
+    Array<RootObject *> *tiargs;
+    Array<RootObject *> tdtypes;
+    Array<Module *> importedModules;
+    Dsymbol *tempdecl;
+    Dsymbol *enclosing;
+    Dsymbol *aliasdecl;
+    TemplateInstance *inst;
+    ScopeDsymbol *argsym;
     size_t hash;
-    Array<Expression* >* fargs;
-    Array<Identifier* >* fnames;
-    Array<TemplateInstance* >* deferred;
-    Module* memberOf;
-    TemplateInstance* tinst;
-    TemplateInstance* tnext;
-    Module* minst;
+    Array<Expression *> *fargs;
+    Array<Identifier *> *fnames;
+    Array<TemplateInstance *> *deferred;
+    Module *memberOf;
+    TemplateInstance *tinst;
+    TemplateInstance *tnext;
+    Module *minst;
+
 private:
     uint16_t _nest;
+
 public:
     uint8_t inuse;
+
 private:
     enum class Flag : uint32_t
     {
@@ -1798,22 +1815,21 @@ private:
     };
 
 public:
-    TemplateInstance* syntaxCopy(Dsymbol* s) override;
-    Dsymbol* toAlias() final override;
-    const char* kind() const override;
-    const char* toPrettyCharsHelper() final override;
-    Identifier* getIdent() final override;
-    bool equalsx(TemplateInstance* ti);
+    TemplateInstance *syntaxCopy(Dsymbol *s) override;
+    Dsymbol *toAlias() final override;
+    const char *kind() const override;
+    const char *toPrettyCharsHelper() final override;
+    Identifier *getIdent() final override;
+    bool equalsx(TemplateInstance *ti);
     bool isDiscardable();
     bool needsCodegen();
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 struct TemplateInstanceBox final
 {
-    TemplateInstance* ti;
-    TemplateInstanceBox() :
-        ti()
+    TemplateInstance *ti;
+    TemplateInstanceBox() : ti()
     {
     }
 };
@@ -1821,107 +1837,105 @@ struct TemplateInstanceBox final
 class TemplateMixin final : public TemplateInstance
 {
 public:
-    TypeQualified* tqual;
-    TemplateInstance* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
+    TypeQualified *tqual;
+    TemplateInstance *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
     bool hasPointers() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 struct TemplatePrevious final
 {
-    TemplatePrevious* prev;
-    Scope* sc;
-    Array<RootObject* >* dedargs;
-    TemplatePrevious() :
-        prev(),
-        sc(),
-        dedargs()
+    TemplatePrevious *prev;
+    Scope *sc;
+    Array<RootObject *> *dedargs;
+    TemplatePrevious() : prev(),
+                         sc(),
+                         dedargs()
     {
     }
-    TemplatePrevious(TemplatePrevious* prev, Scope* sc = nullptr, Array<RootObject* >* dedargs = nullptr) :
-        prev(prev),
-        sc(sc),
-        dedargs(dedargs)
-        {}
+    TemplatePrevious(TemplatePrevious *prev, Scope *sc = nullptr, Array<RootObject *> *dedargs = nullptr) : prev(prev),
+                                                                                                            sc(sc),
+                                                                                                            dedargs(dedargs)
+    {
+    }
 };
 
 struct TemplateStats final
 {
     uint32_t numInstantiations;
     uint32_t uniqueInstantiations;
-    Array<TemplateInstance* >* allInstances;
-    TemplateStats() :
-        numInstantiations(),
-        uniqueInstantiations(),
-        allInstances()
+    Array<TemplateInstance *> *allInstances;
+    TemplateStats() : numInstantiations(),
+                      uniqueInstantiations(),
+                      allInstances()
     {
     }
-    TemplateStats(uint32_t numInstantiations, uint32_t uniqueInstantiations = 0u, Array<TemplateInstance* >* allInstances = nullptr) :
-        numInstantiations(numInstantiations),
-        uniqueInstantiations(uniqueInstantiations),
-        allInstances(allInstances)
-        {}
+    TemplateStats(uint32_t numInstantiations, uint32_t uniqueInstantiations = 0u, Array<TemplateInstance *> *allInstances = nullptr) : numInstantiations(numInstantiations),
+                                                                                                                                       uniqueInstantiations(uniqueInstantiations),
+                                                                                                                                       allInstances(allInstances)
+    {
+    }
 };
 
 class TemplateTypeParameter : public TemplateParameter
 {
 public:
-    Type* specType;
-    Type* defaultType;
-    TemplateTypeParameter* isTemplateTypeParameter() final override;
-    TemplateTypeParameter* syntaxCopy() override;
-    bool declareParameter(Scope* sc) final override;
-    void print(RootObject* oarg, RootObject* oded) final override;
-    RootObject* specialization() final override;
-    RootObject* defaultArg(Loc instLoc, Scope* sc) final override;
+    Type *specType;
+    Type *defaultType;
+    TemplateTypeParameter *isTemplateTypeParameter() final override;
+    TemplateTypeParameter *syntaxCopy() override;
+    bool declareParameter(Scope *sc) final override;
+    void print(RootObject *oarg, RootObject *oded) final override;
+    RootObject *specialization() final override;
+    RootObject *defaultArg(Loc instLoc, Scope *sc) final override;
     bool hasDefaultArg() final override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TemplateThisParameter final : public TemplateTypeParameter
 {
 public:
-    TemplateThisParameter* isTemplateThisParameter() override;
-    TemplateThisParameter* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    TemplateThisParameter *isTemplateThisParameter() override;
+    TemplateThisParameter *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class TemplateTupleParameter final : public TemplateParameter
 {
 public:
-    TemplateTupleParameter* isTemplateTupleParameter() override;
-    TemplateTupleParameter* syntaxCopy() override;
-    bool declareParameter(Scope* sc) override;
-    void print(RootObject* oarg, RootObject* oded) override;
-    RootObject* specialization() override;
-    RootObject* defaultArg(Loc instLoc, Scope* sc) override;
+    TemplateTupleParameter *isTemplateTupleParameter() override;
+    TemplateTupleParameter *syntaxCopy() override;
+    bool declareParameter(Scope *sc) override;
+    void print(RootObject *oarg, RootObject *oded) override;
+    RootObject *specialization() override;
+    RootObject *defaultArg(Loc instLoc, Scope *sc) override;
     bool hasDefaultArg() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TemplateValueParameter final : public TemplateParameter
 {
 public:
-    Type* valType;
-    Expression* specValue;
-    Expression* defaultValue;
-    TemplateValueParameter* isTemplateValueParameter() override;
-    TemplateValueParameter* syntaxCopy() override;
-    bool declareParameter(Scope* sc) override;
-    void print(RootObject* oarg, RootObject* oded) override;
-    RootObject* specialization() override;
-    RootObject* defaultArg(Loc instLoc, Scope* sc) override;
+    Type *valType;
+    Expression *specValue;
+    Expression *defaultValue;
+    TemplateValueParameter *isTemplateValueParameter() override;
+    TemplateValueParameter *syntaxCopy() override;
+    bool declareParameter(Scope *sc) override;
+    void print(RootObject *oarg, RootObject *oded) override;
+    RootObject *specialization() override;
+    RootObject *defaultArg(Loc instLoc, Scope *sc) override;
     bool hasDefaultArg() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class Tuple final : public RootObject
 {
 public:
-    Array<RootObject* > objects;
+    Array<RootObject *> objects;
     DYNCAST dyncast() const override;
-    const char* toChars() const override;
+    const char *toChars() const override;
 };
 
 enum class TY : uint8_t
@@ -1981,122 +1995,121 @@ class Type : public ASTNode
 public:
     TY ty;
     uint8_t mod;
-    char* deco;
+    char *deco;
     struct Mcache final
     {
-        Type* cto;
-        Type* ito;
-        Type* sto;
-        Type* scto;
-        Type* wto;
-        Type* wcto;
-        Type* swto;
-        Type* swcto;
-        Type* pto;
-        Type* rto;
-        Type* arrayof;
-        Identifier* typedefIdent;
-        Mcache() :
-            cto(),
-            ito(),
-            sto(),
-            scto(),
-            wto(),
-            wcto(),
-            swto(),
-            swcto(),
-            pto(),
-            rto(),
-            arrayof(),
-            typedefIdent()
+        Type *cto;
+        Type *ito;
+        Type *sto;
+        Type *scto;
+        Type *wto;
+        Type *wcto;
+        Type *swto;
+        Type *swcto;
+        Type *pto;
+        Type *rto;
+        Type *arrayof;
+        Identifier *typedefIdent;
+        Mcache() : cto(),
+                   ito(),
+                   sto(),
+                   scto(),
+                   wto(),
+                   wcto(),
+                   swto(),
+                   swcto(),
+                   pto(),
+                   rto(),
+                   arrayof(),
+                   typedefIdent()
         {
         }
-        Mcache(Type* cto, Type* ito = nullptr, Type* sto = nullptr, Type* scto = nullptr, Type* wto = nullptr, Type* wcto = nullptr, Type* swto = nullptr, Type* swcto = nullptr, Type* pto = nullptr, Type* rto = nullptr, Type* arrayof = nullptr, Identifier* typedefIdent = nullptr) :
-            cto(cto),
-            ito(ito),
-            sto(sto),
-            scto(scto),
-            wto(wto),
-            wcto(wcto),
-            swto(swto),
-            swcto(swcto),
-            pto(pto),
-            rto(rto),
-            arrayof(arrayof),
-            typedefIdent(typedefIdent)
-            {}
+        Mcache(Type *cto, Type *ito = nullptr, Type *sto = nullptr, Type *scto = nullptr, Type *wto = nullptr, Type *wcto = nullptr, Type *swto = nullptr, Type *swcto = nullptr, Type *pto = nullptr, Type *rto = nullptr, Type *arrayof = nullptr, Identifier *typedefIdent = nullptr) : cto(cto),
+                                                                                                                                                                                                                                                                                           ito(ito),
+                                                                                                                                                                                                                                                                                           sto(sto),
+                                                                                                                                                                                                                                                                                           scto(scto),
+                                                                                                                                                                                                                                                                                           wto(wto),
+                                                                                                                                                                                                                                                                                           wcto(wcto),
+                                                                                                                                                                                                                                                                                           swto(swto),
+                                                                                                                                                                                                                                                                                           swcto(swcto),
+                                                                                                                                                                                                                                                                                           pto(pto),
+                                                                                                                                                                                                                                                                                           rto(rto),
+                                                                                                                                                                                                                                                                                           arrayof(arrayof),
+                                                                                                                                                                                                                                                                                           typedefIdent(typedefIdent)
+        {
+        }
     };
 
-    Mcache* mcache;
-    TypeInfoDeclaration* vtinfo;
-    void* ctype;
-    static Type* tvoid;
-    static Type* tint8;
-    static Type* tuns8;
-    static Type* tint16;
-    static Type* tuns16;
-    static Type* tint32;
-    static Type* tuns32;
-    static Type* tint64;
-    static Type* tuns64;
-    static Type* tint128;
-    static Type* tuns128;
-    static Type* tfloat32;
-    static Type* tfloat64;
-    static Type* tfloat80;
-    static Type* timaginary32;
-    static Type* timaginary64;
-    static Type* timaginary80;
-    static Type* tcomplex32;
-    static Type* tcomplex64;
-    static Type* tcomplex80;
-    static Type* tbool;
-    static Type* tchar;
-    static Type* twchar;
-    static Type* tdchar;
-    static Type* tshiftcnt;
-    static Type* tvoidptr;
-    static Type* tstring;
-    static Type* twstring;
-    static Type* tdstring;
-    static Type* terror;
-    static Type* tnull;
-    static Type* tnoreturn;
-    static Type* tsize_t;
-    static Type* tptrdiff_t;
-    static Type* thash_t;
-    static ClassDeclaration* dtypeinfo;
-    static ClassDeclaration* typeinfoclass;
-    static ClassDeclaration* typeinfointerface;
-    static ClassDeclaration* typeinfostruct;
-    static ClassDeclaration* typeinfopointer;
-    static ClassDeclaration* typeinfoarray;
-    static ClassDeclaration* typeinfostaticarray;
-    static ClassDeclaration* typeinfoassociativearray;
-    static ClassDeclaration* typeinfovector;
-    static ClassDeclaration* typeinfoenum;
-    static ClassDeclaration* typeinfofunction;
-    static ClassDeclaration* typeinfodelegate;
-    static ClassDeclaration* typeinfotypelist;
-    static ClassDeclaration* typeinfoconst;
-    static ClassDeclaration* typeinfoinvariant;
-    static ClassDeclaration* typeinfoshared;
-    static ClassDeclaration* typeinfowild;
-    static TemplateDeclaration* rtinfo;
-    static Type* basic[48LLU];
-    virtual const char* kind() const;
-    Type* copy() const;
-    virtual Type* syntaxCopy();
-    bool equals(const RootObject* const o) const override;
+    Mcache *mcache;
+    TypeInfoDeclaration *vtinfo;
+    void *ctype;
+    static Type *tvoid;
+    static Type *tint8;
+    static Type *tuns8;
+    static Type *tint16;
+    static Type *tuns16;
+    static Type *tint32;
+    static Type *tuns32;
+    static Type *tint64;
+    static Type *tuns64;
+    static Type *tint128;
+    static Type *tuns128;
+    static Type *tfloat32;
+    static Type *tfloat64;
+    static Type *tfloat80;
+    static Type *timaginary32;
+    static Type *timaginary64;
+    static Type *timaginary80;
+    static Type *tcomplex32;
+    static Type *tcomplex64;
+    static Type *tcomplex80;
+    static Type *tbool;
+    static Type *tchar;
+    static Type *twchar;
+    static Type *tdchar;
+    static Type *tshiftcnt;
+    static Type *tvoidptr;
+    static Type *tstring;
+    static Type *twstring;
+    static Type *tdstring;
+    static Type *terror;
+    static Type *tnull;
+    static Type *tnoreturn;
+    static Type *tsize_t;
+    static Type *tptrdiff_t;
+    static Type *thash_t;
+    static ClassDeclaration *dtypeinfo;
+    static ClassDeclaration *typeinfoclass;
+    static ClassDeclaration *typeinfointerface;
+    static ClassDeclaration *typeinfostruct;
+    static ClassDeclaration *typeinfopointer;
+    static ClassDeclaration *typeinfoarray;
+    static ClassDeclaration *typeinfostaticarray;
+    static ClassDeclaration *typeinfoassociativearray;
+    static ClassDeclaration *typeinfovector;
+    static ClassDeclaration *typeinfoenum;
+    static ClassDeclaration *typeinfofunction;
+    static ClassDeclaration *typeinfodelegate;
+    static ClassDeclaration *typeinfotypelist;
+    static ClassDeclaration *typeinfoconst;
+    static ClassDeclaration *typeinfoinvariant;
+    static ClassDeclaration *typeinfoshared;
+    static ClassDeclaration *typeinfowild;
+    static TemplateDeclaration *rtinfo;
+    static Type *basic[48LLU];
+    virtual const char *kind() const;
+    Type *copy() const;
+    virtual Type *syntaxCopy();
+    bool equals(const RootObject *const o) const override;
     DYNCAST dyncast() const final override;
     size_t getUniqueID() const;
-    const char* toChars() const final override;
-    char* toPrettyChars(bool QualifyTypes = false);
+    const char *toChars() const final override;
+    char *toPrettyChars(bool QualifyTypes = false);
     static void _init();
     static void deinitialize();
     virtual uint32_t alignsize();
-    void modToBuffer(OutBuffer& buf) const;
-    char* modToChars() const;
+    void modToBuffer(OutBuffer &buf) const;
+    char *modToChars() const;
     virtual bool isIntegral();
     virtual bool isFloating();
     virtual bool isReal();
@@ -2117,86 +2130,86 @@ public:
     bool isWildConst() const;
     bool isSharedWild() const;
     bool isNaked() const;
-    Type* nullAttributes() const;
+    Type *nullAttributes() const;
     bool hasDeprecatedAliasThis();
-    virtual Type* makeConst();
-    virtual Type* makeImmutable();
-    virtual Type* makeShared();
-    virtual Type* makeSharedConst();
-    virtual Type* makeWild();
-    virtual Type* makeWildConst();
-    virtual Type* makeSharedWild();
-    virtual Type* makeSharedWildConst();
-    virtual Type* makeMutable();
-    Type* toBasetype();
-    virtual uint8_t deduceWild(Type* t, bool isRef);
-    virtual ClassDeclaration* isClassHandle();
+    virtual Type *makeConst();
+    virtual Type *makeImmutable();
+    virtual Type *makeShared();
+    virtual Type *makeSharedConst();
+    virtual Type *makeWild();
+    virtual Type *makeWildConst();
+    virtual Type *makeSharedWild();
+    virtual Type *makeSharedWildConst();
+    virtual Type *makeMutable();
+    Type *toBasetype();
+    virtual uint8_t deduceWild(Type *t, bool isRef);
+    virtual ClassDeclaration *isClassHandle();
     virtual structalign_t alignment();
-    virtual Expression* defaultInitLiteral(Loc loc);
+    virtual Expression *defaultInitLiteral(Loc loc);
     virtual int32_t hasWild() const;
     virtual bool hasVoidInitPointers();
     virtual bool hasUnsafeBitpatterns();
     virtual bool hasInvariant();
-    virtual Type* nextOf();
-    Type* baseElemOf();
+    virtual Type *nextOf();
+    Type *baseElemOf();
     virtual bool needsDestruction();
     virtual bool needsCopyOrPostblit();
     virtual bool needsNested();
-    virtual TypeBasic* isTypeBasic();
-    TypeFunction* isPtrToFunction();
-    TypeFunction* isFunction_Delegate_PtrToFunction();
-    TypeError* isTypeError();
-    TypeVector* isTypeVector();
-    TypeSArray* isTypeSArray();
-    TypeDArray* isTypeDArray();
-    TypeAArray* isTypeAArray();
-    TypePointer* isTypePointer();
-    TypeReference* isTypeReference();
-    TypeFunction* isTypeFunction();
-    TypeDelegate* isTypeDelegate();
-    TypeIdentifier* isTypeIdentifier();
-    TypeInstance* isTypeInstance();
-    TypeTypeof* isTypeTypeof();
-    TypeReturn* isTypeReturn();
-    TypeStruct* isTypeStruct();
-    TypeEnum* isTypeEnum();
-    TypeClass* isTypeClass();
-    TypeTuple* isTypeTuple();
-    TypeSlice* isTypeSlice();
-    TypeNull* isTypeNull();
-    TypeMixin* isTypeMixin();
-    TypeTraits* isTypeTraits();
-    TypeNoreturn* isTypeNoreturn();
-    TypeTag* isTypeTag();
-    void accept(Visitor* v) override;
-    TypeFunction* toTypeFunction();
+    virtual TypeBasic *isTypeBasic();
+    TypeFunction *isPtrToFunction();
+    TypeFunction *isFunction_Delegate_PtrToFunction();
+    TypeError *isTypeError();
+    TypeVector *isTypeVector();
+    TypeSArray *isTypeSArray();
+    TypeDArray *isTypeDArray();
+    TypeAArray *isTypeAArray();
+    TypePointer *isTypePointer();
+    TypeReference *isTypeReference();
+    TypeFunction *isTypeFunction();
+    TypeDelegate *isTypeDelegate();
+    TypeIdentifier *isTypeIdentifier();
+    TypeInstance *isTypeInstance();
+    TypeTypeof *isTypeTypeof();
+    TypeReturn *isTypeReturn();
+    TypeStruct *isTypeStruct();
+    TypeEnum *isTypeEnum();
+    TypeClass *isTypeClass();
+    TypeTuple *isTypeTuple();
+    TypeSlice *isTypeSlice();
+    TypeNull *isTypeNull();
+    TypeMixin *isTypeMixin();
+    TypeTraits *isTypeTraits();
+    TypeNoreturn *isTypeNoreturn();
+    TypeTag *isTypeTag();
+    void accept(Visitor *v) override;
+    TypeFunction *toTypeFunction();
 };
 
 class TypeDeduced final : public Type
 {
 public:
-    Type* tded;
-    Array<Expression* > argexps;
-    Array<Type* > tparams;
-    void update(Expression* e, Type* tparam);
-    void update(Type* tt, Expression* e, Type* tparam);
-    MATCH matchAll(Type* tt);
+    Type *tded;
+    Array<Expression *> argexps;
+    Array<Type *> tparams;
+    void update(Expression *e, Type *tparam);
+    void update(Type *tt, Expression *e, Type *tparam);
+    MATCH matchAll(Type *tt);
 };
 
 class DebugSymbol final : public Dsymbol
 {
 public:
-    DebugSymbol* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    DebugSymbol *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
 class VersionSymbol final : public Dsymbol
 {
 public:
-    VersionSymbol* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    VersionSymbol *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
 enum class EXP : uint8_t
@@ -2350,7 +2363,7 @@ struct Optional final
     T value;
     bool present;
     Optional(T value);
-    static Optional<T > create(T val);
+    static Optional<T> create(T val);
     bool isPresent() const;
     bool isEmpty() const;
     T get();
@@ -2363,255 +2376,261 @@ struct Optional final
 class Expression : public ASTNode
 {
 public:
-    Type* type;
+    Type *type;
     Loc loc;
     const EXP op;
     struct BitFields final
     {
         bool parens;
         bool rvalue;
-        BitFields() :
-            parens(),
-            rvalue()
+        BitFields() : parens(),
+                      rvalue()
         {
         }
-        BitFields(bool parens, bool rvalue = false) :
-            parens(parens),
-            rvalue(rvalue)
-            {}
+        BitFields(bool parens, bool rvalue = false) : parens(parens),
+                                                      rvalue(rvalue)
+        {
+        }
     };
 
     bool parens() const;
     bool parens(bool v);
     bool rvalue() const;
     bool rvalue(bool v);
+
 private:
     uint8_t bitFields;
+
 public:
     size_t size() const;
     static void _init();
     static void deinitialize();
-    virtual Expression* syntaxCopy();
+    virtual Expression *syntaxCopy();
     DYNCAST dyncast() const final override;
-    const char* toChars() const final override;
+    const char *toChars() const final override;
     virtual dinteger_t toInteger();
     virtual uinteger_t toUInteger();
     virtual _d_real toReal();
     virtual _d_real toImaginary();
     virtual complex_t toComplex();
-    virtual StringExp* toStringExp();
+    virtual StringExp *toStringExp();
     virtual bool isLvalue();
     virtual bool checkType();
-    Expression* addressOf();
-    Expression* deref();
+    Expression *addressOf();
+    Expression *deref();
     int32_t isConst();
-    virtual bool isIdentical(const Expression* const e) const;
-    virtual Optional<bool > toBool();
+    virtual bool isIdentical(const Expression *const e) const;
+    virtual Optional<bool> toBool();
     virtual bool hasCode();
-    IntegerExp* isIntegerExp();
-    ErrorExp* isErrorExp();
-    VoidInitExp* isVoidInitExp();
-    RealExp* isRealExp();
-    ComplexExp* isComplexExp();
-    IdentifierExp* isIdentifierExp();
-    DollarExp* isDollarExp();
-    DsymbolExp* isDsymbolExp();
-    ThisExp* isThisExp();
-    SuperExp* isSuperExp();
-    NullExp* isNullExp();
-    StringExp* isStringExp();
-    InterpExp* isInterpExp();
-    TupleExp* isTupleExp();
-    ArrayLiteralExp* isArrayLiteralExp();
-    AssocArrayLiteralExp* isAssocArrayLiteralExp();
-    StructLiteralExp* isStructLiteralExp();
-    CompoundLiteralExp* isCompoundLiteralExp();
-    TypeExp* isTypeExp();
-    ScopeExp* isScopeExp();
-    TemplateExp* isTemplateExp();
-    NewExp* isNewExp();
-    NewAnonClassExp* isNewAnonClassExp();
-    SymOffExp* isSymOffExp();
-    VarExp* isVarExp();
-    OverExp* isOverExp();
-    FuncExp* isFuncExp();
-    DeclarationExp* isDeclarationExp();
-    TypeidExp* isTypeidExp();
-    TraitsExp* isTraitsExp();
-    HaltExp* isHaltExp();
-    IsExp* isIsExp();
-    MixinExp* isMixinExp();
-    ImportExp* isImportExp();
-    AssertExp* isAssertExp();
-    ThrowExp* isThrowExp();
-    DotIdExp* isDotIdExp();
-    DotTemplateExp* isDotTemplateExp();
-    DotVarExp* isDotVarExp();
-    DotTemplateInstanceExp* isDotTemplateInstanceExp();
-    DelegateExp* isDelegateExp();
-    DotTypeExp* isDotTypeExp();
-    CallExp* isCallExp();
-    AddrExp* isAddrExp();
-    PtrExp* isPtrExp();
-    NegExp* isNegExp();
-    UAddExp* isUAddExp();
-    ComExp* isComExp();
-    NotExp* isNotExp();
-    DeleteExp* isDeleteExp();
-    CastExp* isCastExp();
-    VectorExp* isVectorExp();
-    VectorArrayExp* isVectorArrayExp();
-    SliceExp* isSliceExp();
-    ArrayLengthExp* isArrayLengthExp();
-    ArrayExp* isArrayExp();
-    DotExp* isDotExp();
-    CommaExp* isCommaExp();
-    IntervalExp* isIntervalExp();
-    DelegatePtrExp* isDelegatePtrExp();
-    DelegateFuncptrExp* isDelegateFuncptrExp();
-    IndexExp* isIndexExp();
-    PostExp* isPostExp();
-    PreExp* isPreExp();
-    AssignExp* isAssignExp();
-    LoweredAssignExp* isLoweredAssignExp();
-    ConstructExp* isConstructExp();
-    BlitExp* isBlitExp();
-    AddAssignExp* isAddAssignExp();
-    MinAssignExp* isMinAssignExp();
-    MulAssignExp* isMulAssignExp();
-    DivAssignExp* isDivAssignExp();
-    ModAssignExp* isModAssignExp();
-    AndAssignExp* isAndAssignExp();
-    OrAssignExp* isOrAssignExp();
-    XorAssignExp* isXorAssignExp();
-    PowAssignExp* isPowAssignExp();
-    ShlAssignExp* isShlAssignExp();
-    ShrAssignExp* isShrAssignExp();
-    UshrAssignExp* isUshrAssignExp();
-    CatAssignExp* isCatAssignExp();
-    CatElemAssignExp* isCatElemAssignExp();
-    CatDcharAssignExp* isCatDcharAssignExp();
-    AddExp* isAddExp();
-    MinExp* isMinExp();
-    CatExp* isCatExp();
-    MulExp* isMulExp();
-    DivExp* isDivExp();
-    ModExp* isModExp();
-    PowExp* isPowExp();
-    ShlExp* isShlExp();
-    ShrExp* isShrExp();
-    UshrExp* isUshrExp();
-    AndExp* isAndExp();
-    OrExp* isOrExp();
-    XorExp* isXorExp();
-    LogicalExp* isLogicalExp();
-    InExp* isInExp();
-    RemoveExp* isRemoveExp();
-    EqualExp* isEqualExp();
-    IdentityExp* isIdentityExp();
-    CondExp* isCondExp();
-    GenericExp* isGenericExp();
-    DefaultInitExp* isDefaultInitExp();
-    FileInitExp* isFileInitExp();
-    LineInitExp* isLineInitExp();
-    ModuleInitExp* isModuleInitExp();
-    FuncInitExp* isFuncInitExp();
-    PrettyFuncInitExp* isPrettyFuncInitExp();
-    ObjcClassReferenceExp* isObjcClassReferenceExp();
-    ClassReferenceExp* isClassReferenceExp();
-    ThrownExceptionExp* isThrownExceptionExp();
-    UnaExp* isUnaExp();
-    BinExp* isBinExp();
-    BinAssignExp* isBinAssignExp();
-    void accept(Visitor* v) override;
+    IntegerExp *isIntegerExp();
+    ErrorExp *isErrorExp();
+    VoidInitExp *isVoidInitExp();
+    RealExp *isRealExp();
+    ComplexExp *isComplexExp();
+    IdentifierExp *isIdentifierExp();
+    DollarExp *isDollarExp();
+    DsymbolExp *isDsymbolExp();
+    ThisExp *isThisExp();
+    SuperExp *isSuperExp();
+    NullExp *isNullExp();
+    StringExp *isStringExp();
+    InterpExp *isInterpExp();
+    TupleExp *isTupleExp();
+    ArrayLiteralExp *isArrayLiteralExp();
+    AssocArrayLiteralExp *isAssocArrayLiteralExp();
+    StructLiteralExp *isStructLiteralExp();
+    CompoundLiteralExp *isCompoundLiteralExp();
+    TypeExp *isTypeExp();
+    ScopeExp *isScopeExp();
+    TemplateExp *isTemplateExp();
+    NewExp *isNewExp();
+    NewAnonClassExp *isNewAnonClassExp();
+    SymOffExp *isSymOffExp();
+    VarExp *isVarExp();
+    OverExp *isOverExp();
+    FuncExp *isFuncExp();
+    DeclarationExp *isDeclarationExp();
+    TypeidExp *isTypeidExp();
+    TraitsExp *isTraitsExp();
+    HaltExp *isHaltExp();
+    IsExp *isIsExp();
+    MixinExp *isMixinExp();
+    ImportExp *isImportExp();
+    AssertExp *isAssertExp();
+    ThrowExp *isThrowExp();
+    DotIdExp *isDotIdExp();
+    DotTemplateExp *isDotTemplateExp();
+    DotVarExp *isDotVarExp();
+    DotTemplateInstanceExp *isDotTemplateInstanceExp();
+    DelegateExp *isDelegateExp();
+    DotTypeExp *isDotTypeExp();
+    CallExp *isCallExp();
+    AddrExp *isAddrExp();
+    PtrExp *isPtrExp();
+    NegExp *isNegExp();
+    UAddExp *isUAddExp();
+    ComExp *isComExp();
+    NotExp *isNotExp();
+    DeleteExp *isDeleteExp();
+    CastExp *isCastExp();
+    VectorExp *isVectorExp();
+    VectorArrayExp *isVectorArrayExp();
+    SliceExp *isSliceExp();
+    ArrayLengthExp *isArrayLengthExp();
+    ArrayExp *isArrayExp();
+    DotExp *isDotExp();
+    CommaExp *isCommaExp();
+    IntervalExp *isIntervalExp();
+    DelegatePtrExp *isDelegatePtrExp();
+    DelegateFuncptrExp *isDelegateFuncptrExp();
+    IndexExp *isIndexExp();
+    PostExp *isPostExp();
+    PreExp *isPreExp();
+    AssignExp *isAssignExp();
+    LoweredAssignExp *isLoweredAssignExp();
+    ConstructExp *isConstructExp();
+    BlitExp *isBlitExp();
+    AddAssignExp *isAddAssignExp();
+    MinAssignExp *isMinAssignExp();
+    MulAssignExp *isMulAssignExp();
+    DivAssignExp *isDivAssignExp();
+    ModAssignExp *isModAssignExp();
+    AndAssignExp *isAndAssignExp();
+    OrAssignExp *isOrAssignExp();
+    XorAssignExp *isXorAssignExp();
+    PowAssignExp *isPowAssignExp();
+    ShlAssignExp *isShlAssignExp();
+    ShrAssignExp *isShrAssignExp();
+    UshrAssignExp *isUshrAssignExp();
+    CatAssignExp *isCatAssignExp();
+    CatElemAssignExp *isCatElemAssignExp();
+    CatDcharAssignExp *isCatDcharAssignExp();
+    AddExp *isAddExp();
+    MinExp *isMinExp();
+    CatExp *isCatExp();
+    MulExp *isMulExp();
+    DivExp *isDivExp();
+    ModExp *isModExp();
+    PowExp *isPowExp();
+    ShlExp *isShlExp();
+    ShrExp *isShrExp();
+    UshrExp *isUshrExp();
+    AndExp *isAndExp();
+    OrExp *isOrExp();
+    XorExp *isXorExp();
+    LogicalExp *isLogicalExp();
+    InExp *isInExp();
+    RemoveExp *isRemoveExp();
+    EqualExp *isEqualExp();
+    IdentityExp *isIdentityExp();
+    CondExp *isCondExp();
+    GenericExp *isGenericExp();
+    DefaultInitExp *isDefaultInitExp();
+    FileInitExp *isFileInitExp();
+    LineInitExp *isLineInitExp();
+    ModuleInitExp *isModuleInitExp();
+    FuncInitExp *isFuncInitExp();
+    PrettyFuncInitExp *isPrettyFuncInitExp();
+    ObjcClassReferenceExp *isObjcClassReferenceExp();
+    ClassReferenceExp *isClassReferenceExp();
+    ThrownExceptionExp *isThrownExceptionExp();
+    UnaExp *isUnaExp();
+    BinExp *isBinExp();
+    BinAssignExp *isBinAssignExp();
+    void accept(Visitor *v) override;
 };
 
 class BinExp : public Expression
 {
 public:
-    Expression* e1;
-    Expression* e2;
-    BinExp* syntaxCopy() override;
+    Expression *e1;
+    Expression *e2;
+    BinExp *syntaxCopy() override;
     void setNoderefOperands();
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class BinAssignExp : public BinExp
 {
 public:
     bool isLvalue() final override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class AddAssignExp final : public BinAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class AddExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class UnaExp : public Expression
 {
 public:
-    Expression* e1;
-    UnaExp* syntaxCopy() override;
+    Expression *e1;
+    UnaExp *syntaxCopy() override;
     void setNoderefOperand();
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class AddrExp final : public UnaExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class AndAssignExp final : public BinAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class AndExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 struct ArgumentList final
 {
-    Array<Expression* >* arguments;
-    Array<Identifier* >* names;
-    ArgumentList() :
-        arguments(),
-        names()
+    Array<Expression *> *arguments;
+    Array<Identifier *> *names;
+    ArgumentList() : arguments(),
+                     names()
     {
     }
-    ArgumentList(Array<Expression* >* arguments, Array<Identifier* >* names = nullptr) :
-        arguments(arguments),
-        names(names)
-        {}
+    ArgumentList(Array<Expression *> *arguments, Array<Identifier *> *names = nullptr) : arguments(arguments),
+                                                                                         names(names)
+    {
+    }
+};
+
+struct ArgumentLabel
+{
+    Identifier *name;
+    Loc loc;
 };
 
 class ArrayExp final : public UnaExp
 {
 public:
-    Array<Expression* >* arguments;
+    Array<Expression *> *arguments;
     size_t currentDimension;
-    VarDeclaration* lengthVar;
-    ArrayExp* syntaxCopy() override;
+    VarDeclaration *lengthVar;
+    ArrayExp *syntaxCopy() override;
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ArrayLengthExp final : public UnaExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 enum class OwnedBy : uint8_t
@@ -2626,23 +2645,23 @@ class ArrayLiteralExp final : public Expression
 public:
     OwnedBy ownedByCtfe;
     bool onstack;
-    Expression* basis;
-    Array<Expression* >* elements;
-    static ArrayLiteralExp* create(Loc loc, Array<Expression* >* elements);
-    ArrayLiteralExp* syntaxCopy() override;
-    bool equals(const RootObject* const o) const override;
-    Expression* getElement(size_t i);
-    Optional<bool > toBool() override;
-    StringExp* toStringExp() override;
-    void accept(Visitor* v) override;
+    Expression *basis;
+    Array<Expression *> *elements;
+    static ArrayLiteralExp *create(Loc loc, Array<Expression *> *elements);
+    ArrayLiteralExp *syntaxCopy() override;
+    bool equals(const RootObject *const o) const override;
+    Expression *getElement(size_t i);
+    Optional<bool> toBool() override;
+    StringExp *toStringExp() override;
+    void accept(Visitor *v) override;
 };
 
 class AssertExp final : public UnaExp
 {
 public:
-    Expression* msg;
-    AssertExp* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Expression *msg;
+    AssertExp *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 enum class MemorySet
@@ -2656,28 +2675,28 @@ class AssignExp : public BinExp
 {
 public:
     MemorySet memset;
-    AssignExp(Loc loc, EXP tok, Expression* e1, Expression* e2);
+    AssignExp(Loc loc, EXP tok, Expression *e1, Expression *e2);
     bool isLvalue() final override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class AssocArrayLiteralExp final : public Expression
 {
 public:
     OwnedBy ownedByCtfe;
-    Array<Expression* >* keys;
-    Array<Expression* >* values;
-    Expression* lowering;
-    bool equals(const RootObject* const o) const override;
-    AssocArrayLiteralExp* syntaxCopy() override;
-    Optional<bool > toBool() override;
-    void accept(Visitor* v) override;
+    Array<Expression *> *keys;
+    Array<Expression *> *values;
+    Expression *lowering;
+    bool equals(const RootObject *const o) const override;
+    AssocArrayLiteralExp *syntaxCopy() override;
+    Optional<bool> toBool() override;
+    void accept(Visitor *v) override;
 };
 
 class BlitExp final : public AssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class CTFEExp final : public Expression
@@ -2687,80 +2706,81 @@ class CTFEExp final : public Expression
 class CallExp final : public UnaExp
 {
 public:
-    Array<Expression* >* arguments;
-    Array<Identifier* >* names;
-    FuncDeclaration* f;
+    Array<Expression *> *arguments;
+    Array<Identifier *> *names;
+    DArray<ArgumentLabel> argLabels;
+    FuncDeclaration *f;
     bool directcall;
     bool inDebugStatement;
     bool ignoreAttributes;
     bool isUfcsRewrite;
-    VarDeclaration* vthis2;
-    static CallExp* create(Loc loc, Expression* e, Array<Expression* >* exps);
-    static CallExp* create(Loc loc, Expression* e);
-    static CallExp* create(Loc loc, Expression* e, Expression* earg1);
-    static CallExp* create(Loc loc, FuncDeclaration* fd, Expression* earg1);
-    CallExp* syntaxCopy() override;
+    VarDeclaration *vthis2;
+    static CallExp *create(Loc loc, Expression *e, Array<Expression *> *exps);
+    static CallExp *create(Loc loc, Expression *e);
+    static CallExp *create(Loc loc, Expression *e, Expression *earg1);
+    static CallExp *create(Loc loc, FuncDeclaration *fd, Expression *earg1);
+    CallExp *syntaxCopy() override;
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class CastExp final : public UnaExp
 {
 public:
-    Type* to;
+    Type *to;
     uint8_t mod;
     bool trusted;
-    CastExp* syntaxCopy() override;
+    CastExp *syntaxCopy() override;
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class CatAssignExp : public BinAssignExp
 {
 public:
-    Expression* lowering;
-    void accept(Visitor* v) override;
+    Expression *lowering;
+    void accept(Visitor *v) override;
 };
 
 class CatDcharAssignExp final : public CatAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class CatElemAssignExp final : public CatAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class CatExp final : public BinExp
 {
 public:
-    Expression* lowering;
-    void accept(Visitor* v) override;
+    Expression *lowering;
+    void accept(Visitor *v) override;
 };
 
 class ClassReferenceExp final : public Expression
 {
 public:
-    StructLiteralExp* value;
-    ClassDeclaration* originalClass();
-    int32_t getFieldIndex(Type* fieldtype, uint32_t fieldoffset);
-    int32_t findFieldIndexByName(VarDeclaration* v);
-    void accept(Visitor* v) override;
+    StructLiteralExp *value;
+    ClassDeclaration *originalClass();
+    int32_t getFieldIndex(Type *fieldtype, uint32_t fieldoffset);
+    int32_t findFieldIndexByName(VarDeclaration *v);
+    void accept(Visitor *v) override;
 };
 
 class CmpExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ComExp final : public UnaExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class CommaExp final : public BinExp
@@ -2769,198 +2789,198 @@ public:
     const bool isGenerated;
     bool allowCommaExp;
     bool isLvalue() override;
-    Optional<bool > toBool() override;
-    void accept(Visitor* v) override;
-    static void allow(Expression* exp);
+    Optional<bool> toBool() override;
+    void accept(Visitor *v) override;
+    static void allow(Expression *exp);
 };
 
 class ComplexExp final : public Expression
 {
 public:
     complex_t value;
-    static ComplexExp* create(Loc loc, complex_t value, Type* type);
-    bool equals(const RootObject* const o) const override;
-    bool isIdentical(const Expression* const e) const override;
+    static ComplexExp *create(Loc loc, complex_t value, Type *type);
+    bool equals(const RootObject *const o) const override;
+    bool isIdentical(const Expression *const e) const override;
     dinteger_t toInteger() override;
     uinteger_t toUInteger() override;
     _d_real toReal() override;
     _d_real toImaginary() override;
     complex_t toComplex() override;
-    Optional<bool > toBool() override;
-    void accept(Visitor* v) override;
+    Optional<bool> toBool() override;
+    void accept(Visitor *v) override;
 };
 
 class CompoundLiteralExp final : public Expression
 {
 public:
-    Initializer* initializer;
-    void accept(Visitor* v) override;
+    Initializer *initializer;
+    void accept(Visitor *v) override;
 };
 
 class CondExp final : public BinExp
 {
 public:
-    Expression* econd;
-    CondExp* syntaxCopy() override;
+    Expression *econd;
+    CondExp *syntaxCopy() override;
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ConstructExp final : public AssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DeclarationExp final : public Expression
 {
 public:
-    Dsymbol* declaration;
-    DeclarationExp* syntaxCopy() override;
+    Dsymbol *declaration;
+    DeclarationExp *syntaxCopy() override;
     bool hasCode() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DefaultInitExp : public Expression
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DelegateExp final : public UnaExp
 {
 public:
-    FuncDeclaration* func;
+    FuncDeclaration *func;
     bool hasOverloads;
-    VarDeclaration* vthis2;
-    void accept(Visitor* v) override;
+    VarDeclaration *vthis2;
+    void accept(Visitor *v) override;
 };
 
 class DelegateFuncptrExp final : public UnaExp
 {
 public:
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DelegatePtrExp final : public UnaExp
 {
 public:
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DeleteExp final : public UnaExp
 {
 public:
     bool isRAII;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DivAssignExp final : public BinAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DivExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class IdentifierExp : public Expression
 {
 public:
-    Identifier* ident;
-    static IdentifierExp* create(Loc loc, Identifier* ident);
+    Identifier *ident;
+    static IdentifierExp *create(Loc loc, Identifier *ident);
     bool isLvalue() final override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DollarExp final : public IdentifierExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DotExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DotIdExp final : public UnaExp
 {
 public:
-    Identifier* ident;
+    Identifier *ident;
     bool noderef;
     bool wantsym;
     bool arrow;
-    static DotIdExp* create(Loc loc, Expression* e, Identifier* ident);
-    void accept(Visitor* v) override;
+    static DotIdExp *create(Loc loc, Expression *e, Identifier *ident);
+    void accept(Visitor *v) override;
 };
 
 class DotTemplateExp final : public UnaExp
 {
 public:
-    TemplateDeclaration* td;
+    TemplateDeclaration *td;
     bool checkType() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DotTemplateInstanceExp final : public UnaExp
 {
 public:
-    TemplateInstance* ti;
-    DotTemplateInstanceExp* syntaxCopy() override;
+    TemplateInstance *ti;
+    DotTemplateInstanceExp *syntaxCopy() override;
     bool checkType() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DotTypeExp final : public UnaExp
 {
 public:
-    Dsymbol* sym;
-    void accept(Visitor* v) override;
+    Dsymbol *sym;
+    void accept(Visitor *v) override;
 };
 
 class DotVarExp final : public UnaExp
 {
 public:
-    Declaration* var;
+    Declaration *var;
     bool hasOverloads;
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DsymbolExp final : public Expression
 {
 public:
-    Dsymbol* s;
+    Dsymbol *s;
     bool hasOverloads;
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class EqualExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ErrorExp final : public Expression
 {
 public:
-    static ErrorExp* get();
-    void accept(Visitor* v) override;
-    static ErrorExp* errorexp;
+    static ErrorExp *get();
+    void accept(Visitor *v) override;
+    static ErrorExp *errorexp;
 };
 
 class FileInitExp final : public DefaultInitExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 enum class TOK : uint8_t
@@ -3196,81 +3216,82 @@ enum class TOK : uint8_t
 class FuncExp final : public Expression
 {
 public:
-    FuncLiteralDeclaration* fd;
-    TemplateDeclaration* td;
+    FuncLiteralDeclaration *fd;
+    TemplateDeclaration *td;
     TOK tok;
-    bool equals(const RootObject* const o) const override;
-    FuncExp* syntaxCopy() override;
+    bool equals(const RootObject *const o) const override;
+    FuncExp *syntaxCopy() override;
     bool checkType() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class FuncInitExp final : public DefaultInitExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class GenericExp final : public Expression
 {
 public:
-    Expression* cntlExp;
-    Array<Type* >* types;
-    Array<Expression* >* exps;
-    GenericExp* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Expression *cntlExp;
+    Array<Type *> *types;
+    Array<Expression *> *exps;
+    GenericExp *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class HaltExp final : public Expression
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class IdentityExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ImportExp final : public UnaExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class InExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class IndexExp final : public BinExp
 {
 public:
-    VarDeclaration* lengthVar;
+    VarDeclaration *lengthVar;
     bool modifiable;
     bool indexIsInBounds;
-    IndexExp* syntaxCopy() override;
+    IndexExp *syntaxCopy() override;
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class IntegerExp final : public Expression
 {
     dinteger_t value;
+
 public:
-    static IntegerExp* create(Loc loc, dinteger_t value, Type* type);
-    bool equals(const RootObject* const o) const override;
+    static IntegerExp *create(Loc loc, dinteger_t value, Type *type);
+    bool equals(const RootObject *const o) const override;
     dinteger_t toInteger() override;
     _d_real toReal() override;
     _d_real toImaginary() override;
     complex_t toComplex() override;
-    Optional<bool > toBool() override;
-    void accept(Visitor* v) override;
+    Optional<bool> toBool() override;
+    void accept(Visitor *v) override;
     dinteger_t getInteger();
-    IntegerExp* syntaxCopy() override;
-    static IntegerExp* createBool(bool b);
+    IntegerExp *syntaxCopy() override;
+    static IntegerExp *createBool(bool b);
 };
 
 class InterpExp final : public Expression
@@ -3278,298 +3299,304 @@ class InterpExp final : public Expression
 public:
     char postfix;
     OwnedBy ownedByCtfe;
-    InterpolatedSet* interpolatedSet;
-    enum : char { NoPostfix = 0u };
+    InterpolatedSet *interpolatedSet;
+    enum : char
+    {
+        NoPostfix = 0u
+    };
 
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class IntervalExp final : public Expression
 {
 public:
-    Expression* lwr;
-    Expression* upr;
-    Expression* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Expression *lwr;
+    Expression *upr;
+    Expression *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class IsExp final : public Expression
 {
 public:
-    Type* targ;
-    Identifier* id;
-    Type* tspec;
-    Array<TemplateParameter* >* parameters;
+    Type *targ;
+    Identifier *id;
+    Type *tspec;
+    Array<TemplateParameter *> *parameters;
     TOK tok;
     TOK tok2;
-    IsExp* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    IsExp *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
-enum : bool { LOGSEMANTIC = false };
+enum : bool
+{
+    LOGSEMANTIC = false
+};
 
 class LineInitExp final : public DefaultInitExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class LogicalExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class LoweredAssignExp final : public AssignExp
 {
 public:
-    Expression* lowering;
-    void accept(Visitor* v) override;
+    Expression *lowering;
+    void accept(Visitor *v) override;
 };
 
 class MinAssignExp final : public BinAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class MinExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class MixinExp final : public Expression
 {
 public:
-    Array<Expression* >* exps;
-    MixinExp* syntaxCopy() override;
-    bool equals(const RootObject* const o) const override;
-    void accept(Visitor* v) override;
+    Array<Expression *> *exps;
+    MixinExp *syntaxCopy() override;
+    bool equals(const RootObject *const o) const override;
+    void accept(Visitor *v) override;
 };
 
 class ModAssignExp final : public BinAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ModExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ModuleInitExp final : public DefaultInitExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class MulAssignExp final : public BinAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class MulExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class NegExp final : public UnaExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class NewAnonClassExp final : public Expression
 {
 public:
-    Expression* thisexp;
-    ClassDeclaration* cd;
-    Array<Expression* >* arguments;
-    Expression* placement;
-    NewAnonClassExp* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Expression *thisexp;
+    ClassDeclaration *cd;
+    Array<Expression *> *arguments;
+    Expression *placement;
+    NewAnonClassExp *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class NewExp final : public Expression
 {
 public:
-    Expression* thisexp;
-    Type* newtype;
-    Array<Expression* >* arguments;
-    Array<Identifier* >* names;
-    Expression* placement;
-    Expression* argprefix;
-    CtorDeclaration* member;
+    Expression *thisexp;
+    Type *newtype;
+    Array<Expression *> *arguments;
+    Array<Identifier *> *names;
+    Expression *placement;
+    Expression *argprefix;
+    CtorDeclaration *member;
     bool onstack;
     bool thrownew;
-    Expression* lowering;
-    static NewExp* create(Loc loc, Expression* placement, Expression* thisexp, Type* newtype, Array<Expression* >* arguments);
-    NewExp* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Expression *lowering;
+    static NewExp *create(Loc loc, Expression *placement, Expression *thisexp, Type *newtype, Array<Expression *> *arguments);
+    NewExp *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class NotExp final : public UnaExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class NullExp final : public Expression
 {
 public:
-    bool equals(const RootObject* const o) const override;
-    Optional<bool > toBool() override;
-    StringExp* toStringExp() override;
-    void accept(Visitor* v) override;
+    bool equals(const RootObject *const o) const override;
+    Optional<bool> toBool() override;
+    StringExp *toStringExp() override;
+    void accept(Visitor *v) override;
 };
 
 class ObjcClassReferenceExp final : public Expression
 {
 public:
-    ClassDeclaration* classDeclaration;
-    void accept(Visitor* v) override;
+    ClassDeclaration *classDeclaration;
+    void accept(Visitor *v) override;
 };
 
 class OrAssignExp final : public BinAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class OrExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class OverExp final : public Expression
 {
 public:
-    OverloadSet* vars;
+    OverloadSet *vars;
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class PostExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class PowAssignExp final : public BinAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class PowExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class PreExp final : public UnaExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class PrettyFuncInitExp final : public DefaultInitExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class PtrExp final : public UnaExp
 {
 public:
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class RealExp final : public Expression
 {
 public:
     _d_real value;
-    static RealExp* create(Loc loc, _d_real value, Type* type);
-    bool equals(const RootObject* const o) const override;
-    bool isIdentical(const Expression* const e) const override;
+    static RealExp *create(Loc loc, _d_real value, Type *type);
+    bool equals(const RootObject *const o) const override;
+    bool isIdentical(const Expression *const e) const override;
     dinteger_t toInteger() override;
     uinteger_t toUInteger() override;
     _d_real toReal() override;
     _d_real toImaginary() override;
     complex_t toComplex() override;
-    Optional<bool > toBool() override;
-    void accept(Visitor* v) override;
+    Optional<bool> toBool() override;
+    void accept(Visitor *v) override;
 };
 
 class RemoveExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ScopeExp final : public Expression
 {
 public:
-    ScopeDsymbol* sds;
-    ScopeExp* syntaxCopy() override;
+    ScopeDsymbol *sds;
+    ScopeExp *syntaxCopy() override;
     bool checkType() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ShlAssignExp final : public BinAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ShlExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ShrAssignExp final : public BinAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ShrExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class SliceExp final : public UnaExp
 {
 public:
-    Expression* upr;
-    Expression* lwr;
-    VarDeclaration* lengthVar;
+    Expression *upr;
+    Expression *lwr;
+    VarDeclaration *lengthVar;
+
 private:
     struct BitFields final
     {
         bool upperIsInBounds;
         bool lowerIsLessThanUpper;
         bool arrayop;
-        BitFields() :
-            upperIsInBounds(),
-            lowerIsLessThanUpper(),
-            arrayop()
+        BitFields() : upperIsInBounds(),
+                      lowerIsLessThanUpper(),
+                      arrayop()
         {
         }
-        BitFields(bool upperIsInBounds, bool lowerIsLessThanUpper = false, bool arrayop = false) :
-            upperIsInBounds(upperIsInBounds),
-            lowerIsLessThanUpper(lowerIsLessThanUpper),
-            arrayop(arrayop)
-            {}
+        BitFields(bool upperIsInBounds, bool lowerIsLessThanUpper = false, bool arrayop = false) : upperIsInBounds(upperIsInBounds),
+                                                                                                   lowerIsLessThanUpper(lowerIsLessThanUpper),
+                                                                                                   arrayop(arrayop)
+        {
+        }
     };
 
 public:
@@ -3579,13 +3606,15 @@ public:
     bool lowerIsLessThanUpper(bool v);
     bool arrayop() const;
     bool arrayop(bool v);
+
 private:
     uint8_t bitFields;
+
 public:
-    SliceExp* syntaxCopy() override;
+    SliceExp *syntaxCopy() override;
     bool isLvalue() override;
-    Optional<bool > toBool() override;
-    void accept(Visitor* v) override;
+    Optional<bool> toBool() override;
+    void accept(Visitor *v) override;
 };
 
 class StringExp final : public Expression
@@ -3595,29 +3624,32 @@ public:
     OwnedBy ownedByCtfe;
     union
     {
-        char* string;
-        char16_t* wstring;
-        char32_t* dstring;
-        uint64_t* lstring;
+        char *string;
+        char16_t *wstring;
+        char32_t *dstring;
+        uint64_t *lstring;
     };
     size_t len;
     uint8_t sz;
     bool committed;
     bool hexString;
-    enum : char { NoPostfix = 0u };
+    enum : char
+    {
+        NoPostfix = 0u
+    };
 
-    static StringExp* create(Loc loc, const char* s);
-    static StringExp* create(Loc loc, const void* string, size_t len);
-    bool equals(const RootObject* const o) const override;
+    static StringExp *create(Loc loc, const char *s);
+    static StringExp *create(Loc loc, const void *string, size_t len);
+    bool equals(const RootObject *const o) const override;
     size_t numberOfCodeUnits(int32_t tynto = 0) const;
-    void writeTo(void* dest, bool zero, int32_t tyto = 0) const;
+    void writeTo(void *dest, bool zero, int32_t tyto = 0) const;
     char32_t getCodeUnit(size_t i) const;
     dinteger_t getIndex(size_t i) const;
-    StringExp* toStringExp() override;
-    int32_t compare(const StringExp* const se2) const;
-    Optional<bool > toBool() override;
+    StringExp *toStringExp() override;
+    int32_t compare(const StringExp *const se2) const;
+    Optional<bool> toBool() override;
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class StructLiteralExp final : public Expression
@@ -3628,17 +3660,16 @@ public:
         bool useStaticInit;
         bool isOriginal;
         OwnedBy ownedByCtfe;
-        BitFields() :
-            useStaticInit(),
-            isOriginal(false),
-            ownedByCtfe((OwnedBy)0u)
+        BitFields() : useStaticInit(),
+                      isOriginal(false),
+                      ownedByCtfe((OwnedBy)0u)
         {
         }
-        BitFields(bool useStaticInit, bool isOriginal = false, OwnedBy ownedByCtfe = (OwnedBy)0u) :
-            useStaticInit(useStaticInit),
-            isOriginal(isOriginal),
-            ownedByCtfe(ownedByCtfe)
-            {}
+        BitFields(bool useStaticInit, bool isOriginal = false, OwnedBy ownedByCtfe = (OwnedBy)0u) : useStaticInit(useStaticInit),
+                                                                                                    isOriginal(isOriginal),
+                                                                                                    ownedByCtfe(ownedByCtfe)
+        {
+        }
     };
 
     bool useStaticInit() const;
@@ -3647,19 +3678,21 @@ public:
     bool isOriginal(bool v);
     OwnedBy ownedByCtfe() const;
     OwnedBy ownedByCtfe(OwnedBy v);
+
 private:
     uint8_t bitFields;
+
 public:
     StageFlags stageflags;
-    StructDeclaration* sd;
-    Array<Expression* >* elements;
-    Type* stype;
+    StructDeclaration *sd;
+    Array<Expression *> *elements;
+    Type *stype;
     union
     {
-        void* sym;
-        StructLiteralExp* inlinecopy;
+        void *sym;
+        StructLiteralExp *inlinecopy;
     };
-    StructLiteralExp* origin;
+    StructLiteralExp *origin;
     enum class StageFlags : uint8_t
     {
         none = 0u,
@@ -3671,184 +3704,189 @@ public:
         toCBuffer = 32u,
     };
 
-    static StructLiteralExp* create(Loc loc, StructDeclaration* sd, void* elements, Type* stype = nullptr);
-    bool equals(const RootObject* const o) const override;
-    StructLiteralExp* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    static StructLiteralExp *create(Loc loc, StructDeclaration *sd, void *elements, Type *stype = nullptr);
+    bool equals(const RootObject *const o) const override;
+    StructLiteralExp *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class ThisExp : public Expression
 {
 public:
-    VarDeclaration* var;
+    VarDeclaration *var;
     ThisExp(Loc loc, const EXP tok);
-    ThisExp* syntaxCopy() override;
-    Optional<bool > toBool() override;
+    ThisExp *syntaxCopy() override;
+    Optional<bool> toBool() override;
     bool isLvalue() final override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class SuperExp final : public ThisExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class SymbolExp : public Expression
 {
 public:
-    Declaration* var;
-    Dsymbol* originalScope;
+    Declaration *var;
+    Dsymbol *originalScope;
     bool hasOverloads;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class SymOffExp final : public SymbolExp
 {
 public:
     dinteger_t offset;
-    Optional<bool > toBool() override;
-    void accept(Visitor* v) override;
+    Optional<bool> toBool() override;
+    void accept(Visitor *v) override;
 };
 
 class TemplateExp final : public Expression
 {
 public:
-    TemplateDeclaration* td;
-    FuncDeclaration* fd;
+    TemplateDeclaration *td;
+    FuncDeclaration *fd;
     bool isLvalue() override;
     bool checkType() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ThrowExp final : public UnaExp
 {
 public:
-    ThrowExp* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    ThrowExp *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class ThrownExceptionExp final : public Expression
 {
 public:
-    ClassReferenceExp* thrown;
-    void accept(Visitor* v) override;
+    ClassReferenceExp *thrown;
+    void accept(Visitor *v) override;
 };
 
 class TraitsExp final : public Expression
 {
 public:
-    Identifier* ident;
-    Array<RootObject* >* args;
-    TraitsExp* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Identifier *ident;
+    Array<RootObject *> *args;
+    TraitsExp *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class TupleExp final : public Expression
 {
 public:
-    Expression* e0;
-    Array<Expression* >* exps;
-    static TupleExp* create(Loc loc, Array<Expression* >* exps);
-    TupleExp* syntaxCopy() override;
-    bool equals(const RootObject* const o) const override;
-    void accept(Visitor* v) override;
+    Expression *e0;
+    Array<Expression *> *exps;
+    static TupleExp *create(Loc loc, Array<Expression *> *exps);
+    TupleExp *syntaxCopy() override;
+    bool equals(const RootObject *const o) const override;
+    void accept(Visitor *v) override;
 };
 
 class TypeExp final : public Expression
 {
 public:
-    TypeExp* syntaxCopy() override;
+    TypeExp *syntaxCopy() override;
     bool checkType() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TypeidExp final : public Expression
 {
 public:
-    RootObject* obj;
-    TypeidExp* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    RootObject *obj;
+    TypeidExp *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class UAddExp final : public UnaExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class UshrAssignExp final : public BinAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class UshrExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class VarExp final : public SymbolExp
 {
 public:
     bool delegateWasExtracted;
-    static VarExp* create(Loc loc, Declaration* var, bool hasOverloads = true);
-    bool equals(const RootObject* const o) const override;
+    static VarExp *create(Loc loc, Declaration *var, bool hasOverloads = true);
+    bool equals(const RootObject *const o) const override;
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class VectorArrayExp final : public UnaExp
 {
 public:
     bool isLvalue() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class VectorExp final : public UnaExp
 {
 public:
-    TypeVector* to;
+    TypeVector *to;
     uint32_t dim;
     OwnedBy ownedByCtfe;
-    static VectorExp* create(Loc loc, Expression* e, Type* t);
-    VectorExp* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    static VectorExp *create(Loc loc, Expression *e, Type *t);
+    VectorExp *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class VoidInitExp final : public Expression
 {
 public:
-    VarDeclaration* var;
-    void accept(Visitor* v) override;
+    VarDeclaration *var;
+    void accept(Visitor *v) override;
 };
 
-enum : int32_t { WANTexpand = 1 };
+enum : int32_t
+{
+    WANTexpand = 1
+};
 
-enum : int32_t { WANTvalue = 0 };
+enum : int32_t
+{
+    WANTvalue = 0
+};
 
 class XorAssignExp final : public BinAssignExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class XorExp final : public BinExp
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 struct AttributeViolation final
 {
     Loc loc;
-    FuncDeclaration* fd;
-    _d_dynamicArray< const char > action;
-    AttributeViolation() :
-        loc(),
-        fd(),
-        action()
+    FuncDeclaration *fd;
+    _d_dynamicArray<const char> action;
+    AttributeViolation() : loc(),
+                           fd(),
+                           action()
     {
     }
 };
@@ -3869,20 +3907,19 @@ enum class PINLINE : uint8_t
 
 struct ObjcFuncDeclaration final
 {
-    ObjcSelector* selector;
-    VarDeclaration* selectorParameter;
+    ObjcSelector *selector;
+    VarDeclaration *selectorParameter;
     bool isOptional;
-    ObjcFuncDeclaration() :
-        selector(),
-        selectorParameter(),
-        isOptional()
+    ObjcFuncDeclaration() : selector(),
+                            selectorParameter(),
+                            isOptional()
     {
     }
-    ObjcFuncDeclaration(ObjcSelector* selector, VarDeclaration* selectorParameter = nullptr, bool isOptional = false) :
-        selector(selector),
-        selectorParameter(selectorParameter),
-        isOptional(isOptional)
-        {}
+    ObjcFuncDeclaration(ObjcSelector *selector, VarDeclaration *selectorParameter = nullptr, bool isOptional = false) : selector(selector),
+                                                                                                                        selectorParameter(selectorParameter),
+                                                                                                                        isOptional(isOptional)
+    {
+    }
 };
 
 enum class VarArg : uint8_t
@@ -3895,17 +3932,16 @@ enum class VarArg : uint8_t
 
 struct ParameterList final
 {
-    Array<Parameter* >* parameters;
+    Array<Parameter *> *parameters;
     STC stc;
     VarArg varargs;
     bool hasIdentifierList;
-    ParameterList(Array<Parameter* >* parameters, VarArg varargs = (VarArg)0u, STC stc = (STC)0LLU);
+    ParameterList(Array<Parameter *> *parameters, VarArg varargs = (VarArg)0u, STC stc = (STC)0LLU);
     size_t length();
-    Parameter* opIndex(size_t i);
-    ParameterList() :
-        parameters(),
-        varargs((VarArg)0u),
-        hasIdentifierList()
+    Parameter *opIndex(size_t i);
+    ParameterList() : parameters(),
+                      varargs((VarArg)0u),
+                      hasIdentifierList()
     {
     }
 };
@@ -3913,51 +3949,53 @@ struct ParameterList final
 class FuncDeclaration : public Declaration
 {
 public:
-    Statement* fbody;
-    Array<FuncDeclaration* > foverrides;
+    Statement *fbody;
+    Array<FuncDeclaration *> foverrides;
+
 private:
-    ContractInfo* contracts;
+    ContractInfo *contracts;
+
 public:
-    const char* mangleString;
-    VarDeclaration* vresult;
-    LabelDsymbol* returnLabel;
-    void* isTypeIsolatedCache;
-    DsymbolTable* localsymtab;
-    VarDeclaration* vthis;
-    VarDeclaration* v_arguments;
-    VarDeclaration* v_argptr;
-    Array<VarDeclaration* >* parameters;
-    DsymbolTable* labtab;
-    Dsymbol* overnext;
-    FuncDeclaration* overnext0;
+    const char *mangleString;
+    VarDeclaration *vresult;
+    LabelDsymbol *returnLabel;
+    void *isTypeIsolatedCache;
+    DsymbolTable *localsymtab;
+    VarDeclaration *vthis;
+    VarDeclaration *v_arguments;
+    VarDeclaration *v_argptr;
+    Array<VarDeclaration *> *parameters;
+    DsymbolTable *labtab;
+    Dsymbol *overnext;
+    FuncDeclaration *overnext0;
     Loc endloc;
     int32_t vtblIndex;
     ILS inlineStatusStmt;
     ILS inlineStatusExp;
     PINLINE inlining;
     int32_t inlineNest;
-    ForeachStatement* fes;
-    BaseClass* interfaceVirtual;
-    Type* tintro;
+    ForeachStatement *fes;
+    BaseClass *interfaceVirtual;
+    Type *tintro;
     STC storage_class2;
-    VarDeclaration* nrvo_var;
-    Symbol* shidden;
-    Array<ReturnStatement* >* returns;
-    Array<GotoStatement* >* gotos;
-    Array<VarDeclaration* >* alignSectionVars;
-    Symbol* salignSection;
+    VarDeclaration *nrvo_var;
+    Symbol *shidden;
+    Array<ReturnStatement *> *returns;
+    Array<GotoStatement *> *gotos;
+    Array<VarDeclaration *> *alignSectionVars;
+    Symbol *salignSection;
     BUILTIN builtin;
     int32_t tookAddressOf;
     bool requiresClosure;
-    Array<VarDeclaration* > closureVars;
-    Array<VarDeclaration* > outerVars;
-    static FuncDeclaration* lastMain;
-    Array<FuncDeclaration* > siblingCallers;
-    Array<FuncDeclaration* >* inlinedNestedCallees;
-    AttributeViolation* safetyViolation;
-    AttributeViolation* nogcViolation;
-    AttributeViolation* pureViolation;
-    AttributeViolation* nothrowViolation;
+    Array<VarDeclaration *> closureVars;
+    Array<VarDeclaration *> outerVars;
+    static FuncDeclaration *lastMain;
+    Array<FuncDeclaration *> siblingCallers;
+    Array<FuncDeclaration *> *inlinedNestedCallees;
+    AttributeViolation *safetyViolation;
+    AttributeViolation *nogcViolation;
+    AttributeViolation *pureViolation;
+    AttributeViolation *nothrowViolation;
     bool purityInprocess() const;
     bool purityInprocess(bool v);
     bool safetyInprocess() const;
@@ -4018,36 +4056,41 @@ public:
     bool hasInlineAsm(bool v);
     bool hasMultipleReturnExp() const;
     bool hasMultipleReturnExp(bool v);
+
 private:
     uint32_t bitFields;
+
 public:
     ObjcFuncDeclaration objc;
-    static FuncDeclaration* create(Loc loc, Loc endloc, Identifier* id, StorageClass storage_class, Type* type, bool noreturn = false);
-    Array<Statement* >* frequires();
-    Array<Ensure >* fensures();
-    Statement* frequire();
-    Statement* fensure();
-    FuncDeclaration* fdrequire();
-    FuncDeclaration* fdensure();
-    Array<Expression* >* fdrequireParams();
-    Array<Expression* >* fdensureParams();
-    Array<Statement* >* frequires(Array<Statement* >* param);
-    Array<Ensure >* fensures(Array<Ensure >* param);
-    Statement* frequire(Statement* param);
-    Statement* fensure(Statement* param);
-    FuncDeclaration* fdrequire(FuncDeclaration* param);
-    FuncDeclaration* fdensure(FuncDeclaration* param);
-    Array<Expression* >* fdrequireParams(Array<Expression* >* param);
-    Array<Expression* >* fdensureParams(Array<Expression* >* param);
-    FuncDeclaration* syntaxCopy(Dsymbol* s) override;
-    bool equals(const RootObject* const o) const final override;
-    bool overloadInsert(Dsymbol* s) override;
+    static FuncDeclaration *create(Loc loc, Loc endloc, Identifier *id, StorageClass storage_class, Type *type, bool noreturn = false);
+    Array<Statement *> *frequires();
+    Array<Ensure> *fensures();
+    Statement *frequire();
+    Statement *fensure();
+    FuncDeclaration *fdrequire();
+    FuncDeclaration *fdensure();
+    Array<Expression *> *fdrequireParams();
+    Array<Expression *> *fdensureParams();
+    Array<Statement *> *frequires(Array<Statement *> *param);
+    Array<Ensure> *fensures(Array<Ensure> *param);
+    Statement *frequire(Statement *param);
+    Statement *fensure(Statement *param);
+    FuncDeclaration *fdrequire(FuncDeclaration *param);
+    FuncDeclaration *fdensure(FuncDeclaration *param);
+    Array<Expression *> *fdrequireParams(Array<Expression *> *param);
+    Array<Expression *> *fdensureParams(Array<Expression *> *param);
+    FuncDeclaration *syntaxCopy(Dsymbol *s) override;
+    bool equals(const RootObject *const o) const final override;
+    bool overloadInsert(Dsymbol *s) override;
     bool inUnittest();
-    LabelDsymbol* searchLabel(Identifier* ident, Loc loc);
-    enum : int32_t { LevelError = -2 };
+    LabelDsymbol *searchLabel(Identifier *ident, Loc loc);
+    enum : int32_t
+    {
+        LevelError = -2
+    };
 
-    const char* toPrettyChars(bool QualifyTypes = false) override;
-    const char* toFullSignature();
+    const char *toPrettyChars(bool QualifyTypes = false) override;
+    const char *toFullSignature();
     bool isMain() const;
     bool isCMain() const;
     bool isWinMain() const;
@@ -4059,20 +4102,20 @@ public:
     bool isOverloadable() const final override;
     bool isAbstract() final override;
     virtual bool isNested() const;
-    AggregateDeclaration* isThis() override;
+    AggregateDeclaration *isThis() override;
     bool needThis() final override;
     bool isVirtualMethod();
     virtual bool isVirtual() const;
     bool isFinalFunc() const;
     virtual bool addPreInvariant();
     virtual bool addPostInvariant();
-    const char* kind() const override;
+    const char *kind() const override;
     bool isUnique() const;
     bool needsClosure();
     bool hasNestedFrameRefs();
     ParameterList getParameterList();
-    virtual FuncDeclaration* toAliasFunc();
-    void accept(Visitor* v) override;
+    virtual FuncDeclaration *toAliasFunc();
+    void accept(Visitor *v) override;
 };
 
 class CtorDeclaration final : public FuncDeclaration
@@ -4080,134 +4123,134 @@ class CtorDeclaration final : public FuncDeclaration
 public:
     bool isCpCtor;
     bool isMoveCtor;
-    CtorDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
+    CtorDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
     bool isVirtual() const override;
     bool addPreInvariant() override;
     bool addPostInvariant() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class DtorDeclaration final : public FuncDeclaration
 {
 public:
-    DtorDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
+    DtorDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
     bool isVirtual() const override;
     bool addPreInvariant() override;
     bool addPostInvariant() override;
-    bool overloadInsert(Dsymbol* s) override;
-    void accept(Visitor* v) override;
+    bool overloadInsert(Dsymbol *s) override;
+    void accept(Visitor *v) override;
 };
 
 class FuncAliasDeclaration final : public FuncDeclaration
 {
 public:
-    FuncDeclaration* funcalias;
+    FuncDeclaration *funcalias;
     bool hasOverloads;
-    const char* kind() const override;
-    FuncDeclaration* toAliasFunc() override;
-    void accept(Visitor* v) override;
+    const char *kind() const override;
+    FuncDeclaration *toAliasFunc() override;
+    void accept(Visitor *v) override;
 };
 
 class FuncLiteralDeclaration final : public FuncDeclaration
 {
 public:
     TOK tok;
-    Type* treq;
+    Type *treq;
     bool deferToObj;
-    FuncLiteralDeclaration* syntaxCopy(Dsymbol* s) override;
+    FuncLiteralDeclaration *syntaxCopy(Dsymbol *s) override;
     bool isNested() const override;
-    AggregateDeclaration* isThis() override;
+    AggregateDeclaration *isThis() override;
     bool isVirtual() const override;
     bool addPreInvariant() override;
     bool addPostInvariant() override;
-    const char* kind() const override;
-    const char* toPrettyChars(bool QualifyTypes = false) override;
-    void accept(Visitor* v) override;
+    const char *kind() const override;
+    const char *toPrettyChars(bool QualifyTypes = false) override;
+    void accept(Visitor *v) override;
 };
 
 class InvariantDeclaration final : public FuncDeclaration
 {
 public:
-    InvariantDeclaration* syntaxCopy(Dsymbol* s) override;
+    InvariantDeclaration *syntaxCopy(Dsymbol *s) override;
     bool isVirtual() const override;
     bool addPreInvariant() override;
     bool addPostInvariant() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class NewDeclaration final : public FuncDeclaration
 {
 public:
-    NewDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
+    NewDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
     bool isVirtual() const override;
     bool addPreInvariant() override;
     bool addPostInvariant() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class PostBlitDeclaration final : public FuncDeclaration
 {
 public:
-    PostBlitDeclaration* syntaxCopy(Dsymbol* s) override;
+    PostBlitDeclaration *syntaxCopy(Dsymbol *s) override;
     bool isVirtual() const override;
     bool addPreInvariant() override;
     bool addPostInvariant() override;
-    bool overloadInsert(Dsymbol* s) override;
-    void accept(Visitor* v) override;
+    bool overloadInsert(Dsymbol *s) override;
+    void accept(Visitor *v) override;
 };
 
 class StaticCtorDeclaration : public FuncDeclaration
 {
 public:
-    StaticCtorDeclaration* syntaxCopy(Dsymbol* s) override;
-    AggregateDeclaration* isThis() final override;
+    StaticCtorDeclaration *syntaxCopy(Dsymbol *s) override;
+    AggregateDeclaration *isThis() final override;
     bool isVirtual() const final override;
     bool addPreInvariant() final override;
     bool addPostInvariant() final override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class SharedStaticCtorDeclaration final : public StaticCtorDeclaration
 {
 public:
     bool standalone;
-    SharedStaticCtorDeclaration* syntaxCopy(Dsymbol* s) override;
-    void accept(Visitor* v) override;
+    SharedStaticCtorDeclaration *syntaxCopy(Dsymbol *s) override;
+    void accept(Visitor *v) override;
 };
 
 class StaticDtorDeclaration : public FuncDeclaration
 {
 public:
-    VarDeclaration* vgate;
-    StaticDtorDeclaration* syntaxCopy(Dsymbol* s) override;
-    AggregateDeclaration* isThis() final override;
+    VarDeclaration *vgate;
+    StaticDtorDeclaration *syntaxCopy(Dsymbol *s) override;
+    AggregateDeclaration *isThis() final override;
     bool isVirtual() const final override;
     bool addPreInvariant() final override;
     bool addPostInvariant() final override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class SharedStaticDtorDeclaration final : public StaticDtorDeclaration
 {
 public:
-    SharedStaticDtorDeclaration* syntaxCopy(Dsymbol* s) override;
-    void accept(Visitor* v) override;
+    SharedStaticDtorDeclaration *syntaxCopy(Dsymbol *s) override;
+    void accept(Visitor *v) override;
 };
 
 class UnitTestDeclaration final : public FuncDeclaration
 {
 public:
-    char* codedoc;
-    Array<FuncDeclaration* > deferredNested;
-    UnitTestDeclaration* syntaxCopy(Dsymbol* s) override;
-    AggregateDeclaration* isThis() override;
+    char *codedoc;
+    Array<FuncDeclaration *> deferredNested;
+    UnitTestDeclaration *syntaxCopy(Dsymbol *s) override;
+    AggregateDeclaration *isThis() override;
     bool isVirtual() const override;
     bool addPreInvariant() override;
     bool addPostInvariant() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 struct HdrGenState final
@@ -4229,51 +4272,53 @@ struct HdrGenState final
     int32_t insideFuncBody;
     int32_t insideAggregate;
     bool declstring;
-    EnumDeclaration* inEnumDecl;
-    HdrGenState() :
-        hdrgen(),
-        ddoc(),
-        fullDump(),
-        importcHdr(),
-        inCAlias(),
-        doFuncBodies(),
-        vcg_ast(),
-        skipConstraints(),
-        showOneMember(true),
-        errorMsg(),
-        fullQual(),
-        tpltMember(),
-        autoMember(),
-        forStmtInit(),
-        insideFuncBody(),
-        insideAggregate(),
-        declstring(),
-        inEnumDecl()
+    EnumDeclaration *inEnumDecl;
+    HdrGenState() : hdrgen(),
+                    ddoc(),
+                    fullDump(),
+                    importcHdr(),
+                    inCAlias(),
+                    doFuncBodies(),
+                    vcg_ast(),
+                    skipConstraints(),
+                    showOneMember(true),
+                    errorMsg(),
+                    fullQual(),
+                    tpltMember(),
+                    autoMember(),
+                    forStmtInit(),
+                    insideFuncBody(),
+                    insideAggregate(),
+                    declstring(),
+                    inEnumDecl()
     {
     }
-    HdrGenState(bool hdrgen, bool ddoc = false, bool fullDump = false, bool importcHdr = false, bool inCAlias = false, bool doFuncBodies = false, bool vcg_ast = false, bool skipConstraints = false, bool showOneMember = true, bool errorMsg = false, bool fullQual = false, int32_t tpltMember = 0, int32_t autoMember = 0, int32_t forStmtInit = 0, int32_t insideFuncBody = 0, int32_t insideAggregate = 0, bool declstring = false, EnumDeclaration* inEnumDecl = nullptr) :
-        hdrgen(hdrgen),
-        ddoc(ddoc),
-        fullDump(fullDump),
-        importcHdr(importcHdr),
-        inCAlias(inCAlias),
-        doFuncBodies(doFuncBodies),
-        vcg_ast(vcg_ast),
-        skipConstraints(skipConstraints),
-        showOneMember(showOneMember),
-        errorMsg(errorMsg),
-        fullQual(fullQual),
-        tpltMember(tpltMember),
-        autoMember(autoMember),
-        forStmtInit(forStmtInit),
-        insideFuncBody(insideFuncBody),
-        insideAggregate(insideAggregate),
-        declstring(declstring),
-        inEnumDecl(inEnumDecl)
-        {}
+    HdrGenState(bool hdrgen, bool ddoc = false, bool fullDump = false, bool importcHdr = false, bool inCAlias = false, bool doFuncBodies = false, bool vcg_ast = false, bool skipConstraints = false, bool showOneMember = true, bool errorMsg = false, bool fullQual = false, int32_t tpltMember = 0, int32_t autoMember = 0, int32_t forStmtInit = 0, int32_t insideFuncBody = 0, int32_t insideAggregate = 0, bool declstring = false, EnumDeclaration *inEnumDecl = nullptr) : hdrgen(hdrgen),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ddoc(ddoc),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   fullDump(fullDump),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   importcHdr(importcHdr),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   inCAlias(inCAlias),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   doFuncBodies(doFuncBodies),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   vcg_ast(vcg_ast),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   skipConstraints(skipConstraints),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   showOneMember(showOneMember),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   errorMsg(errorMsg),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   fullQual(fullQual),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   tpltMember(tpltMember),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   autoMember(autoMember),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   forStmtInit(forStmtInit),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   insideFuncBody(insideFuncBody),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   insideAggregate(insideAggregate),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   declstring(declstring),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   inEnumDecl(inEnumDecl)
+    {
+    }
 };
 
-enum : int32_t { TEST_EMIT_ALL = 0 };
+enum : int32_t
+{
+    TEST_EMIT_ALL = 0
+};
 
 enum class InitKind : uint8_t
 {
@@ -4293,55 +4338,55 @@ public:
     InitKind kind;
     bool semanticDone;
     DYNCAST dyncast() const override;
-    ErrorInitializer* isErrorInitializer();
-    VoidInitializer* isVoidInitializer();
-    DefaultInitializer* isDefaultInitializer();
-    StructInitializer* isStructInitializer();
-    ArrayInitializer* isArrayInitializer();
-    ExpInitializer* isExpInitializer();
-    CInitializer* isCInitializer();
-    void accept(Visitor* v) override;
+    ErrorInitializer *isErrorInitializer();
+    VoidInitializer *isVoidInitializer();
+    DefaultInitializer *isDefaultInitializer();
+    StructInitializer *isStructInitializer();
+    ArrayInitializer *isArrayInitializer();
+    ExpInitializer *isExpInitializer();
+    CInitializer *isCInitializer();
+    void accept(Visitor *v) override;
 };
 
 class ArrayInitializer final : public Initializer
 {
 public:
-    Array<Expression* > index;
-    Array<Initializer* > value;
+    Array<Expression *> index;
+    Array<Initializer *> value;
     uint32_t dim;
-    Type* type;
+    Type *type;
     bool isCarray;
     bool isAssociativeArray() const;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class CInitializer final : public Initializer
 {
 public:
-    Array<DesigInit > initializerList;
-    Type* type;
-    void accept(Visitor* v) override;
+    Array<DesigInit> initializerList;
+    Type *type;
+    void accept(Visitor *v) override;
 };
 
 class DefaultInitializer final : public Initializer
 {
 public:
-    Type* type;
-    void accept(Visitor* v) override;
+    Type *type;
+    void accept(Visitor *v) override;
 };
 
 class ErrorInitializer final : public Initializer
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ExpInitializer final : public Initializer
 {
 public:
     bool expandTuples;
-    Expression* exp;
-    void accept(Visitor* v) override;
+    Expression *exp;
+    void accept(Visitor *v) override;
 };
 
 enum class NeedInterpret
@@ -4353,16 +4398,16 @@ enum class NeedInterpret
 class StructInitializer final : public Initializer
 {
 public:
-    Array<Identifier* > field;
-    Array<Initializer* > value;
-    void accept(Visitor* v) override;
+    Array<Identifier *> field;
+    Array<Initializer *> value;
+    void accept(Visitor *v) override;
 };
 
 class VoidInitializer final : public Initializer
 {
 public:
-    Type* type;
-    void accept(Visitor* v) override;
+    Type *type;
+    void accept(Visitor *v) override;
 };
 
 enum class Covariant
@@ -4381,30 +4426,36 @@ enum class DotExpFlag
     noAliasThis = 4,
 };
 
-enum : int32_t { LOGDEFAULTINIT = 0 };
+enum : int32_t
+{
+    LOGDEFAULTINIT = 0
+};
 
-enum : int32_t { LOGDOTEXP = 0 };
+enum : int32_t
+{
+    LOGDOTEXP = 0
+};
 
 class Parameter final : public ASTNode
 {
 public:
     Loc loc;
     STC storageClass;
-    Type* type;
-    Identifier* ident;
-    Expression* defaultArg;
-    UserAttributeDeclaration* userAttribDecl;
-    static Parameter* create(Loc loc, StorageClass storageClass, Type* type, Identifier* ident, Expression* defaultArg, UserAttributeDeclaration* userAttribDecl);
-    Parameter* syntaxCopy();
-    Type* isLazyArray();
+    Type *type;
+    Identifier *ident;
+    Expression *defaultArg;
+    UserAttributeDeclaration *userAttribDecl;
+    static Parameter *create(Loc loc, StorageClass storageClass, Type *type, Identifier *ident, Expression *defaultArg, UserAttributeDeclaration *userAttribDecl);
+    Parameter *syntaxCopy();
+    Type *isLazyArray();
     bool isLazy() const;
     bool isReference() const;
     DYNCAST dyncast() const override;
-    void accept(Visitor* v) override;
-    static size_t dim(Array<Parameter* >* parameters);
-    static Parameter* getNth(Array<Parameter* >* parameters, size_t nth);
-    const char* toChars() const override;
-    bool isCovariant(bool returnByRef, const Parameter* const p) const;
+    void accept(Visitor *v) override;
+    static size_t dim(Array<Parameter *> *parameters);
+    static Parameter *getNth(Array<Parameter *> *parameters, size_t nth);
+    const char *toChars() const override;
+    bool isCovariant(bool returnByRef, const Parameter *const p) const;
 };
 
 enum class RET
@@ -4413,7 +4464,10 @@ enum class RET
     stack = 2,
 };
 
-enum : uint64_t { SIZE_INVALID = 18446744073709551615LLU };
+enum : uint64_t
+{
+    SIZE_INVALID = 18446744073709551615LLU
+};
 
 enum class ScopeRef
 {
@@ -4437,48 +4491,48 @@ enum class TRUSTformat
 class TypeNext : public Type
 {
 public:
-    Type* next;
+    Type *next;
     int32_t hasWild() const final override;
-    Type* nextOf() final override;
-    Type* makeConst() final override;
-    Type* makeImmutable() final override;
-    Type* makeShared() final override;
-    Type* makeSharedConst() final override;
-    Type* makeWild() final override;
-    Type* makeWildConst() final override;
-    Type* makeSharedWild() final override;
-    Type* makeSharedWildConst() final override;
-    Type* makeMutable() final override;
-    uint8_t deduceWild(Type* t, bool isRef) final override;
+    Type *nextOf() final override;
+    Type *makeConst() final override;
+    Type *makeImmutable() final override;
+    Type *makeShared() final override;
+    Type *makeSharedConst() final override;
+    Type *makeWild() final override;
+    Type *makeWildConst() final override;
+    Type *makeSharedWild() final override;
+    Type *makeSharedWildConst() final override;
+    Type *makeMutable() final override;
+    uint8_t deduceWild(Type *t, bool isRef) final override;
     void transitive();
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TypeArray : public TypeNext
 {
 public:
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TypeAArray final : public TypeArray
 {
 public:
-    Type* index;
+    Type *index;
     Loc loc;
-    static TypeAArray* create(Type* t, Type* index);
-    const char* kind() const override;
-    TypeAArray* syntaxCopy() override;
+    static TypeAArray *create(Type *t, Type *index);
+    const char *kind() const override;
+    TypeAArray *syntaxCopy() override;
     bool isBoolean() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TypeBasic final : public Type
 {
 public:
-    const char* dstring;
+    const char *dstring;
     uint32_t flags;
-    const char* kind() const override;
-    TypeBasic* syntaxCopy() override;
+    const char *kind() const override;
+    TypeBasic *syntaxCopy() override;
     uint32_t alignsize() override;
     bool isIntegral() override;
     bool isFloating() override;
@@ -4488,8 +4542,8 @@ public:
     bool isScalar() override;
     bool isUnsigned() override;
     bool hasUnsafeBitpatterns() override;
-    TypeBasic* isTypeBasic() override;
-    void accept(Visitor* v) override;
+    TypeBasic *isTypeBasic() override;
+    void accept(Visitor *v) override;
 };
 
 enum class AliasThisRec
@@ -4505,47 +4559,47 @@ enum class AliasThisRec
 class TypeClass final : public Type
 {
 public:
-    ClassDeclaration* sym;
+    ClassDeclaration *sym;
     AliasThisRec att;
     CPPMANGLE cppmangle;
-    const char* kind() const override;
-    TypeClass* syntaxCopy() override;
-    ClassDeclaration* isClassHandle() override;
-    uint8_t deduceWild(Type* t, bool isRef) override;
+    const char *kind() const override;
+    TypeClass *syntaxCopy() override;
+    ClassDeclaration *isClassHandle() override;
+    uint8_t deduceWild(Type *t, bool isRef) override;
     bool isScopeClass() override;
     bool isBoolean() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TypeDArray final : public TypeArray
 {
 public:
-    const char* kind() const override;
-    TypeDArray* syntaxCopy() override;
+    const char *kind() const override;
+    TypeDArray *syntaxCopy() override;
     uint32_t alignsize() override;
     bool isString() override;
     bool isBoolean() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TypeDelegate final : public TypeNext
 {
 public:
-    static TypeDelegate* create(TypeFunction* t);
-    const char* kind() const override;
-    TypeDelegate* syntaxCopy() override;
+    static TypeDelegate *create(TypeFunction *t);
+    const char *kind() const override;
+    TypeDelegate *syntaxCopy() override;
     uint32_t alignsize() override;
     bool isBoolean() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TypeEnum final : public Type
 {
 public:
-    EnumDeclaration* sym;
-    const char* kind() const override;
-    TypeEnum* syntaxCopy() override;
-    Type* memType();
+    EnumDeclaration *sym;
+    const char *kind() const override;
+    TypeEnum *syntaxCopy() override;
+    Type *memType();
     uint32_t alignsize() override;
     bool isIntegral() override;
     bool isFloating() override;
@@ -4563,17 +4617,17 @@ public:
     bool hasVoidInitPointers() override;
     bool hasUnsafeBitpatterns() override;
     bool hasInvariant() override;
-    Type* nextOf() override;
-    void accept(Visitor* v) override;
+    Type *nextOf() override;
+    void accept(Visitor *v) override;
 };
 
 class TypeError final : public Type
 {
 public:
-    const char* kind() const override;
-    TypeError* syntaxCopy() override;
-    Expression* defaultInitLiteral(Loc loc) override;
-    void accept(Visitor* v) override;
+    const char *kind() const override;
+    TypeError *syntaxCopy() override;
+    Expression *defaultInitLiteral(Loc loc) override;
+    void accept(Visitor *v) override;
 };
 
 enum class TRUST : uint8_t
@@ -4596,6 +4650,7 @@ class TypeFunction final : public TypeNext
 {
 public:
     ParameterList parameterList;
+
 private:
     struct BitFields final
     {
@@ -4614,41 +4669,40 @@ private:
         bool isCtor;
         bool isReturnScope;
         bool isRvalue;
-        BitFields() :
-            isNothrow(),
-            isNogc(),
-            isProperty(),
-            isRef(),
-            isReturn(),
-            isScopeQual(),
-            isReturnInferred(),
-            isScopeInferred(),
-            isLive(),
-            incomplete(),
-            isInOutParam(),
-            isInOutQual(),
-            isCtor(),
-            isReturnScope(),
-            isRvalue()
+        BitFields() : isNothrow(),
+                      isNogc(),
+                      isProperty(),
+                      isRef(),
+                      isReturn(),
+                      isScopeQual(),
+                      isReturnInferred(),
+                      isScopeInferred(),
+                      isLive(),
+                      incomplete(),
+                      isInOutParam(),
+                      isInOutQual(),
+                      isCtor(),
+                      isReturnScope(),
+                      isRvalue()
         {
         }
-        BitFields(bool isNothrow, bool isNogc = false, bool isProperty = false, bool isRef = false, bool isReturn = false, bool isScopeQual = false, bool isReturnInferred = false, bool isScopeInferred = false, bool isLive = false, bool incomplete = false, bool isInOutParam = false, bool isInOutQual = false, bool isCtor = false, bool isReturnScope = false, bool isRvalue = false) :
-            isNothrow(isNothrow),
-            isNogc(isNogc),
-            isProperty(isProperty),
-            isRef(isRef),
-            isReturn(isReturn),
-            isScopeQual(isScopeQual),
-            isReturnInferred(isReturnInferred),
-            isScopeInferred(isScopeInferred),
-            isLive(isLive),
-            incomplete(incomplete),
-            isInOutParam(isInOutParam),
-            isInOutQual(isInOutQual),
-            isCtor(isCtor),
-            isReturnScope(isReturnScope),
-            isRvalue(isRvalue)
-            {}
+        BitFields(bool isNothrow, bool isNogc = false, bool isProperty = false, bool isRef = false, bool isReturn = false, bool isScopeQual = false, bool isReturnInferred = false, bool isScopeInferred = false, bool isLive = false, bool incomplete = false, bool isInOutParam = false, bool isInOutQual = false, bool isCtor = false, bool isReturnScope = false, bool isRvalue = false) : isNothrow(isNothrow),
+                                                                                                                                                                                                                                                                                                                                                                                               isNogc(isNogc),
+                                                                                                                                                                                                                                                                                                                                                                                               isProperty(isProperty),
+                                                                                                                                                                                                                                                                                                                                                                                               isRef(isRef),
+                                                                                                                                                                                                                                                                                                                                                                                               isReturn(isReturn),
+                                                                                                                                                                                                                                                                                                                                                                                               isScopeQual(isScopeQual),
+                                                                                                                                                                                                                                                                                                                                                                                               isReturnInferred(isReturnInferred),
+                                                                                                                                                                                                                                                                                                                                                                                               isScopeInferred(isScopeInferred),
+                                                                                                                                                                                                                                                                                                                                                                                               isLive(isLive),
+                                                                                                                                                                                                                                                                                                                                                                                               incomplete(incomplete),
+                                                                                                                                                                                                                                                                                                                                                                                               isInOutParam(isInOutParam),
+                                                                                                                                                                                                                                                                                                                                                                                               isInOutQual(isInOutQual),
+                                                                                                                                                                                                                                                                                                                                                                                               isCtor(isCtor),
+                                                                                                                                                                                                                                                                                                                                                                                               isReturnScope(isReturnScope),
+                                                                                                                                                                                                                                                                                                                                                                                               isRvalue(isRvalue)
+        {
+        }
     };
 
 public:
@@ -4682,149 +4736,151 @@ public:
     bool isReturnScope(bool v);
     bool isRvalue() const;
     bool isRvalue(bool v);
+
 private:
     uint16_t bitFields;
+
 public:
     LINK linkage;
     TRUST trust;
     PURE purity;
     int8_t inuse;
     ArgumentList inferenceArguments;
-    static TypeFunction* create(Array<Parameter* >* parameters, Type* treturn, uint8_t varargs, LINK linkage, StorageClass stc = static_cast<StorageClass>(STC::none));
-    const char* kind() const override;
-    TypeFunction* syntaxCopy() override;
+    static TypeFunction *create(Array<Parameter *> *parameters, Type *treturn, uint8_t varargs, LINK linkage, StorageClass stc = static_cast<StorageClass>(STC::none));
+    const char *kind() const override;
+    TypeFunction *syntaxCopy() override;
     bool hasLazyParameters();
     bool isDstyleVariadic() const;
     bool iswild() const;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TypeQualified : public Type
 {
 public:
     Loc loc;
-    Array<RootObject* > idents;
-    TypeQualified* syntaxCopy() override = 0;
-    void accept(Visitor* v) override;
+    Array<RootObject *> idents;
+    TypeQualified *syntaxCopy() override = 0;
+    void accept(Visitor *v) override;
 };
 
 class TypeIdentifier final : public TypeQualified
 {
 public:
-    Identifier* ident;
-    static TypeIdentifier* create(Loc loc, Identifier* ident);
-    const char* kind() const override;
-    TypeIdentifier* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Identifier *ident;
+    static TypeIdentifier *create(Loc loc, Identifier *ident);
+    const char *kind() const override;
+    TypeIdentifier *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class TypeInstance final : public TypeQualified
 {
 public:
-    TemplateInstance* tempinst;
-    const char* kind() const override;
-    TypeInstance* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    TemplateInstance *tempinst;
+    const char *kind() const override;
+    TypeInstance *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class TypeMixin final : public Type
 {
 public:
     Loc loc;
-    Array<Expression* >* exps;
-    RootObject* obj;
-    const char* kind() const override;
-    TypeMixin* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Array<Expression *> *exps;
+    RootObject *obj;
+    const char *kind() const override;
+    TypeMixin *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class TypeNoreturn final : public Type
 {
 public:
-    const char* kind() const override;
-    TypeNoreturn* syntaxCopy() override;
+    const char *kind() const override;
+    TypeNoreturn *syntaxCopy() override;
     bool isBoolean() override;
     uint32_t alignsize() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TypeNull final : public Type
 {
 public:
-    const char* kind() const override;
-    TypeNull* syntaxCopy() override;
+    const char *kind() const override;
+    TypeNull *syntaxCopy() override;
     bool isBoolean() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TypePointer final : public TypeNext
 {
 public:
-    static TypePointer* create(Type* t);
-    const char* kind() const override;
-    TypePointer* syntaxCopy() override;
+    static TypePointer *create(Type *t);
+    const char *kind() const override;
+    TypePointer *syntaxCopy() override;
     bool isScalar() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TypeReference final : public TypeNext
 {
 public:
-    const char* kind() const override;
-    TypeReference* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    const char *kind() const override;
+    TypeReference *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class TypeReturn final : public TypeQualified
 {
 public:
-    const char* kind() const override;
-    TypeReturn* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    const char *kind() const override;
+    TypeReturn *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class TypeSArray final : public TypeArray
 {
 public:
-    Expression* dim;
-    const char* kind() const override;
-    TypeSArray* syntaxCopy() override;
+    Expression *dim;
+    const char *kind() const override;
+    TypeSArray *syntaxCopy() override;
     bool isIncomplete();
     uint32_t alignsize() override;
     bool isString() override;
     structalign_t alignment() override;
-    Expression* defaultInitLiteral(Loc loc) override;
+    Expression *defaultInitLiteral(Loc loc) override;
     bool hasUnsafeBitpatterns() override;
     bool hasVoidInitPointers() override;
     bool hasInvariant() override;
     bool needsDestruction() override;
     bool needsCopyOrPostblit() override;
     bool needsNested() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TypeSlice final : public TypeNext
 {
 public:
-    Expression* lwr;
-    Expression* upr;
-    const char* kind() const override;
-    TypeSlice* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Expression *lwr;
+    Expression *upr;
+    const char *kind() const override;
+    TypeSlice *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class TypeStruct final : public Type
 {
 public:
-    StructDeclaration* sym;
+    StructDeclaration *sym;
     AliasThisRec att;
     bool inuse;
-    static TypeStruct* create(StructDeclaration* sym);
-    const char* kind() const override;
+    static TypeStruct *create(StructDeclaration *sym);
+    const char *kind() const override;
     uint32_t alignsize() override;
-    TypeStruct* syntaxCopy() override;
+    TypeStruct *syntaxCopy() override;
     structalign_t alignment() override;
-    Expression* defaultInitLiteral(Loc loc) override;
+    Expression *defaultInitLiteral(Loc loc) override;
     bool isAssignable() override;
     bool isBoolean() override;
     bool needsDestruction() override;
@@ -4833,8 +4889,8 @@ public:
     bool hasVoidInitPointers() override;
     bool hasUnsafeBitpatterns() override;
     bool hasInvariant() override;
-    uint8_t deduceWild(Type* t, bool isRef) override;
-    void accept(Visitor* v) override;
+    uint8_t deduceWild(Type *t, bool isRef) override;
+    void accept(Visitor *v) override;
 };
 
 class TypeTag final : public Type
@@ -4843,78 +4899,78 @@ public:
     Loc loc;
     TOK tok;
     structalign_t packalign;
-    Identifier* id;
-    Type* base;
-    Array<Dsymbol* >* members;
-    Type* resolved;
+    Identifier *id;
+    Type *base;
+    Array<Dsymbol *> *members;
+    Type *resolved;
     uint8_t mod;
-    const char* kind() const override;
-    TypeTag* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    const char *kind() const override;
+    TypeTag *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class TypeTraits final : public Type
 {
 public:
     Loc loc;
-    TraitsExp* exp;
-    RootObject* obj;
-    const char* kind() const override;
-    TypeTraits* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    TraitsExp *exp;
+    RootObject *obj;
+    const char *kind() const override;
+    TypeTraits *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class TypeTuple final : public Type
 {
 public:
-    static TypeTuple* empty;
-    Array<Parameter* >* arguments;
-    static TypeTuple* create(Array<Parameter* >* arguments);
-    static TypeTuple* create();
-    static TypeTuple* create(Type* t1);
-    static TypeTuple* create(Type* t1, Type* t2);
-    const char* kind() const override;
-    TypeTuple* syntaxCopy() override;
-    bool equals(const RootObject* const o) const override;
-    void accept(Visitor* v) override;
+    static TypeTuple *empty;
+    Array<Parameter *> *arguments;
+    static TypeTuple *create(Array<Parameter *> *arguments);
+    static TypeTuple *create();
+    static TypeTuple *create(Type *t1);
+    static TypeTuple *create(Type *t1, Type *t2);
+    const char *kind() const override;
+    TypeTuple *syntaxCopy() override;
+    bool equals(const RootObject *const o) const override;
+    void accept(Visitor *v) override;
 };
 
 class TypeTypeof final : public TypeQualified
 {
 public:
-    Expression* exp;
+    Expression *exp;
     int32_t inuse;
-    const char* kind() const override;
-    TypeTypeof* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    const char *kind() const override;
+    TypeTypeof *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class TypeVector final : public Type
 {
 public:
-    Type* basetype;
-    static TypeVector* create(Type* basetype);
-    const char* kind() const override;
-    TypeVector* syntaxCopy() override;
+    Type *basetype;
+    static TypeVector *create(Type *basetype);
+    const char *kind() const override;
+    TypeVector *syntaxCopy() override;
     uint32_t alignsize() override;
     bool isIntegral() override;
     bool isFloating() override;
     bool isScalar() override;
     bool isUnsigned() override;
     bool isBoolean() override;
-    Expression* defaultInitLiteral(Loc loc) override;
-    TypeBasic* elementType();
-    void accept(Visitor* v) override;
+    Expression *defaultInitLiteral(Loc loc) override;
+    TypeBasic *elementType();
+    void accept(Visitor *v) override;
 };
 
 class Nspace final : public ScopeDsymbol
 {
 public:
-    Expression* identExp;
-    Nspace* syntaxCopy(Dsymbol* s) override;
+    Expression *identExp;
+    Nspace *syntaxCopy(Dsymbol *s) override;
     bool hasPointers() override;
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
 enum class STMT : uint8_t
@@ -4971,571 +5027,571 @@ public:
     const Loc loc;
     const STMT stmt;
     DYNCAST dyncast() const final override;
-    virtual Statement* syntaxCopy();
-    static Array<Statement* >* arraySyntaxCopy(Array<Statement* >* a);
-    virtual Statement* getRelatedLabeled();
+    virtual Statement *syntaxCopy();
+    static Array<Statement *> *arraySyntaxCopy(Array<Statement *> *a);
+    virtual Statement *getRelatedLabeled();
     virtual bool hasBreak() const;
     virtual bool hasContinue() const;
-    virtual Statement* last();
-    void accept(Visitor* v) override;
-    virtual ReturnStatement* endsWithReturnStatement();
-    ErrorStatement* isErrorStatement();
-    PeelStatement* isPeelStatement();
-    ScopeStatement* isScopeStatement();
-    ExpStatement* isExpStatement();
-    CompoundStatement* isCompoundStatement();
-    ReturnStatement* isReturnStatement();
-    IfStatement* isIfStatement();
-    ConditionalStatement* isConditionalStatement();
-    StaticForeachStatement* isStaticForeachStatement();
-    CaseStatement* isCaseStatement();
-    DefaultStatement* isDefaultStatement();
-    LabelStatement* isLabelStatement();
-    GotoStatement* isGotoStatement();
-    GotoDefaultStatement* isGotoDefaultStatement();
-    GotoCaseStatement* isGotoCaseStatement();
-    BreakStatement* isBreakStatement();
-    DtorExpStatement* isDtorExpStatement();
-    MixinStatement* isMixinStatement();
-    ForwardingStatement* isForwardingStatement();
-    DoStatement* isDoStatement();
-    WhileStatement* isWhileStatement();
-    ForStatement* isForStatement();
-    ForeachStatement* isForeachStatement();
-    SwitchStatement* isSwitchStatement();
-    ContinueStatement* isContinueStatement();
-    WithStatement* isWithStatement();
-    TryCatchStatement* isTryCatchStatement();
-    ThrowStatement* isThrowStatement();
-    DebugStatement* isDebugStatement();
-    TryFinallyStatement* isTryFinallyStatement();
-    ScopeGuardStatement* isScopeGuardStatement();
-    SwitchErrorStatement* isSwitchErrorStatement();
-    UnrolledLoopStatement* isUnrolledLoopStatement();
-    ForeachRangeStatement* isForeachRangeStatement();
-    CompoundDeclarationStatement* isCompoundDeclarationStatement();
-    CompoundAsmStatement* isCompoundAsmStatement();
-    PragmaStatement* isPragmaStatement();
-    StaticAssertStatement* isStaticAssertStatement();
-    CaseRangeStatement* isCaseRangeStatement();
-    SynchronizedStatement* isSynchronizedStatement();
-    AsmStatement* isAsmStatement();
-    InlineAsmStatement* isInlineAsmStatement();
-    GccAsmStatement* isGccAsmStatement();
-    ImportStatement* isImportStatement();
+    virtual Statement *last();
+    void accept(Visitor *v) override;
+    virtual ReturnStatement *endsWithReturnStatement();
+    ErrorStatement *isErrorStatement();
+    PeelStatement *isPeelStatement();
+    ScopeStatement *isScopeStatement();
+    ExpStatement *isExpStatement();
+    CompoundStatement *isCompoundStatement();
+    ReturnStatement *isReturnStatement();
+    IfStatement *isIfStatement();
+    ConditionalStatement *isConditionalStatement();
+    StaticForeachStatement *isStaticForeachStatement();
+    CaseStatement *isCaseStatement();
+    DefaultStatement *isDefaultStatement();
+    LabelStatement *isLabelStatement();
+    GotoStatement *isGotoStatement();
+    GotoDefaultStatement *isGotoDefaultStatement();
+    GotoCaseStatement *isGotoCaseStatement();
+    BreakStatement *isBreakStatement();
+    DtorExpStatement *isDtorExpStatement();
+    MixinStatement *isMixinStatement();
+    ForwardingStatement *isForwardingStatement();
+    DoStatement *isDoStatement();
+    WhileStatement *isWhileStatement();
+    ForStatement *isForStatement();
+    ForeachStatement *isForeachStatement();
+    SwitchStatement *isSwitchStatement();
+    ContinueStatement *isContinueStatement();
+    WithStatement *isWithStatement();
+    TryCatchStatement *isTryCatchStatement();
+    ThrowStatement *isThrowStatement();
+    DebugStatement *isDebugStatement();
+    TryFinallyStatement *isTryFinallyStatement();
+    ScopeGuardStatement *isScopeGuardStatement();
+    SwitchErrorStatement *isSwitchErrorStatement();
+    UnrolledLoopStatement *isUnrolledLoopStatement();
+    ForeachRangeStatement *isForeachRangeStatement();
+    CompoundDeclarationStatement *isCompoundDeclarationStatement();
+    CompoundAsmStatement *isCompoundAsmStatement();
+    PragmaStatement *isPragmaStatement();
+    StaticAssertStatement *isStaticAssertStatement();
+    CaseRangeStatement *isCaseRangeStatement();
+    SynchronizedStatement *isSynchronizedStatement();
+    AsmStatement *isAsmStatement();
+    InlineAsmStatement *isInlineAsmStatement();
+    GccAsmStatement *isGccAsmStatement();
+    ImportStatement *isImportStatement();
 };
 
 class AsmStatement : public Statement
 {
 public:
-    Token* tokens;
+    Token *tokens;
     bool caseSensitive;
-    AsmStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    AsmStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class BreakStatement final : public Statement
 {
 public:
-    Identifier* ident;
-    BreakStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Identifier *ident;
+    BreakStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class CaseRangeStatement final : public Statement
 {
 public:
-    Expression* first;
-    Expression* last;
-    Statement* statement;
-    CaseRangeStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Expression *first;
+    Expression *last;
+    Statement *statement;
+    CaseRangeStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class CaseStatement final : public Statement
 {
 public:
-    Expression* exp;
-    Statement* statement;
+    Expression *exp;
+    Statement *statement;
     int32_t index;
-    VarDeclaration* lastVar;
-    void* extra;
-    CaseStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    VarDeclaration *lastVar;
+    void *extra;
+    CaseStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class Catch final : public RootObject
 {
 public:
     const Loc loc;
-    Type* type;
-    Identifier* ident;
-    Statement* handler;
-    VarDeclaration* var;
+    Type *type;
+    Identifier *ident;
+    Statement *handler;
+    VarDeclaration *var;
     bool errors;
     bool internalCatch;
-    Catch* syntaxCopy();
+    Catch *syntaxCopy();
 };
 
 class CompoundStatement : public Statement
 {
 public:
-    Array<Statement* >* statements;
-    static CompoundStatement* create(Loc loc, Statement* s1, Statement* s2);
-    CompoundStatement* syntaxCopy() override;
-    ReturnStatement* endsWithReturnStatement() final override;
-    Statement* last() final override;
-    void accept(Visitor* v) override;
+    Array<Statement *> *statements;
+    static CompoundStatement *create(Loc loc, Statement *s1, Statement *s2);
+    CompoundStatement *syntaxCopy() override;
+    ReturnStatement *endsWithReturnStatement() final override;
+    Statement *last() final override;
+    void accept(Visitor *v) override;
 };
 
 class CompoundAsmStatement final : public CompoundStatement
 {
 public:
     STC stc;
-    CompoundAsmStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    CompoundAsmStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class CompoundDeclarationStatement final : public CompoundStatement
 {
 public:
-    CompoundDeclarationStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    CompoundDeclarationStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class ConditionalStatement final : public Statement
 {
 public:
-    Condition* condition;
-    Statement* ifbody;
-    Statement* elsebody;
-    ConditionalStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Condition *condition;
+    Statement *ifbody;
+    Statement *elsebody;
+    ConditionalStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class ContinueStatement final : public Statement
 {
 public:
-    Identifier* ident;
-    ContinueStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Identifier *ident;
+    ContinueStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class DebugStatement final : public Statement
 {
 public:
-    Statement* statement;
-    DebugStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Statement *statement;
+    DebugStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class DefaultStatement final : public Statement
 {
 public:
-    Statement* statement;
-    VarDeclaration* lastVar;
-    DefaultStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Statement *statement;
+    VarDeclaration *lastVar;
+    DefaultStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class DoStatement final : public Statement
 {
 public:
-    Statement* _body;
-    Expression* condition;
+    Statement *_body;
+    Expression *condition;
     Loc endloc;
-    DoStatement* syntaxCopy() override;
+    DoStatement *syntaxCopy() override;
     bool hasBreak() const override;
     bool hasContinue() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ExpStatement : public Statement
 {
 public:
-    Expression* exp;
-    static ExpStatement* create(Loc loc, Expression* exp);
-    ExpStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Expression *exp;
+    static ExpStatement *create(Loc loc, Expression *exp);
+    ExpStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class DtorExpStatement final : public ExpStatement
 {
 public:
-    VarDeclaration* var;
-    DtorExpStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    VarDeclaration *var;
+    DtorExpStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class ErrorStatement final : public Statement
 {
 public:
-    ErrorStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    ErrorStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class ForStatement final : public Statement
 {
 public:
-    Statement* _init;
-    Expression* condition;
-    Expression* increment;
-    Statement* _body;
+    Statement *_init;
+    Expression *condition;
+    Expression *increment;
+    Statement *_body;
     Loc endloc;
-    Statement* relatedLabeled;
-    ForStatement* syntaxCopy() override;
-    Statement* getRelatedLabeled() override;
+    Statement *relatedLabeled;
+    ForStatement *syntaxCopy() override;
+    Statement *getRelatedLabeled() override;
     bool hasBreak() const override;
     bool hasContinue() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ForeachRangeStatement final : public Statement
 {
 public:
     TOK op;
-    Parameter* param;
-    Expression* lwr;
-    Expression* upr;
-    Statement* _body;
+    Parameter *param;
+    Expression *lwr;
+    Expression *upr;
+    Statement *_body;
     Loc endloc;
-    VarDeclaration* key;
-    ForeachRangeStatement* syntaxCopy() override;
+    VarDeclaration *key;
+    ForeachRangeStatement *syntaxCopy() override;
     bool hasBreak() const override;
     bool hasContinue() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ForeachStatement final : public Statement
 {
 public:
     TOK op;
-    Array<Parameter* >* parameters;
-    Expression* aggr;
-    Statement* _body;
+    Array<Parameter *> *parameters;
+    Expression *aggr;
+    Statement *_body;
     Loc endloc;
-    VarDeclaration* key;
-    VarDeclaration* value;
-    FuncDeclaration* func;
-    Array<Statement* >* cases;
-    Array<ScopeStatement* >* gotos;
-    ForeachStatement* syntaxCopy() override;
+    VarDeclaration *key;
+    VarDeclaration *value;
+    FuncDeclaration *func;
+    Array<Statement *> *cases;
+    Array<ScopeStatement *> *gotos;
+    ForeachStatement *syntaxCopy() override;
     bool hasBreak() const override;
     bool hasContinue() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ForwardingStatement final : public Statement
 {
 public:
-    ForwardingScopeDsymbol* sym;
-    Statement* statement;
-    ForwardingStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    ForwardingScopeDsymbol *sym;
+    Statement *statement;
+    ForwardingStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class GccAsmStatement final : public AsmStatement
 {
 public:
     STC stc;
-    Expression* insn;
-    Array<Expression* >* args;
+    Expression *insn;
+    Array<Expression *> *args;
     uint32_t outputargs;
-    Array<Identifier* >* names;
-    Array<Expression* >* constraints;
-    Array<Expression* >* clobbers;
-    Array<Identifier* >* labels;
-    Array<GotoStatement* >* gotos;
-    GccAsmStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Array<Identifier *> *names;
+    Array<Expression *> *constraints;
+    Array<Expression *> *clobbers;
+    Array<Identifier *> *labels;
+    Array<GotoStatement *> *gotos;
+    GccAsmStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class GotoCaseStatement final : public Statement
 {
 public:
-    Expression* exp;
-    CaseStatement* cs;
-    GotoCaseStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Expression *exp;
+    CaseStatement *cs;
+    GotoCaseStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class GotoDefaultStatement final : public Statement
 {
 public:
-    SwitchStatement* sw;
-    GotoDefaultStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    SwitchStatement *sw;
+    GotoDefaultStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class GotoStatement final : public Statement
 {
 public:
-    Identifier* ident;
-    LabelDsymbol* label;
-    Statement* tryBody;
-    TryFinallyStatement* tf;
-    ScopeGuardStatement* os;
-    VarDeclaration* lastVar;
+    Identifier *ident;
+    LabelDsymbol *label;
+    Statement *tryBody;
+    TryFinallyStatement *tf;
+    ScopeGuardStatement *os;
+    VarDeclaration *lastVar;
     bool inCtfeBlock;
-    GotoStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    GotoStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class IfStatement final : public Statement
 {
 public:
-    Parameter* param;
-    Expression* condition;
-    Statement* ifbody;
-    Statement* elsebody;
-    VarDeclaration* match;
+    Parameter *param;
+    Expression *condition;
+    Statement *ifbody;
+    Statement *elsebody;
+    VarDeclaration *match;
     Loc endloc;
-    IfStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    IfStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
     bool isIfCtfeBlock();
 };
 
 class ImportStatement final : public Statement
 {
 public:
-    Array<Dsymbol* >* imports;
-    ImportStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Array<Dsymbol *> *imports;
+    ImportStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class InlineAsmStatement final : public AsmStatement
 {
 public:
-    void* asmcode;
+    void *asmcode;
     uint32_t asmalign;
     uint32_t regs;
     bool refparam;
     bool naked;
-    InlineAsmStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    InlineAsmStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class LabelDsymbol final : public Dsymbol
 {
 public:
-    LabelStatement* statement;
+    LabelStatement *statement;
     bool deleted;
     bool iasm;
     bool duplicated;
-    static LabelDsymbol* create(Identifier* ident);
-    LabelDsymbol* isLabel() override;
-    void accept(Visitor* v) override;
+    static LabelDsymbol *create(Identifier *ident);
+    LabelDsymbol *isLabel() override;
+    void accept(Visitor *v) override;
 };
 
 class LabelStatement final : public Statement
 {
 public:
-    Identifier* ident;
-    Statement* statement;
-    Statement* tryBody;
-    TryFinallyStatement* tf;
-    ScopeGuardStatement* os;
-    VarDeclaration* lastVar;
-    Statement* gotoTarget;
-    void* extra;
+    Identifier *ident;
+    Statement *statement;
+    Statement *tryBody;
+    TryFinallyStatement *tf;
+    ScopeGuardStatement *os;
+    VarDeclaration *lastVar;
+    Statement *gotoTarget;
+    void *extra;
     bool breaks;
     bool inCtfeBlock;
-    LabelStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    LabelStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class MixinStatement final : public Statement
 {
 public:
-    Array<Expression* >* exps;
-    MixinStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Array<Expression *> *exps;
+    MixinStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class PeelStatement final : public Statement
 {
 public:
-    Statement* s;
-    void accept(Visitor* v) override;
+    Statement *s;
+    void accept(Visitor *v) override;
 };
 
 class PragmaStatement final : public Statement
 {
 public:
-    const Identifier* const ident;
-    Array<Expression* >* args;
-    Statement* _body;
-    PragmaStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    const Identifier *const ident;
+    Array<Expression *> *args;
+    Statement *_body;
+    PragmaStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class ReturnStatement final : public Statement
 {
 public:
-    Expression* exp;
+    Expression *exp;
     size_t caseDim;
-    ReturnStatement* syntaxCopy() override;
-    ReturnStatement* endsWithReturnStatement() override;
-    void accept(Visitor* v) override;
+    ReturnStatement *syntaxCopy() override;
+    ReturnStatement *endsWithReturnStatement() override;
+    void accept(Visitor *v) override;
 };
 
 class ScopeGuardStatement final : public Statement
 {
 public:
     TOK tok;
-    Statement* statement;
-    ScopeGuardStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    Statement *statement;
+    ScopeGuardStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class ScopeStatement final : public Statement
 {
 public:
-    Statement* statement;
+    Statement *statement;
     Loc endloc;
-    ScopeStatement* syntaxCopy() override;
-    ReturnStatement* endsWithReturnStatement() override;
+    ScopeStatement *syntaxCopy() override;
+    ReturnStatement *endsWithReturnStatement() override;
     bool hasBreak() const override;
     bool hasContinue() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class StaticAssertStatement final : public Statement
 {
 public:
-    StaticAssert* sa;
-    StaticAssertStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    StaticAssert *sa;
+    StaticAssertStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class StaticForeachStatement final : public Statement
 {
 public:
-    StaticForeach* sfe;
-    StaticForeachStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    StaticForeach *sfe;
+    StaticForeachStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class SwitchErrorStatement final : public Statement
 {
 public:
-    Expression* exp;
-    void accept(Visitor* v) override;
+    Expression *exp;
+    void accept(Visitor *v) override;
 };
 
 class SwitchStatement final : public Statement
 {
 public:
-    Parameter* param;
-    Expression* condition;
-    Statement* _body;
+    Parameter *param;
+    Expression *condition;
+    Statement *_body;
     bool isFinal;
     Loc endloc;
     bool hasDefault;
     bool hasVars;
-    DefaultStatement* sdefault;
-    Statement* tryBody;
-    TryFinallyStatement* tryFinally;
-    Array<GotoCaseStatement* > gotoCases;
-    Array<CaseStatement* >* cases;
-    VarDeclaration* lastVar;
-    SwitchStatement* syntaxCopy() override;
+    DefaultStatement *sdefault;
+    Statement *tryBody;
+    TryFinallyStatement *tryFinally;
+    Array<GotoCaseStatement *> gotoCases;
+    Array<CaseStatement *> *cases;
+    VarDeclaration *lastVar;
+    SwitchStatement *syntaxCopy() override;
     bool hasBreak() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class SynchronizedStatement final : public Statement
 {
 public:
-    Expression* exp;
-    Statement* _body;
-    SynchronizedStatement* syntaxCopy() override;
+    Expression *exp;
+    Statement *_body;
+    SynchronizedStatement *syntaxCopy() override;
     bool hasBreak() const override;
     bool hasContinue() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class ThrowStatement final : public Statement
 {
 public:
-    Expression* exp;
+    Expression *exp;
     bool internalThrow;
-    ThrowStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    ThrowStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class TryCatchStatement final : public Statement
 {
 public:
-    Statement* _body;
-    Array<Catch* >* catches;
-    Statement* tryBody;
-    TryCatchStatement* syntaxCopy() override;
+    Statement *_body;
+    Array<Catch *> *catches;
+    Statement *tryBody;
+    TryCatchStatement *syntaxCopy() override;
     bool hasBreak() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TryFinallyStatement final : public Statement
 {
 public:
-    Statement* _body;
-    Statement* finalbody;
-    Statement* tryBody;
+    Statement *_body;
+    Statement *finalbody;
+    Statement *tryBody;
     bool bodyFallsThru;
-    static TryFinallyStatement* create(Loc loc, Statement* _body, Statement* finalbody);
-    TryFinallyStatement* syntaxCopy() override;
+    static TryFinallyStatement *create(Loc loc, Statement *_body, Statement *finalbody);
+    TryFinallyStatement *syntaxCopy() override;
     bool hasBreak() const override;
     bool hasContinue() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class UnrolledLoopStatement final : public Statement
 {
 public:
-    Array<Statement* >* statements;
-    UnrolledLoopStatement* syntaxCopy() override;
+    Array<Statement *> *statements;
+    UnrolledLoopStatement *syntaxCopy() override;
     bool hasBreak() const override;
     bool hasContinue() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class WhileStatement final : public Statement
 {
 public:
-    Parameter* param;
-    Expression* condition;
-    Statement* _body;
+    Parameter *param;
+    Expression *condition;
+    Statement *_body;
     Loc endloc;
-    WhileStatement* syntaxCopy() override;
+    WhileStatement *syntaxCopy() override;
     bool hasBreak() const override;
     bool hasContinue() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class WithStatement final : public Statement
 {
 public:
-    Expression* exp;
-    Statement* _body;
-    VarDeclaration* wthis;
+    Expression *exp;
+    Statement *_body;
+    VarDeclaration *wthis;
     Loc endloc;
-    WithStatement* syntaxCopy() override;
-    void accept(Visitor* v) override;
+    WithStatement *syntaxCopy() override;
+    void accept(Visitor *v) override;
 };
 
 class StaticAssert final : public Dsymbol
 {
 public:
-    Expression* exp;
-    Array<Expression* >* msgs;
-    StaticAssert* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    Expression *exp;
+    Array<Expression *> *msgs;
+    StaticAssert *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
 struct UnionExp final
 {
-    #pragma pack(push, 8)
+#pragma pack(push, 8)
 private:
     union _AnonStruct_u
     {
@@ -5557,13 +5613,13 @@ private:
         char sliceexp[57LLU];
         char vectorexp[45LLU];
     };
-    #pragma pack(pop)
+#pragma pack(pop)
 
     // Ignoring var u alignment 8
     _AnonStruct_u u;
+
 public:
-    UnionExp() :
-        u()
+    UnionExp() : u()
     {
     }
 };
@@ -5951,17 +6007,17 @@ struct ASTCodegen final
     using StaticAssert = ::StaticAssert;
     using UnionExp = ::UnionExp;
     using emplaceExp = ::emplaceExp;
-    typedef UserAttributeDeclaration* UserAttributeDeclaration;
+    typedef UserAttributeDeclaration *UserAttributeDeclaration;
     typedef Ensure Ensure;
-    typedef ErrorExp* ErrorExp;
+    typedef ErrorExp *ErrorExp;
     typedef MODFlags MODFlags;
-    typedef Type* Type;
-    typedef Parameter* Parameter;
+    typedef Type *Type;
+    typedef Parameter *Parameter;
     typedef ParameterList ParameterList;
     typedef VarArg VarArg;
     typedef STC STC;
-    typedef Dsymbol* Dsymbol;
-    typedef Array<Dsymbol* > Dsymbols;
+    typedef Dsymbol *Dsymbol;
+    typedef Array<Dsymbol *> Dsymbols;
     typedef Visibility Visibility;
     typedef SearchOpt SearchOpt;
     typedef PASS PASS;
@@ -5970,115 +6026,115 @@ struct ASTCodegen final
     }
 };
 
-class Visitor : public ParseTimeVisitor<ASTCodegen >
+class Visitor : public ParseTimeVisitor<ASTCodegen>
 {
 public:
-    using ParseTimeVisitor<ASTCodegen >::visit;
-    virtual void visit(ErrorStatement* s);
-    virtual void visit(PeelStatement* s);
-    virtual void visit(UnrolledLoopStatement* s);
-    virtual void visit(SwitchErrorStatement* s);
-    virtual void visit(DebugStatement* s);
-    virtual void visit(DtorExpStatement* s);
-    virtual void visit(ForwardingStatement* s);
-    virtual void visit(OverloadSet* s);
-    virtual void visit(LabelDsymbol* s);
-    virtual void visit(WithScopeSymbol* s);
-    virtual void visit(ArrayScopeSymbol* s);
-    virtual void visit(OverDeclaration* s);
-    virtual void visit(SymbolDeclaration* s);
-    virtual void visit(ForwardingAttribDeclaration* s);
-    virtual void visit(ThisDeclaration* s);
-    virtual void visit(TypeInfoDeclaration* s);
-    virtual void visit(TypeInfoStructDeclaration* s);
-    virtual void visit(TypeInfoClassDeclaration* s);
-    virtual void visit(TypeInfoInterfaceDeclaration* s);
-    virtual void visit(TypeInfoPointerDeclaration* s);
-    virtual void visit(TypeInfoArrayDeclaration* s);
-    virtual void visit(TypeInfoStaticArrayDeclaration* s);
-    virtual void visit(TypeInfoAssociativeArrayDeclaration* s);
-    virtual void visit(TypeInfoEnumDeclaration* s);
-    virtual void visit(TypeInfoFunctionDeclaration* s);
-    virtual void visit(TypeInfoDelegateDeclaration* s);
-    virtual void visit(TypeInfoTupleDeclaration* s);
-    virtual void visit(TypeInfoConstDeclaration* s);
-    virtual void visit(TypeInfoInvariantDeclaration* s);
-    virtual void visit(TypeInfoSharedDeclaration* s);
-    virtual void visit(TypeInfoWildDeclaration* s);
-    virtual void visit(TypeInfoVectorDeclaration* s);
-    virtual void visit(FuncAliasDeclaration* s);
-    virtual void visit(ErrorInitializer* i);
-    virtual void visit(ErrorExp* e);
-    virtual void visit(ComplexExp* e);
-    virtual void visit(StructLiteralExp* e);
-    virtual void visit(CompoundLiteralExp* e);
-    virtual void visit(ObjcClassReferenceExp* e);
-    virtual void visit(SymOffExp* e);
-    virtual void visit(OverExp* e);
-    virtual void visit(HaltExp* e);
-    virtual void visit(DotTemplateExp* e);
-    virtual void visit(DotVarExp* e);
-    virtual void visit(DelegateExp* e);
-    virtual void visit(DotTypeExp* e);
-    virtual void visit(VectorExp* e);
-    virtual void visit(VectorArrayExp* e);
-    virtual void visit(SliceExp* e);
-    virtual void visit(ArrayLengthExp* e);
-    virtual void visit(DelegatePtrExp* e);
-    virtual void visit(DelegateFuncptrExp* e);
-    virtual void visit(DotExp* e);
-    virtual void visit(IndexExp* e);
-    virtual void visit(ConstructExp* e);
-    virtual void visit(BlitExp* e);
-    virtual void visit(RemoveExp* e);
-    virtual void visit(ClassReferenceExp* e);
-    virtual void visit(VoidInitExp* e);
-    virtual void visit(ThrownExceptionExp* e);
-    virtual void visit(LoweredAssignExp* e);
+    using ParseTimeVisitor<ASTCodegen>::visit;
+    virtual void visit(ErrorStatement *s);
+    virtual void visit(PeelStatement *s);
+    virtual void visit(UnrolledLoopStatement *s);
+    virtual void visit(SwitchErrorStatement *s);
+    virtual void visit(DebugStatement *s);
+    virtual void visit(DtorExpStatement *s);
+    virtual void visit(ForwardingStatement *s);
+    virtual void visit(OverloadSet *s);
+    virtual void visit(LabelDsymbol *s);
+    virtual void visit(WithScopeSymbol *s);
+    virtual void visit(ArrayScopeSymbol *s);
+    virtual void visit(OverDeclaration *s);
+    virtual void visit(SymbolDeclaration *s);
+    virtual void visit(ForwardingAttribDeclaration *s);
+    virtual void visit(ThisDeclaration *s);
+    virtual void visit(TypeInfoDeclaration *s);
+    virtual void visit(TypeInfoStructDeclaration *s);
+    virtual void visit(TypeInfoClassDeclaration *s);
+    virtual void visit(TypeInfoInterfaceDeclaration *s);
+    virtual void visit(TypeInfoPointerDeclaration *s);
+    virtual void visit(TypeInfoArrayDeclaration *s);
+    virtual void visit(TypeInfoStaticArrayDeclaration *s);
+    virtual void visit(TypeInfoAssociativeArrayDeclaration *s);
+    virtual void visit(TypeInfoEnumDeclaration *s);
+    virtual void visit(TypeInfoFunctionDeclaration *s);
+    virtual void visit(TypeInfoDelegateDeclaration *s);
+    virtual void visit(TypeInfoTupleDeclaration *s);
+    virtual void visit(TypeInfoConstDeclaration *s);
+    virtual void visit(TypeInfoInvariantDeclaration *s);
+    virtual void visit(TypeInfoSharedDeclaration *s);
+    virtual void visit(TypeInfoWildDeclaration *s);
+    virtual void visit(TypeInfoVectorDeclaration *s);
+    virtual void visit(FuncAliasDeclaration *s);
+    virtual void visit(ErrorInitializer *i);
+    virtual void visit(ErrorExp *e);
+    virtual void visit(ComplexExp *e);
+    virtual void visit(StructLiteralExp *e);
+    virtual void visit(CompoundLiteralExp *e);
+    virtual void visit(ObjcClassReferenceExp *e);
+    virtual void visit(SymOffExp *e);
+    virtual void visit(OverExp *e);
+    virtual void visit(HaltExp *e);
+    virtual void visit(DotTemplateExp *e);
+    virtual void visit(DotVarExp *e);
+    virtual void visit(DelegateExp *e);
+    virtual void visit(DotTypeExp *e);
+    virtual void visit(VectorExp *e);
+    virtual void visit(VectorArrayExp *e);
+    virtual void visit(SliceExp *e);
+    virtual void visit(ArrayLengthExp *e);
+    virtual void visit(DelegatePtrExp *e);
+    virtual void visit(DelegateFuncptrExp *e);
+    virtual void visit(DotExp *e);
+    virtual void visit(IndexExp *e);
+    virtual void visit(ConstructExp *e);
+    virtual void visit(BlitExp *e);
+    virtual void visit(RemoveExp *e);
+    virtual void visit(ClassReferenceExp *e);
+    virtual void visit(VoidInitExp *e);
+    virtual void visit(ThrownExceptionExp *e);
+    virtual void visit(LoweredAssignExp *e);
 };
 
 class SemanticTimePermissiveVisitor : public Visitor
 {
 public:
     using Visitor::visit;
-    void visit(Dsymbol* __param_0_) override;
-    void visit(Parameter* __param_0_) override;
-    void visit(Statement* __param_0_) override;
-    void visit(Type* __param_0_) override;
-    void visit(Expression* __param_0_) override;
-    void visit(TemplateParameter* __param_0_) override;
-    void visit(Condition* __param_0_) override;
-    void visit(Initializer* __param_0_) override;
+    void visit(Dsymbol *__param_0_) override;
+    void visit(Parameter *__param_0_) override;
+    void visit(Statement *__param_0_) override;
+    void visit(Type *__param_0_) override;
+    void visit(Expression *__param_0_) override;
+    void visit(TemplateParameter *__param_0_) override;
+    void visit(Condition *__param_0_) override;
+    void visit(Initializer *__param_0_) override;
 };
 
 class StatementRewriteWalker : public SemanticTimePermissiveVisitor
 {
 public:
     using SemanticTimePermissiveVisitor::visit;
-    Statement** ps;
-    void visitStmt(Statement*& s);
-    void replaceCurrent(Statement* s);
-    void visit(PeelStatement* s) override;
-    void visit(CompoundStatement* s) override;
-    void visit(CompoundDeclarationStatement* s) override;
-    void visit(UnrolledLoopStatement* s) override;
-    void visit(ScopeStatement* s) override;
-    void visit(WhileStatement* s) override;
-    void visit(DoStatement* s) override;
-    void visit(ForStatement* s) override;
-    void visit(ForeachStatement* s) override;
-    void visit(ForeachRangeStatement* s) override;
-    void visit(IfStatement* s) override;
-    void visit(SwitchStatement* s) override;
-    void visit(CaseStatement* s) override;
-    void visit(CaseRangeStatement* s) override;
-    void visit(DefaultStatement* s) override;
-    void visit(SynchronizedStatement* s) override;
-    void visit(WithStatement* s) override;
-    void visit(TryCatchStatement* s) override;
-    void visit(TryFinallyStatement* s) override;
-    void visit(DebugStatement* s) override;
-    void visit(LabelStatement* s) override;
+    Statement **ps;
+    void visitStmt(Statement *&s);
+    void replaceCurrent(Statement *s);
+    void visit(PeelStatement *s) override;
+    void visit(CompoundStatement *s) override;
+    void visit(CompoundDeclarationStatement *s) override;
+    void visit(UnrolledLoopStatement *s) override;
+    void visit(ScopeStatement *s) override;
+    void visit(WhileStatement *s) override;
+    void visit(DoStatement *s) override;
+    void visit(ForStatement *s) override;
+    void visit(ForeachStatement *s) override;
+    void visit(ForeachRangeStatement *s) override;
+    void visit(IfStatement *s) override;
+    void visit(SwitchStatement *s) override;
+    void visit(CaseStatement *s) override;
+    void visit(CaseRangeStatement *s) override;
+    void visit(DefaultStatement *s) override;
+    void visit(SynchronizedStatement *s) override;
+    void visit(WithStatement *s) override;
+    void visit(TryCatchStatement *s) override;
+    void visit(TryFinallyStatement *s) override;
+    void visit(DebugStatement *s) override;
+    void visit(LabelStatement *s) override;
 };
 
 class StoppableVisitor : public Visitor
@@ -6119,30 +6175,29 @@ struct TargetC final
     uint8_t wchar_tsize;
     Runtime runtime;
     BitFieldStyle bitFieldStyle;
-    bool contributesToAggregateAlignment(BitFieldDeclaration* bfd);
-    TargetC() :
-        crtDestructorsSupported(true),
-        boolsize(),
-        shortsize(),
-        intsize(),
-        longsize(),
-        long_longsize(),
-        long_doublesize(),
-        wchar_tsize()
+    bool contributesToAggregateAlignment(BitFieldDeclaration *bfd);
+    TargetC() : crtDestructorsSupported(true),
+                boolsize(),
+                shortsize(),
+                intsize(),
+                longsize(),
+                long_longsize(),
+                long_doublesize(),
+                wchar_tsize()
     {
     }
-    TargetC(bool crtDestructorsSupported, uint8_t boolsize = 0u, uint8_t shortsize = 0u, uint8_t intsize = 0u, uint8_t longsize = 0u, uint8_t long_longsize = 0u, uint8_t long_doublesize = 0u, uint8_t wchar_tsize = 0u, Runtime runtime = (Runtime)0u, BitFieldStyle bitFieldStyle = (BitFieldStyle)0u) :
-        crtDestructorsSupported(crtDestructorsSupported),
-        boolsize(boolsize),
-        shortsize(shortsize),
-        intsize(intsize),
-        longsize(longsize),
-        long_longsize(long_longsize),
-        long_doublesize(long_doublesize),
-        wchar_tsize(wchar_tsize),
-        runtime(runtime),
-        bitFieldStyle(bitFieldStyle)
-        {}
+    TargetC(bool crtDestructorsSupported, uint8_t boolsize = 0u, uint8_t shortsize = 0u, uint8_t intsize = 0u, uint8_t longsize = 0u, uint8_t long_longsize = 0u, uint8_t long_doublesize = 0u, uint8_t wchar_tsize = 0u, Runtime runtime = (Runtime)0u, BitFieldStyle bitFieldStyle = (BitFieldStyle)0u) : crtDestructorsSupported(crtDestructorsSupported),
+                                                                                                                                                                                                                                                                                                            boolsize(boolsize),
+                                                                                                                                                                                                                                                                                                            shortsize(shortsize),
+                                                                                                                                                                                                                                                                                                            intsize(intsize),
+                                                                                                                                                                                                                                                                                                            longsize(longsize),
+                                                                                                                                                                                                                                                                                                            long_longsize(long_longsize),
+                                                                                                                                                                                                                                                                                                            long_doublesize(long_doublesize),
+                                                                                                                                                                                                                                                                                                            wchar_tsize(wchar_tsize),
+                                                                                                                                                                                                                                                                                                            runtime(runtime),
+                                                                                                                                                                                                                                                                                                            bitFieldStyle(bitFieldStyle)
+    {
+    }
 };
 
 struct TargetCPP final
@@ -6162,41 +6217,39 @@ struct TargetCPP final
     bool splitVBasetable;
     bool wrapDtorInExternD;
     Runtime runtime;
-    const char* toMangle(Dsymbol* s);
-    const char* typeInfoMangle(ClassDeclaration* cd);
-    const char* thunkMangle(FuncDeclaration* fd, int32_t offset);
-    const char* typeMangle(Type* t);
-    Type* parameterType(Type* t);
-    bool fundamentalType(const Type* const t, bool& isFundamental);
-    uint32_t derivedClassOffset(ClassDeclaration* baseClass);
-    TargetCPP() :
-        reverseOverloads(),
-        exceptions(),
-        twoDtorInVtable(),
-        splitVBasetable(),
-        wrapDtorInExternD()
+    const char *toMangle(Dsymbol *s);
+    const char *typeInfoMangle(ClassDeclaration *cd);
+    const char *thunkMangle(FuncDeclaration *fd, int32_t offset);
+    const char *typeMangle(Type *t);
+    Type *parameterType(Type *t);
+    bool fundamentalType(const Type *const t, bool &isFundamental);
+    uint32_t derivedClassOffset(ClassDeclaration *baseClass);
+    TargetCPP() : reverseOverloads(),
+                  exceptions(),
+                  twoDtorInVtable(),
+                  splitVBasetable(),
+                  wrapDtorInExternD()
     {
     }
-    TargetCPP(bool reverseOverloads, bool exceptions = false, bool twoDtorInVtable = false, bool splitVBasetable = false, bool wrapDtorInExternD = false, Runtime runtime = (Runtime)0u) :
-        reverseOverloads(reverseOverloads),
-        exceptions(exceptions),
-        twoDtorInVtable(twoDtorInVtable),
-        splitVBasetable(splitVBasetable),
-        wrapDtorInExternD(wrapDtorInExternD),
-        runtime(runtime)
-        {}
+    TargetCPP(bool reverseOverloads, bool exceptions = false, bool twoDtorInVtable = false, bool splitVBasetable = false, bool wrapDtorInExternD = false, Runtime runtime = (Runtime)0u) : reverseOverloads(reverseOverloads),
+                                                                                                                                                                                           exceptions(exceptions),
+                                                                                                                                                                                           twoDtorInVtable(twoDtorInVtable),
+                                                                                                                                                                                           splitVBasetable(splitVBasetable),
+                                                                                                                                                                                           wrapDtorInExternD(wrapDtorInExternD),
+                                                                                                                                                                                           runtime(runtime)
+    {
+    }
 };
 
 struct TargetObjC final
 {
     bool supported;
-    TargetObjC() :
-        supported()
+    TargetObjC() : supported()
     {
     }
-    TargetObjC(bool supported) :
-        supported(supported)
-        {}
+    TargetObjC(bool supported) : supported(supported)
+    {
+    }
 };
 
 enum class CPU : uint8_t
@@ -6276,43 +6329,42 @@ enum class JsonFieldFlags : uint32_t
 struct CompileEnv final
 {
     uint32_t versionNumber;
-    _d_dynamicArray< const char > date;
-    _d_dynamicArray< const char > time;
-    _d_dynamicArray< const char > vendor;
-    _d_dynamicArray< const char > timestamp;
+    _d_dynamicArray<const char> date;
+    _d_dynamicArray<const char> time;
+    _d_dynamicArray<const char> vendor;
+    _d_dynamicArray<const char> timestamp;
     bool previewIn;
     bool transitionIn;
     bool ddocOutput;
     bool masm;
     IdentifierCharLookup cCharLookupTable;
     IdentifierCharLookup dCharLookupTable;
-    CompileEnv() :
-        versionNumber(),
-        date(),
-        time(),
-        vendor(),
-        timestamp(),
-        previewIn(),
-        transitionIn(),
-        ddocOutput(),
-        masm(),
-        cCharLookupTable(),
-        dCharLookupTable()
+    CompileEnv() : versionNumber(),
+                   date(),
+                   time(),
+                   vendor(),
+                   timestamp(),
+                   previewIn(),
+                   transitionIn(),
+                   ddocOutput(),
+                   masm(),
+                   cCharLookupTable(),
+                   dCharLookupTable()
     {
     }
-    CompileEnv(uint32_t versionNumber, _d_dynamicArray< const char > date = {}, _d_dynamicArray< const char > time = {}, _d_dynamicArray< const char > vendor = {}, _d_dynamicArray< const char > timestamp = {}, bool previewIn = false, bool transitionIn = false, bool ddocOutput = false, bool masm = false, IdentifierCharLookup cCharLookupTable = IdentifierCharLookup(), IdentifierCharLookup dCharLookupTable = IdentifierCharLookup()) :
-        versionNumber(versionNumber),
-        date(date),
-        time(time),
-        vendor(vendor),
-        timestamp(timestamp),
-        previewIn(previewIn),
-        transitionIn(transitionIn),
-        ddocOutput(ddocOutput),
-        masm(masm),
-        cCharLookupTable(cCharLookupTable),
-        dCharLookupTable(dCharLookupTable)
-        {}
+    CompileEnv(uint32_t versionNumber, _d_dynamicArray<const char> date = {}, _d_dynamicArray<const char> time = {}, _d_dynamicArray<const char> vendor = {}, _d_dynamicArray<const char> timestamp = {}, bool previewIn = false, bool transitionIn = false, bool ddocOutput = false, bool masm = false, IdentifierCharLookup cCharLookupTable = IdentifierCharLookup(), IdentifierCharLookup dCharLookupTable = IdentifierCharLookup()) : versionNumber(versionNumber),
+                                                                                                                                                                                                                                                                                                                                                                                                                                           date(date),
+                                                                                                                                                                                                                                                                                                                                                                                                                                           time(time),
+                                                                                                                                                                                                                                                                                                                                                                                                                                           vendor(vendor),
+                                                                                                                                                                                                                                                                                                                                                                                                                                           timestamp(timestamp),
+                                                                                                                                                                                                                                                                                                                                                                                                                                           previewIn(previewIn),
+                                                                                                                                                                                                                                                                                                                                                                                                                                           transitionIn(transitionIn),
+                                                                                                                                                                                                                                                                                                                                                                                                                                           ddocOutput(ddocOutput),
+                                                                                                                                                                                                                                                                                                                                                                                                                                           masm(masm),
+                                                                                                                                                                                                                                                                                                                                                                                                                                           cCharLookupTable(cCharLookupTable),
+                                                                                                                                                                                                                                                                                                                                                                                                                                           dCharLookupTable(dCharLookupTable)
+    {
+    }
 };
 
 typedef _d_real longdouble;
@@ -6322,57 +6374,57 @@ typedef uint64_t uint64_t;
 class AggregateDeclaration : public ScopeDsymbol
 {
 public:
-    Type* type;
+    Type *type;
     STC storage_class;
     uint32_t structsize;
     uint32_t alignsize;
-    Array<VarDeclaration* > fields;
-    Dsymbol* deferred;
+    Array<VarDeclaration *> fields;
+    Dsymbol *deferred;
     ClassKind classKind;
     CPPMANGLE cppmangle;
-    MangleOverride* pMangleOverride;
-    Dsymbol* enclosing;
-    VarDeclaration* vthis;
-    VarDeclaration* vthis2;
-    Array<FuncDeclaration* > invs;
-    FuncDeclaration* inv;
-    Dsymbol* ctor;
-    CtorDeclaration* defaultCtor;
-    AliasThis* aliasthis;
-    Array<DtorDeclaration* > userDtors;
-    DtorDeclaration* aggrDtor;
-    DtorDeclaration* dtor;
-    DtorDeclaration* tidtor;
-    DtorDeclaration* fieldDtor;
-    Expression* getRTInfo;
+    MangleOverride *pMangleOverride;
+    Dsymbol *enclosing;
+    VarDeclaration *vthis;
+    VarDeclaration *vthis2;
+    Array<FuncDeclaration *> invs;
+    FuncDeclaration *inv;
+    Dsymbol *ctor;
+    CtorDeclaration *defaultCtor;
+    AliasThis *aliasthis;
+    Array<DtorDeclaration *> userDtors;
+    DtorDeclaration *aggrDtor;
+    DtorDeclaration *dtor;
+    DtorDeclaration *tidtor;
+    DtorDeclaration *fieldDtor;
+    Expression *getRTInfo;
     Visibility visibility;
     bool noDefaultCtor;
     bool disableNew;
     Sizeok sizeok;
-    virtual Scope* newScope(Scope* sc);
+    virtual Scope *newScope(Scope *sc);
     virtual void finalizeSize() = 0;
     uinteger_t size(Loc loc) final override;
-    Type* getType() final override;
+    Type *getType() final override;
     bool isDeprecated() const final override;
     bool isNested() const;
     bool isExport() const final override;
     Visibility visible() final override;
-    Type* handleType();
+    Type *handleType();
     bool hasInvariant();
-    void* sinit;
-    void accept(Visitor* v) override;
+    void *sinit;
+    void accept(Visitor *v) override;
 };
 
 class AliasThis final : public Dsymbol
 {
 public:
-    Identifier* ident;
-    Dsymbol* sym;
+    Identifier *ident;
+    Dsymbol *sym;
     bool isDeprecated_;
-    AliasThis* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    AliasThis* isAliasThis();
-    void accept(Visitor* v) override;
+    AliasThis *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    AliasThis *isAliasThis();
+    void accept(Visitor *v) override;
     bool isDeprecated() const override;
 };
 
@@ -6381,6 +6433,7 @@ struct structalign_t final
 private:
     uint16_t value;
     bool pack;
+
 public:
     bool isDefault() const;
     void setDefault();
@@ -6390,21 +6443,20 @@ public:
     uint32_t get() const;
     bool isPack() const;
     void setPack(bool pack);
-    structalign_t() :
-        value(0u),
-        pack()
+    structalign_t() : value(0u),
+                      pack()
     {
     }
-    structalign_t(uint16_t value, bool pack = false) :
-        value(value),
-        pack(pack)
-        {}
+    structalign_t(uint16_t value, bool pack = false) : value(value),
+                                                       pack(pack)
+    {
+    }
 };
 
 template <typename T>
 struct DArray final
 {
-    _d_dynamicArray< T > data;
+    _d_dynamicArray<T> data;
     DArray()
     {
     }
@@ -6413,73 +6465,73 @@ struct DArray final
 class AttribDeclaration : public Dsymbol
 {
 public:
-    Array<Dsymbol* >* decl;
-    const char* kind() const override;
+    Array<Dsymbol *> *decl;
+    const char *kind() const override;
     bool hasPointers() final override;
-    void addObjcSymbols(Array<ClassDeclaration* >* classes, Array<ClassDeclaration* >* categories) final override;
-    void accept(Visitor* v) override;
+    void addObjcSymbols(Array<ClassDeclaration *> *classes, Array<ClassDeclaration *> *categories) final override;
+    void accept(Visitor *v) override;
 };
 
 class StorageClassDeclaration : public AttribDeclaration
 {
 public:
     STC stc;
-    StorageClassDeclaration* syntaxCopy(Dsymbol* s) override;
-    void accept(Visitor* v) override;
+    StorageClassDeclaration *syntaxCopy(Dsymbol *s) override;
+    void accept(Visitor *v) override;
 };
 
 class DeprecatedDeclaration final : public StorageClassDeclaration
 {
 public:
-    Expression* msg;
-    const char* msgstr;
-    DeprecatedDeclaration* syntaxCopy(Dsymbol* s) override;
-    void accept(Visitor* v) override;
+    Expression *msg;
+    const char *msgstr;
+    DeprecatedDeclaration *syntaxCopy(Dsymbol *s) override;
+    void accept(Visitor *v) override;
 };
 
 class LinkDeclaration final : public AttribDeclaration
 {
 public:
     LINK linkage;
-    static LinkDeclaration* create(Loc loc, LINK p, Array<Dsymbol* >* decl);
-    LinkDeclaration* syntaxCopy(Dsymbol* s) override;
-    void accept(Visitor* v) override;
+    static LinkDeclaration *create(Loc loc, LINK p, Array<Dsymbol *> *decl);
+    LinkDeclaration *syntaxCopy(Dsymbol *s) override;
+    void accept(Visitor *v) override;
 };
 
 class CPPMangleDeclaration final : public AttribDeclaration
 {
 public:
     CPPMANGLE cppmangle;
-    CPPMangleDeclaration* syntaxCopy(Dsymbol* s) override;
-    void accept(Visitor* v) override;
+    CPPMangleDeclaration *syntaxCopy(Dsymbol *s) override;
+    void accept(Visitor *v) override;
 };
 
 class CPPNamespaceDeclaration final : public AttribDeclaration
 {
 public:
-    Expression* exp;
-    CPPNamespaceDeclaration* syntaxCopy(Dsymbol* s) override;
-    void accept(Visitor* v) override;
+    Expression *exp;
+    CPPNamespaceDeclaration *syntaxCopy(Dsymbol *s) override;
+    void accept(Visitor *v) override;
 };
 
 class VisibilityDeclaration final : public AttribDeclaration
 {
 public:
     Visibility visibility;
-    _d_dynamicArray< Identifier* > pkg_identifiers;
-    VisibilityDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    const char* toPrettyChars(bool __param_0_) override;
-    void accept(Visitor* v) override;
+    _d_dynamicArray<Identifier *> pkg_identifiers;
+    VisibilityDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    const char *toPrettyChars(bool __param_0_) override;
+    void accept(Visitor *v) override;
 };
 
 class AlignDeclaration final : public AttribDeclaration
 {
 public:
-    Array<Expression* >* exps;
+    Array<Expression *> *exps;
     structalign_t salign;
-    AlignDeclaration* syntaxCopy(Dsymbol* s) override;
-    void accept(Visitor* v) override;
+    AlignDeclaration *syntaxCopy(Dsymbol *s) override;
+    void accept(Visitor *v) override;
 };
 
 class AnonDeclaration final : public AttribDeclaration
@@ -6490,96 +6542,96 @@ public:
     uint32_t anonoffset;
     uint32_t anonstructsize;
     uint32_t anonalignsize;
-    AnonDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    AnonDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
 class PragmaDeclaration final : public AttribDeclaration
 {
 public:
-    Array<Expression* >* args;
-    PragmaDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    Array<Expression *> *args;
+    PragmaDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
 class ConditionalDeclaration : public AttribDeclaration
 {
 public:
-    Condition* condition;
-    Array<Dsymbol* >* elsedecl;
-    ConditionalDeclaration* syntaxCopy(Dsymbol* s) override;
-    void accept(Visitor* v) override;
+    Condition *condition;
+    Array<Dsymbol *> *elsedecl;
+    ConditionalDeclaration *syntaxCopy(Dsymbol *s) override;
+    void accept(Visitor *v) override;
 };
 
 class StaticIfDeclaration final : public ConditionalDeclaration
 {
 public:
-    ScopeDsymbol* scopesym;
+    ScopeDsymbol *scopesym;
     bool addisdone;
     bool onStack;
-    StaticIfDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    StaticIfDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
 class StaticForeachDeclaration final : public AttribDeclaration
 {
 public:
-    StaticForeach* sfe;
-    ScopeDsymbol* scopesym;
+    StaticForeach *sfe;
+    ScopeDsymbol *scopesym;
     bool onStack;
     bool cached;
-    Array<Dsymbol* >* cache;
-    StaticForeachDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    Array<Dsymbol *> *cache;
+    StaticForeachDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
 class ForwardingAttribDeclaration final : public AttribDeclaration
 {
 public:
-    ForwardingScopeDsymbol* sym;
-    ForwardingAttribDeclaration(Array<Dsymbol* >* decl);
-    void accept(Visitor* v) override;
+    ForwardingScopeDsymbol *sym;
+    ForwardingAttribDeclaration(Array<Dsymbol *> *decl);
+    void accept(Visitor *v) override;
 };
 
 class MixinDeclaration final : public AttribDeclaration
 {
 public:
-    Array<Expression* >* exps;
-    ScopeDsymbol* scopesym;
+    Array<Expression *> *exps;
+    ScopeDsymbol *scopesym;
     bool compiled;
-    MixinDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    MixinDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
 class UserAttributeDeclaration final : public AttribDeclaration
 {
 public:
-    Array<Expression* >* atts;
-    UserAttributeDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    Array<Expression *> *atts;
+    UserAttributeDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
-extern BUILTIN isBuiltin(FuncDeclaration* fd);
+extern BUILTIN isBuiltin(FuncDeclaration *fd);
 
-extern Expression* eval_builtin(Loc loc, FuncDeclaration* fd, Array<Expression* >* arguments);
+extern Expression *eval_builtin(Loc loc, FuncDeclaration *fd, Array<Expression *> *arguments);
 
 extern bool includeImports;
 
-extern Array<const char* > includeModulePatterns;
+extern Array<const char *> includeModulePatterns;
 
-extern Array<Module* > compiledImports;
+extern Array<Module *> compiledImports;
 
 struct Compiler final
 {
-    static Expression* paintAsType(UnionExp* pue, Expression* e, Type* type);
-    static void onParseModule(Module* m);
-    static bool onImport(Module* m);
+    static Expression *paintAsType(UnionExp *pue, Expression *e, Type *type);
+    static void onParseModule(Module *m);
+    static bool onImport(Module *m);
     Compiler()
     {
     }
@@ -6591,77 +6643,76 @@ public:
     Loc loc;
     Include inc;
     DYNCAST dyncast() const final override;
-    virtual Condition* syntaxCopy() = 0;
-    virtual int32_t include(Scope* sc) = 0;
-    virtual DebugCondition* isDebugCondition();
-    virtual VersionCondition* isVersionCondition();
-    virtual StaticIfCondition* isStaticIfCondition();
-    void accept(Visitor* v) override;
+    virtual Condition *syntaxCopy() = 0;
+    virtual int32_t include(Scope *sc) = 0;
+    virtual DebugCondition *isDebugCondition();
+    virtual VersionCondition *isVersionCondition();
+    virtual StaticIfCondition *isStaticIfCondition();
+    void accept(Visitor *v) override;
 };
 
 class StaticForeach final : public RootObject
 {
 public:
     Loc loc;
-    ForeachStatement* aggrfe;
-    ForeachRangeStatement* rangefe;
+    ForeachStatement *aggrfe;
+    ForeachRangeStatement *rangefe;
     bool needExpansion;
 };
 
 class DVCondition : public Condition
 {
 public:
-    Identifier* ident;
-    Module* mod;
-    DVCondition* syntaxCopy() final override;
-    void accept(Visitor* v) override;
+    Identifier *ident;
+    Module *mod;
+    DVCondition *syntaxCopy() final override;
+    void accept(Visitor *v) override;
 };
 
 class DebugCondition final : public DVCondition
 {
 public:
-    static void addGlobalIdent(const char* ident);
-    int32_t include(Scope* sc) override;
-    DebugCondition* isDebugCondition() override;
-    void accept(Visitor* v) override;
+    static void addGlobalIdent(const char *ident);
+    int32_t include(Scope *sc) override;
+    DebugCondition *isDebugCondition() override;
+    void accept(Visitor *v) override;
 };
 
 class VersionCondition final : public DVCondition
 {
 public:
-    static void addGlobalIdent(const char* ident);
-    static void addPredefinedGlobalIdent(const char* ident);
-    int32_t include(Scope* sc) override;
-    VersionCondition* isVersionCondition() override;
-    void accept(Visitor* v) override;
+    static void addGlobalIdent(const char *ident);
+    static void addPredefinedGlobalIdent(const char *ident);
+    int32_t include(Scope *sc) override;
+    VersionCondition *isVersionCondition() override;
+    void accept(Visitor *v) override;
 };
 
 class StaticIfCondition final : public Condition
 {
 public:
-    Expression* exp;
-    StaticIfCondition* syntaxCopy() override;
-    int32_t include(Scope* sc) override;
-    void accept(Visitor* v) override;
-    StaticIfCondition* isStaticIfCondition() override;
+    Expression *exp;
+    StaticIfCondition *syntaxCopy() override;
+    int32_t include(Scope *sc) override;
+    void accept(Visitor *v) override;
+    StaticIfCondition *isStaticIfCondition() override;
 };
 
-extern DArray<uint8_t > preprocess(FileName csrcfile, Loc loc, OutBuffer& defines);
+extern DArray<uint8_t> preprocess(FileName csrcfile, Loc loc, OutBuffer &defines);
 
 struct BaseClass final
 {
-    Type* type;
-    ClassDeclaration* sym;
+    Type *type;
+    ClassDeclaration *sym;
     uint32_t offset;
-    Array<FuncDeclaration* > vtbl;
-    _d_dynamicArray< BaseClass > baseInterfaces;
-    bool fillVtbl(ClassDeclaration* cd, Array<FuncDeclaration* >* vtbl, int32_t newinstance);
-    BaseClass() :
-        type(),
-        sym(),
-        offset(),
-        vtbl(),
-        baseInterfaces()
+    Array<FuncDeclaration *> vtbl;
+    _d_dynamicArray<BaseClass> baseInterfaces;
+    bool fillVtbl(ClassDeclaration *cd, Array<FuncDeclaration *> *vtbl, int32_t newinstance);
+    BaseClass() : type(),
+                  sym(),
+                  offset(),
+                  vtbl(),
+                  baseInterfaces()
     {
     }
 };
@@ -6669,20 +6720,20 @@ struct BaseClass final
 class ClassDeclaration : public AggregateDeclaration
 {
 public:
-    static ClassDeclaration* object;
-    static ClassDeclaration* throwable;
-    static ClassDeclaration* exception;
-    static ClassDeclaration* errorException;
-    static ClassDeclaration* cpp_type_info_ptr;
-    ClassDeclaration* baseClass;
-    FuncDeclaration* staticCtor;
-    FuncDeclaration* staticDtor;
-    Array<Dsymbol* > vtbl;
-    Array<Dsymbol* > vtblFinal;
-    Array<BaseClass* >* baseclasses;
-    _d_dynamicArray< BaseClass* > interfaces;
-    Array<BaseClass* >* vtblInterfaces;
-    TypeInfoClassDeclaration* vclassinfo;
+    static ClassDeclaration *object;
+    static ClassDeclaration *throwable;
+    static ClassDeclaration *exception;
+    static ClassDeclaration *errorException;
+    static ClassDeclaration *cpp_type_info_ptr;
+    ClassDeclaration *baseClass;
+    FuncDeclaration *staticCtor;
+    FuncDeclaration *staticDtor;
+    Array<Dsymbol *> vtbl;
+    Array<Dsymbol *> vtblFinal;
+    Array<BaseClass *> *baseclasses;
+    _d_dynamicArray<BaseClass *> interfaces;
+    Array<BaseClass *> *vtblInterfaces;
+    TypeInfoClassDeclaration *vclassinfo;
     bool com;
     bool stack;
     int32_t cppDtorVtblIndex;
@@ -6690,16 +6741,22 @@ public:
     ThreeState isabstract;
     Baseok baseok;
     ObjcClassDeclaration objc;
-    Symbol* cpp_type_info_ptr_sym;
-    static ClassDeclaration* create(Loc loc, Identifier* id, Array<BaseClass* >* baseclasses, Array<Dsymbol* >* members, bool inObject);
-    const char* toPrettyChars(bool qualifyTypes = false) override;
-    ClassDeclaration* syntaxCopy(Dsymbol* s) override;
-    Scope* newScope(Scope* sc) override;
-    enum : int32_t { OFFSET_RUNTIME = 1985229328 };
+    Symbol *cpp_type_info_ptr_sym;
+    static ClassDeclaration *create(Loc loc, Identifier *id, Array<BaseClass *> *baseclasses, Array<Dsymbol *> *members, bool inObject);
+    const char *toPrettyChars(bool qualifyTypes = false) override;
+    ClassDeclaration *syntaxCopy(Dsymbol *s) override;
+    Scope *newScope(Scope *sc) override;
+    enum : int32_t
+    {
+        OFFSET_RUNTIME = 1985229328
+    };
 
-    enum : int32_t { OFFSET_FWDREF = 1985229329 };
+    enum : int32_t
+    {
+        OFFSET_FWDREF = 1985229329
+    };
 
-    virtual bool isBaseOf(ClassDeclaration* cd, int32_t* poffset);
+    virtual bool isBaseOf(ClassDeclaration *cd, int32_t *poffset);
     bool isBaseInfoComplete() const;
     void finalizeSize() final override;
     bool hasMonitor();
@@ -6709,32 +6766,32 @@ public:
     virtual bool isCPPinterface() const;
     bool isAbstract();
     virtual int32_t vtblOffset() const;
-    const char* kind() const override;
-    void addObjcSymbols(Array<ClassDeclaration* >* classes, Array<ClassDeclaration* >* categories) final override;
-    Dsymbol* vtblsym;
-    void accept(Visitor* v) override;
+    const char *kind() const override;
+    void addObjcSymbols(Array<ClassDeclaration *> *classes, Array<ClassDeclaration *> *categories) final override;
+    Dsymbol *vtblsym;
+    void accept(Visitor *v) override;
 };
 
 class InterfaceDeclaration final : public ClassDeclaration
 {
 public:
-    InterfaceDeclaration* syntaxCopy(Dsymbol* s) override;
-    Scope* newScope(Scope* sc) override;
-    bool isBaseOf(ClassDeclaration* cd, int32_t* poffset) override;
-    const char* kind() const override;
+    InterfaceDeclaration *syntaxCopy(Dsymbol *s) override;
+    Scope *newScope(Scope *sc) override;
+    bool isBaseOf(ClassDeclaration *cd, int32_t *poffset) override;
+    const char *kind() const override;
     int32_t vtblOffset() const override;
     bool isCPPinterface() const override;
     bool isCOMinterface() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class Declaration : public Dsymbol
 {
 public:
-    Type* type;
-    Type* originalType;
+    Type *type;
+    Type *originalType;
     STC storage_class;
-    _d_dynamicArray< const char > mangleOverride;
+    _d_dynamicArray<const char> mangleOverride;
     Visibility visibility;
     int16_t inuse;
     LINK _linkage() const;
@@ -6749,10 +6806,12 @@ public:
     bool hidden(bool v);
     bool nrvo() const;
     bool nrvo(bool v);
+
 private:
     uint8_t bitFields;
+
 public:
-    const char* kind() const override;
+    const char *kind() const override;
     uinteger_t size(Loc loc) final override;
     bool isStatic() const;
     LINK resolvedLinkage() const;
@@ -6781,68 +6840,71 @@ public:
     bool isReference() const;
     bool isFuture() const;
     Visibility visible() final override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class TupleDeclaration final : public Declaration
 {
 public:
-    Array<RootObject* >* objects;
-    TypeTuple* tupletype;
+    Array<RootObject *> *objects;
+    TypeTuple *tupletype;
     bool isexp;
     bool building;
-    TupleDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    Type* getType() override;
-    Dsymbol* toAlias2() override;
+    TupleDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    Type *getType() override;
+    Dsymbol *toAlias2() override;
     bool needThis() override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class AliasDeclaration final : public Declaration
 {
 public:
-    Dsymbol* aliassym;
-    Dsymbol* overnext;
-    Dsymbol* _import_;
-    static AliasDeclaration* create(Loc loc, Identifier* id, Type* type);
-    AliasDeclaration* syntaxCopy(Dsymbol* s) override;
-    bool overloadInsert(Dsymbol* s) override;
-    const char* kind() const override;
-    Type* getType() override;
-    Dsymbol* toAlias() override;
-    Dsymbol* toAlias2() override;
+    Dsymbol *aliassym;
+    Dsymbol *overnext;
+    Dsymbol *_import_;
+    static AliasDeclaration *create(Loc loc, Identifier *id, Type *type);
+    AliasDeclaration *syntaxCopy(Dsymbol *s) override;
+    bool overloadInsert(Dsymbol *s) override;
+    const char *kind() const override;
+    Type *getType() override;
+    Dsymbol *toAlias() override;
+    Dsymbol *toAlias2() override;
     bool isOverloadable() const override;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class OverDeclaration final : public Declaration
 {
 public:
-    Dsymbol* overnext;
-    Dsymbol* aliassym;
-    const char* kind() const override;
-    bool equals(const RootObject* const o) const override;
-    bool overloadInsert(Dsymbol* s) override;
+    Dsymbol *overnext;
+    Dsymbol *aliassym;
+    const char *kind() const override;
+    bool equals(const RootObject *const o) const override;
+    bool overloadInsert(Dsymbol *s) override;
     bool isOverloadable() const override;
-    Dsymbol* isUnique();
-    void accept(Visitor* v) override;
+    Dsymbol *isUnique();
+    void accept(Visitor *v) override;
 };
 
 class VarDeclaration : public Declaration
 {
 public:
-    Initializer* _init;
-    Array<FuncDeclaration* > nestedrefs;
-    TupleDeclaration* aliasTuple;
-    VarDeclaration* lastVar;
-    Expression* edtor;
-    IntRange* range;
+    Initializer *_init;
+    Array<FuncDeclaration *> nestedrefs;
+    TupleDeclaration *aliasTuple;
+    VarDeclaration *lastVar;
+    Expression *edtor;
+    IntRange *range;
     uint32_t endlinnum;
     uint32_t offset;
     uint32_t sequenceNumber;
     structalign_t alignment;
-    enum : uint32_t { AdrOnStackNone = 4294967295u };
+    enum : uint32_t
+    {
+        AdrOnStackNone = 4294967295u
+    };
 
     uint32_t ctfeAdrOnStack;
     bool isargptr() const;
@@ -6879,15 +6941,17 @@ public:
     bool inAlignSection(bool v);
     bool systemInferred() const;
     bool systemInferred(bool v);
+
 private:
     uint32_t bitFields;
+
 public:
     int8_t canassign;
     uint8_t isdataseg;
-    static VarDeclaration* create(Loc loc, Type* type, Identifier* ident, Initializer* _init, StorageClass storage_class = static_cast<StorageClass>(STC::none));
-    VarDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    AggregateDeclaration* isThis() final override;
+    static VarDeclaration *create(Loc loc, Type *type, Identifier *ident, Initializer *_init, StorageClass storage_class = static_cast<StorageClass>(STC::none));
+    VarDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    AggregateDeclaration *isThis() final override;
     bool needThis() final override;
     bool isExport() const final override;
     bool isImportedSymbol() const final override;
@@ -6895,220 +6959,222 @@ public:
     bool isDataseg() final override;
     bool isThreadlocal() final override;
     bool isCTFE();
-    bool isOverlappedWith(VarDeclaration* v);
+    bool isOverlappedWith(VarDeclaration *v);
     bool hasPointers() final override;
     bool canTakeAddressOf();
     bool needsScopeDtor();
-    Dsymbol* toAlias() final override;
-    void accept(Visitor* v) override;
+    Dsymbol *toAlias() final override;
+    void accept(Visitor *v) override;
 };
 
 class BitFieldDeclaration : public VarDeclaration
 {
 public:
-    Expression* width;
+    Expression *width;
     uint32_t fieldWidth;
     uint32_t bitOffset;
-    BitFieldDeclaration* syntaxCopy(Dsymbol* s) override;
-    void accept(Visitor* v) override;
-    uint64_t getMinMax(Identifier* id);
+    BitFieldDeclaration *syntaxCopy(Dsymbol *s) override;
+    void accept(Visitor *v) override;
+    uint64_t getMinMax(Identifier *id);
 };
 
 class SymbolDeclaration final : public Declaration
 {
 public:
-    AggregateDeclaration* dsym;
-    void accept(Visitor* v) override;
+    AggregateDeclaration *dsym;
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoDeclaration : public VarDeclaration
 {
 public:
-    Type* tinfo;
-    static TypeInfoDeclaration* create(Type* tinfo);
-    TypeInfoDeclaration* syntaxCopy(Dsymbol* s) final override;
-    void accept(Visitor* v) override;
+    Type *tinfo;
+    static TypeInfoDeclaration *create(Type *tinfo);
+    TypeInfoDeclaration *syntaxCopy(Dsymbol *s) final override;
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoStructDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoStructDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoStructDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoClassDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoClassDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoClassDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoInterfaceDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoInterfaceDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoInterfaceDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoPointerDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoPointerDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoPointerDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoArrayDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoArrayDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoArrayDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoStaticArrayDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoStaticArrayDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoStaticArrayDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoAssociativeArrayDeclaration final : public TypeInfoDeclaration
 {
 public:
-    Type* entry;
-    static TypeInfoAssociativeArrayDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    Type *entry;
+    static TypeInfoAssociativeArrayDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoEnumDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoEnumDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoEnumDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoFunctionDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoFunctionDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoFunctionDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoDelegateDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoDelegateDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoDelegateDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoTupleDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoTupleDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoTupleDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoConstDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoConstDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoConstDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoInvariantDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoInvariantDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoInvariantDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoSharedDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoSharedDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoSharedDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoWildDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoWildDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoWildDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class TypeInfoVectorDeclaration final : public TypeInfoDeclaration
 {
 public:
-    static TypeInfoVectorDeclaration* create(Type* tinfo);
-    void accept(Visitor* v) override;
+    static TypeInfoVectorDeclaration *create(Type *tinfo);
+    void accept(Visitor *v) override;
 };
 
 class ThisDeclaration final : public VarDeclaration
 {
 public:
-    ThisDeclaration* syntaxCopy(Dsymbol* s) override;
-    void accept(Visitor* v) override;
+    ThisDeclaration *syntaxCopy(Dsymbol *s) override;
+    void accept(Visitor *v) override;
 };
 
 class EnumDeclaration final : public ScopeDsymbol
 {
 public:
-    Type* type;
-    Type* memtype;
+    Type *type;
+    Type *memtype;
     Visibility visibility;
-    Expression* maxval;
-    Expression* minval;
-    Expression* defaultval;
+    Expression *maxval;
+    Expression *minval;
+    Expression *defaultval;
     bool isdeprecated() const;
     bool isdeprecated(bool v);
     bool added() const;
     bool added(bool v);
     bool inuse() const;
     bool inuse(bool v);
+
 private:
     uint8_t bitFields;
+
 public:
-    Symbol* sinit;
-    EnumDeclaration* syntaxCopy(Dsymbol* s) override;
-    Type* getType() override;
-    const char* kind() const override;
+    Symbol *sinit;
+    EnumDeclaration *syntaxCopy(Dsymbol *s) override;
+    Type *getType() override;
+    const char *kind() const override;
     bool isDeprecated() const override;
     Visibility visible() override;
     bool isSpecial() const;
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
 };
 
 class EnumMember final : public VarDeclaration
 {
 public:
-    Expression*& value();
-    Expression* origValue;
-    Type* origType;
-    EnumDeclaration* ed;
-    EnumMember* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    Expression *&value();
+    Expression *origValue;
+    Type *origType;
+    EnumDeclaration *ed;
+    EnumMember *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
 class Import final : public Dsymbol
 {
 public:
-    _d_dynamicArray< Identifier* > packages;
-    Identifier* id;
-    Identifier* aliasId;
+    _d_dynamicArray<Identifier *> packages;
+    Identifier *id;
+    Identifier *aliasId;
     int32_t isstatic;
     Visibility visibility;
-    Array<Identifier* > names;
-    Array<Identifier* > aliases;
-    Module* mod;
-    Package* pkg;
-    Array<AliasDeclaration* > aliasdecls;
-    const char* kind() const override;
+    Array<Identifier *> names;
+    Array<Identifier *> aliases;
+    Module *mod;
+    Package *pkg;
+    Array<AliasDeclaration *> aliasdecls;
+    const char *kind() const override;
     Visibility visible() override;
-    Import* syntaxCopy(Dsymbol* s) override;
-    Dsymbol* toAlias() override;
-    bool overloadInsert(Dsymbol* s) override;
-    void accept(Visitor* v) override;
+    Import *syntaxCopy(Dsymbol *s) override;
+    Dsymbol *toAlias() override;
+    bool overloadInsert(Dsymbol *s) override;
+    void accept(Visitor *v) override;
 };
 
 extern void printCtfePerformanceStats();
@@ -7118,153 +7184,156 @@ class Package : public ScopeDsymbol
 public:
     PKG isPkgMod;
     uint32_t tag;
-    Module* mod;
-    const char* kind() const override;
-    bool equals(const RootObject* const o) const override;
-    bool isAncestorPackageOf(const Package* const pkg) const;
-    void accept(Visitor* v) override;
-    Module* isPackageMod();
+    Module *mod;
+    const char *kind() const override;
+    bool equals(const RootObject *const o) const override;
+    bool isAncestorPackageOf(const Package *const pkg) const;
+    void accept(Visitor *v) override;
+    Module *isPackageMod();
     void resolvePKGunknown();
 };
 
 class Module final : public Package
 {
 public:
-    static Module* rootModule;
-    static DsymbolTable* modules;
-    static Array<Module* > amodules;
-    static Array<Dsymbol* > deferred;
-    static Array<Dsymbol* > deferred2;
-    static Array<Dsymbol* > deferred3;
+    static Module *rootModule;
+    static DsymbolTable *modules;
+    static Array<Module *> amodules;
+    static Array<Dsymbol *> deferred;
+    static Array<Dsymbol *> deferred2;
+    static Array<Dsymbol *> deferred3;
     static void _init();
     static void deinitialize();
-    static AggregateDeclaration* moduleinfo;
-    _d_dynamicArray< const char > arg;
-    ModuleDeclaration* md;
+    static AggregateDeclaration *moduleinfo;
+    _d_dynamicArray<const char> arg;
+    ModuleDeclaration *md;
     const FileName srcfile;
     FileName objfile;
     FileName hdrfile;
     FileName docfile;
-    _d_dynamicArray< const uint8_t > src;
+    _d_dynamicArray<const uint8_t> src;
     uint32_t errors;
     uint32_t numlines;
     FileType filetype;
     bool hasAlwaysInlines;
     bool isPackageFile;
     Edition edition;
-    Package* pkg;
-    Array<const char* > contentImportedFiles;
+    Package *pkg;
+    Array<const char *> contentImportedFiles;
     int32_t needmoduleinfo;
+
 private:
     ThreeState selfimports;
     ThreeState rootimports;
+
 public:
-    void* tagSymTab;
+    void *tagSymTab;
+
 private:
     OutBuffer defines;
+
 public:
     bool selfImports();
     bool rootImports();
-    Identifier* searchCacheIdent;
-    Dsymbol* searchCacheSymbol;
+    Identifier *searchCacheIdent;
+    Dsymbol *searchCacheSymbol;
     uint32_t searchCacheFlags;
     bool insearch;
-    Module* importedFrom;
-    Array<Dsymbol* >* decldefs;
-    Array<Module* > aimports;
-    Array<Identifier* >* debugids;
-    Array<Identifier* >* debugidsNot;
-    Array<Identifier* >* versionids;
-    Array<Identifier* >* versionidsNot;
+    Module *importedFrom;
+    Array<Dsymbol *> *decldefs;
+    Array<Module *> aimports;
+    Array<Identifier *> *debugids;
+    Array<Identifier *> *debugidsNot;
+    Array<Identifier *> *versionids;
+    Array<Identifier *> *versionidsNot;
     MacroTable macrotable;
-    Escape* _escapetable;
+    Escape *_escapetable;
     size_t nameoffset;
     size_t namelen;
-    static Module* create(const char* filename, Identifier* ident, int32_t doDocComment, int32_t doHdrGen);
-    static const char* find(const char* filename);
-    static Module* load(Loc loc, Array<Identifier* >* packages, Identifier* ident);
-    const char* kind() const override;
+    static Module *create(const char *filename, Identifier *ident, int32_t doDocComment, int32_t doHdrGen);
+    static const char *find(const char *filename);
+    static Module *load(Loc loc, Array<Identifier *> *packages, Identifier *ident);
+    const char *kind() const override;
     bool read(Loc loc);
-    Module* parse();
+    Module *parse();
     int32_t needModuleInfo();
-    void checkImportDeprecation(Loc loc, Scope* sc);
-    bool isPackageAccessible(Package* p, Visibility visibility, uint32_t flags = 0u) override;
-    Dsymbol* symtabInsert(Dsymbol* s) override;
+    void checkImportDeprecation(Loc loc, Scope *sc);
+    bool isPackageAccessible(Package *p, Visibility visibility, uint32_t flags = 0u) override;
+    Dsymbol *symtabInsert(Dsymbol *s) override;
     static void runDeferredSemantic();
     static void runDeferredSemantic2();
     static void runDeferredSemantic3();
-    int32_t imports(Module* m);
+    int32_t imports(Module *m);
     bool isRoot();
-    bool isCoreModule(Identifier* ident);
+    bool isCoreModule(Identifier *ident);
     int32_t doppelganger;
-    Symbol* cov;
-    _d_dynamicArray< uint32_t > covb;
-    Symbol* sictor;
-    Symbol* sctor;
-    Symbol* sdtor;
-    Symbol* ssharedctor;
-    Symbol* sshareddtor;
-    Symbol* stest;
-    Symbol* sfilename;
-    void* ctfe_cov;
-    void accept(Visitor* v) override;
-    void fullyQualifiedName(OutBuffer& buf);
+    Symbol *cov;
+    _d_dynamicArray<uint32_t> covb;
+    Symbol *sictor;
+    Symbol *sctor;
+    Symbol *sdtor;
+    Symbol *ssharedctor;
+    Symbol *sshareddtor;
+    Symbol *stest;
+    Symbol *sfilename;
+    void *ctfe_cov;
+    void accept(Visitor *v) override;
+    void fullyQualifiedName(OutBuffer &buf);
 };
 
 struct ModuleDeclaration final
 {
     Loc loc;
-    Identifier* id;
-    _d_dynamicArray< Identifier* > packages;
+    Identifier *id;
+    _d_dynamicArray<Identifier *> packages;
     bool isdeprecated;
-    Expression* msg;
-    const char* toChars() const;
-    ModuleDeclaration() :
-        loc(),
-        id(),
-        packages(),
-        isdeprecated(),
-        msg()
+    Expression *msg;
+    const char *toChars() const;
+    ModuleDeclaration() : loc(),
+                          id(),
+                          packages(),
+                          isdeprecated(),
+                          msg()
     {
     }
 };
 
 struct Scope final
 {
-    Scope* enclosing;
-    Module* _module;
-    ScopeDsymbol* scopesym;
-    FuncDeclaration* func;
-    VarDeclaration* varDecl;
-    Dsymbol* parent;
-    LabelStatement* slabel;
-    SwitchStatement* switchStatement;
-    Statement* tryBody;
-    TryFinallyStatement* tryFinally;
-    ScopeGuardStatement* scopeGuard;
-    Statement* sbreak;
-    Statement* scontinue;
-    ForeachStatement* fes;
-    Scope* callsc;
-    Dsymbol* inunion;
+    Scope *enclosing;
+    Module *_module;
+    ScopeDsymbol *scopesym;
+    FuncDeclaration *func;
+    VarDeclaration *varDecl;
+    Dsymbol *parent;
+    LabelStatement *slabel;
+    SwitchStatement *switchStatement;
+    Statement *tryBody;
+    TryFinallyStatement *tryFinally;
+    ScopeGuardStatement *scopeGuard;
+    Statement *sbreak;
+    Statement *scontinue;
+    ForeachStatement *fes;
+    Scope *callsc;
+    Dsymbol *inunion;
     bool nofree;
     bool inLoop;
     bool inDefaultArg;
     int32_t intypeof;
-    VarDeclaration* lastVar;
-    ErrorSink* eSink;
-    Module* minst;
-    TemplateInstance* tinst;
+    VarDeclaration *lastVar;
+    ErrorSink *eSink;
+    Module *minst;
+    TemplateInstance *tinst;
     CtorFlow ctorflow;
-    AlignDeclaration* aligndecl;
-    CPPNamespaceDeclaration* namespace_;
+    AlignDeclaration *aligndecl;
+    CPPNamespaceDeclaration *namespace_;
     LINK linkage;
     CPPMANGLE cppmangle;
-    PragmaDeclaration* inlining;
+    PragmaDeclaration *inlining;
     Visibility visibility;
     int32_t explicitVisibility;
     STC stc;
-    DeprecatedDeclaration* depdecl;
+    DeprecatedDeclaration *depdecl;
     bool ctor() const;
     bool ctor(bool v);
     bool noAccessCheck() const;
@@ -7291,117 +7360,118 @@ struct Scope final
     bool fullinst(bool v);
     bool ctfeBlock() const;
     bool ctfeBlock(bool v);
+
 private:
     uint16_t bitFields;
+
 public:
     Previews previews;
-    UserAttributeDeclaration* userAttribDecl;
-    DocComment* lastdc;
-    void* anchorCounts;
-    Identifier* prevAnchor;
-    AliasDeclaration* aliasAsg;
-    StructDeclaration* argStruct;
-    Dsymbol* search(Loc loc, Identifier* ident, Dsymbol*& pscopesym, uint32_t flags = 0u);
-    Scope() :
-        enclosing(),
-        _module(),
-        scopesym(),
-        func(),
-        varDecl(),
-        parent(),
-        slabel(),
-        switchStatement(),
-        tryBody(),
-        tryFinally(),
-        scopeGuard(),
-        sbreak(),
-        scontinue(),
-        fes(),
-        callsc(),
-        inunion(),
-        nofree(),
-        inLoop(),
-        inDefaultArg(),
-        intypeof(),
-        lastVar(),
-        eSink(),
-        minst(),
-        tinst(),
-        ctorflow(),
-        aligndecl(),
-        namespace_(),
-        linkage((LINK)1u),
-        cppmangle((CPPMANGLE)0u),
-        inlining(),
-        visibility(Visibility((Visibility::Kind)5u, nullptr)),
-        explicitVisibility(),
-        depdecl(),
-        bitFields(0u),
-        previews(),
-        userAttribDecl(),
-        lastdc(),
-        prevAnchor(),
-        aliasAsg(),
-        argStruct()
+    UserAttributeDeclaration *userAttribDecl;
+    DocComment *lastdc;
+    void *anchorCounts;
+    Identifier *prevAnchor;
+    AliasDeclaration *aliasAsg;
+    StructDeclaration *argStruct;
+    Dsymbol *search(Loc loc, Identifier *ident, Dsymbol *&pscopesym, uint32_t flags = 0u);
+    Scope() : enclosing(),
+              _module(),
+              scopesym(),
+              func(),
+              varDecl(),
+              parent(),
+              slabel(),
+              switchStatement(),
+              tryBody(),
+              tryFinally(),
+              scopeGuard(),
+              sbreak(),
+              scontinue(),
+              fes(),
+              callsc(),
+              inunion(),
+              nofree(),
+              inLoop(),
+              inDefaultArg(),
+              intypeof(),
+              lastVar(),
+              eSink(),
+              minst(),
+              tinst(),
+              ctorflow(),
+              aligndecl(),
+              namespace_(),
+              linkage((LINK)1u),
+              cppmangle((CPPMANGLE)0u),
+              inlining(),
+              visibility(Visibility((Visibility::Kind)5u, nullptr)),
+              explicitVisibility(),
+              depdecl(),
+              bitFields(0u),
+              previews(),
+              userAttribDecl(),
+              lastdc(),
+              prevAnchor(),
+              aliasAsg(),
+              argStruct()
     {
     }
-    Scope(Scope* enclosing, Module* _module = nullptr, ScopeDsymbol* scopesym = nullptr, FuncDeclaration* func = nullptr, VarDeclaration* varDecl = nullptr, Dsymbol* parent = nullptr, LabelStatement* slabel = nullptr, SwitchStatement* switchStatement = nullptr, Statement* tryBody = nullptr, TryFinallyStatement* tryFinally = nullptr, ScopeGuardStatement* scopeGuard = nullptr, Statement* sbreak = nullptr, Statement* scontinue = nullptr, ForeachStatement* fes = nullptr, Scope* callsc = nullptr, Dsymbol* inunion = nullptr, bool nofree = false, bool inLoop = false, bool inDefaultArg = false, int32_t intypeof = 0, VarDeclaration* lastVar = nullptr, ErrorSink* eSink = nullptr, Module* minst = nullptr, TemplateInstance* tinst = nullptr, CtorFlow ctorflow = CtorFlow(), AlignDeclaration* aligndecl = nullptr, CPPNamespaceDeclaration* namespace_ = nullptr, LINK linkage = (LINK)1u, CPPMANGLE cppmangle = (CPPMANGLE)0u, PragmaDeclaration* inlining = nullptr, Visibility visibility = Visibility((Visibility::Kind)5u, nullptr), int32_t explicitVisibility = 0, STC stc = (STC)0LLU, DeprecatedDeclaration* depdecl = nullptr, uint16_t bitFields = 0u, Previews previews = Previews(), UserAttributeDeclaration* userAttribDecl = nullptr, DocComment* lastdc = nullptr, void* anchorCounts = nullptr, Identifier* prevAnchor = nullptr, AliasDeclaration* aliasAsg = nullptr, StructDeclaration* argStruct = nullptr) :
-        enclosing(enclosing),
-        _module(_module),
-        scopesym(scopesym),
-        func(func),
-        varDecl(varDecl),
-        parent(parent),
-        slabel(slabel),
-        switchStatement(switchStatement),
-        tryBody(tryBody),
-        tryFinally(tryFinally),
-        scopeGuard(scopeGuard),
-        sbreak(sbreak),
-        scontinue(scontinue),
-        fes(fes),
-        callsc(callsc),
-        inunion(inunion),
-        nofree(nofree),
-        inLoop(inLoop),
-        inDefaultArg(inDefaultArg),
-        intypeof(intypeof),
-        lastVar(lastVar),
-        eSink(eSink),
-        minst(minst),
-        tinst(tinst),
-        ctorflow(ctorflow),
-        aligndecl(aligndecl),
-        namespace_(namespace_),
-        linkage(linkage),
-        cppmangle(cppmangle),
-        inlining(inlining),
-        visibility(visibility),
-        explicitVisibility(explicitVisibility),
-        stc(stc),
-        depdecl(depdecl),
-        bitFields(bitFields),
-        previews(previews),
-        userAttribDecl(userAttribDecl),
-        lastdc(lastdc),
-        anchorCounts(anchorCounts),
-        prevAnchor(prevAnchor),
-        aliasAsg(aliasAsg),
-        argStruct(argStruct)
-        {}
+    Scope(Scope *enclosing, Module *_module = nullptr, ScopeDsymbol *scopesym = nullptr, FuncDeclaration *func = nullptr, VarDeclaration *varDecl = nullptr, Dsymbol *parent = nullptr, LabelStatement *slabel = nullptr, SwitchStatement *switchStatement = nullptr, Statement *tryBody = nullptr, TryFinallyStatement *tryFinally = nullptr, ScopeGuardStatement *scopeGuard = nullptr, Statement *sbreak = nullptr, Statement *scontinue = nullptr, ForeachStatement *fes = nullptr, Scope *callsc = nullptr, Dsymbol *inunion = nullptr, bool nofree = false, bool inLoop = false, bool inDefaultArg = false, int32_t intypeof = 0, VarDeclaration *lastVar = nullptr, ErrorSink *eSink = nullptr, Module *minst = nullptr, TemplateInstance *tinst = nullptr, CtorFlow ctorflow = CtorFlow(), AlignDeclaration *aligndecl = nullptr, CPPNamespaceDeclaration *namespace_ = nullptr, LINK linkage = (LINK)1u, CPPMANGLE cppmangle = (CPPMANGLE)0u, PragmaDeclaration *inlining = nullptr, Visibility visibility = Visibility((Visibility::Kind)5u, nullptr), int32_t explicitVisibility = 0, STC stc = (STC)0LLU, DeprecatedDeclaration *depdecl = nullptr, uint16_t bitFields = 0u, Previews previews = Previews(), UserAttributeDeclaration *userAttribDecl = nullptr, DocComment *lastdc = nullptr, void *anchorCounts = nullptr, Identifier *prevAnchor = nullptr, AliasDeclaration *aliasAsg = nullptr, StructDeclaration *argStruct = nullptr) : enclosing(enclosing),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           _module(_module),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           scopesym(scopesym),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           func(func),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           varDecl(varDecl),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           parent(parent),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           slabel(slabel),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           switchStatement(switchStatement),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           tryBody(tryBody),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           tryFinally(tryFinally),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           scopeGuard(scopeGuard),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           sbreak(sbreak),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           scontinue(scontinue),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           fes(fes),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           callsc(callsc),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           inunion(inunion),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           nofree(nofree),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           inLoop(inLoop),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           inDefaultArg(inDefaultArg),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           intypeof(intypeof),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           lastVar(lastVar),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           eSink(eSink),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           minst(minst),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           tinst(tinst),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ctorflow(ctorflow),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           aligndecl(aligndecl),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           namespace_(namespace_),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           linkage(linkage),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           cppmangle(cppmangle),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           inlining(inlining),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           visibility(visibility),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           explicitVisibility(explicitVisibility),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           stc(stc),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           depdecl(depdecl),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           bitFields(bitFields),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           previews(previews),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           userAttribDecl(userAttribDecl),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           lastdc(lastdc),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           anchorCounts(anchorCounts),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           prevAnchor(prevAnchor),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           aliasAsg(aliasAsg),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           argStruct(argStruct)
+    {
+    }
 };
 
 class StructDeclaration : public AggregateDeclaration
 {
 public:
-    Array<FuncDeclaration* > postblits;
-    FuncDeclaration* postblit;
-    FuncDeclaration* xeq;
-    FuncDeclaration* xcmp;
-    FuncDeclaration* xhash;
-    static FuncDeclaration* xerreq;
-    static FuncDeclaration* xerrcmp;
-    TypeTuple* argTypes;
+    Array<FuncDeclaration *> postblits;
+    FuncDeclaration *postblit;
+    FuncDeclaration *xeq;
+    FuncDeclaration *xcmp;
+    FuncDeclaration *xhash;
+    static FuncDeclaration *xerreq;
+    static FuncDeclaration *xerrcmp;
+    TypeTuple *argTypes;
     structalign_t alignment;
     ThreeState ispod;
     bool zeroInit() const;
@@ -7430,87 +7500,89 @@ public:
     bool computedTypeProperties(bool v);
     bool requestTypeInfo() const;
     bool requestTypeInfo(bool v);
+
 private:
     uint16_t bitFields;
+
 public:
-    static StructDeclaration* create(Loc loc, Identifier* id, bool inObject);
-    StructDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
+    static StructDeclaration *create(Loc loc, Identifier *id, bool inObject);
+    StructDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
     void finalizeSize() final override;
     bool isPOD();
     bool hasCopyConstruction();
-    void accept(Visitor* v) override;
+    void accept(Visitor *v) override;
     uint32_t numArgTypes() const;
-    Type* argType(uint32_t index);
+    Type *argType(uint32_t index);
     bool hasRegularCtor(bool checkDisabled = false);
 };
 
 class UnionDeclaration final : public StructDeclaration
 {
 public:
-    UnionDeclaration* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    UnionDeclaration *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
 class WithScopeSymbol final : public ScopeDsymbol
 {
 public:
-    WithStatement* withstate;
-    void accept(Visitor* v) override;
+    WithStatement *withstate;
+    void accept(Visitor *v) override;
 };
 
 class ArrayScopeSymbol final : public ScopeDsymbol
 {
 public:
-    RootObject* arrayContent;
-    void accept(Visitor* v) override;
+    RootObject *arrayContent;
+    void accept(Visitor *v) override;
 };
 
 class OverloadSet final : public Dsymbol
 {
 public:
-    Array<Dsymbol* > a;
-    void push(Dsymbol* s);
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    Array<Dsymbol *> a;
+    void push(Dsymbol *s);
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
 class ForwardingScopeDsymbol final : public ScopeDsymbol
 {
 public:
-    Dsymbol* symtabInsert(Dsymbol* s) override;
-    Dsymbol* symtabLookup(Dsymbol* s, Identifier* id) override;
-    void importScope(Dsymbol* s, Visibility visibility) override;
-    const char* kind() const override;
+    Dsymbol *symtabInsert(Dsymbol *s) override;
+    Dsymbol *symtabLookup(Dsymbol *s, Identifier *id) override;
+    void importScope(Dsymbol *s, Visibility visibility) override;
+    const char *kind() const override;
 };
 
 class ExpressionDsymbol final : public Dsymbol
 {
 public:
-    Expression* exp;
-    ExpressionDsymbol(Expression* exp);
+    Expression *exp;
+    ExpressionDsymbol(Expression *exp);
 };
 
 class AliasAssign final : public Dsymbol
 {
 public:
-    Identifier* ident;
-    Type* type;
-    Dsymbol* aliassym;
-    AliasAssign* syntaxCopy(Dsymbol* s) override;
-    const char* kind() const override;
-    void accept(Visitor* v) override;
+    Identifier *ident;
+    Type *type;
+    Dsymbol *aliassym;
+    AliasAssign *syntaxCopy(Dsymbol *s) override;
+    const char *kind() const override;
+    void accept(Visitor *v) override;
 };
 
 class DsymbolTable final : public RootObject
 {
 public:
-    AssocArray<Identifier*, Dsymbol* > tab;
-    Dsymbol* lookup(const Identifier* const ident);
-    void update(Dsymbol* s);
-    Dsymbol* insert(Dsymbol* s);
-    Dsymbol* insert(const Identifier* const ident, Dsymbol* s);
+    AssocArray<Identifier *, Dsymbol *> tab;
+    Dsymbol *lookup(const Identifier *const ident);
+    void update(Dsymbol *s);
+    Dsymbol *insert(Dsymbol *s);
+    Dsymbol *insert(const Identifier *const ident, Dsymbol *s);
     size_t length() const;
     DsymbolTable();
 };
@@ -7518,91 +7590,91 @@ public:
 class CAsmDeclaration final : public Dsymbol
 {
 public:
-    Expression* code;
-    void accept(Visitor* v) override;
+    Expression *code;
+    void accept(Visitor *v) override;
 };
 
 class ImportAllVisitor : public Visitor
 {
 public:
     using Visitor::visit;
-    Scope* sc;
-    ImportAllVisitor(Scope* sc);
-    void visit(Dsymbol* d) override;
-    void visit(Import* imp) override;
-    void visit(Module* m) override;
-    void visit(AttribDeclaration* atb) override;
-    void visit(StaticIfDeclaration* _) override;
-    void visit(StaticForeachDeclaration* _) override;
+    Scope *sc;
+    ImportAllVisitor(Scope *sc);
+    void visit(Dsymbol *d) override;
+    void visit(Import *imp) override;
+    void visit(Module *m) override;
+    void visit(AttribDeclaration *atb) override;
+    void visit(StaticIfDeclaration *_) override;
+    void visit(StaticForeachDeclaration *_) override;
 };
 
-extern Array<Dsymbol* >* include(Dsymbol* d, Scope* sc);
+extern Array<Dsymbol *> *include(Dsymbol *d, Scope *sc);
 
 class IncludeVisitor : public Visitor
 {
 public:
     using Visitor::visit;
-    Scope* sc;
-    Array<Dsymbol* >* symbols;
-    IncludeVisitor(Scope* sc);
-    void visit(AttribDeclaration* ad) override;
-    void visit(ConditionalDeclaration* cdc) override;
-    void visit(StaticIfDeclaration* sif) override;
-    void visit(StaticForeachDeclaration* sfd) override;
+    Scope *sc;
+    Array<Dsymbol *> *symbols;
+    IncludeVisitor(Scope *sc);
+    void visit(AttribDeclaration *ad) override;
+    void visit(ConditionalDeclaration *cdc) override;
+    void visit(StaticIfDeclaration *sif) override;
+    void visit(StaticForeachDeclaration *sfd) override;
 };
 
-extern void addComment(Dsymbol* d, const char* comment);
+extern void addComment(Dsymbol *d, const char *comment);
 
 class AddCommentVisitor : public Visitor
 {
 public:
     using Visitor::visit;
-    const char* comment;
-    AddCommentVisitor(const char* comment);
-    void visit(Dsymbol* d) override;
-    void visit(AttribDeclaration* atd) override;
-    void visit(ConditionalDeclaration* cd) override;
-    void visit(StaticForeachDeclaration* sfd) override;
+    const char *comment;
+    AddCommentVisitor(const char *comment);
+    void visit(Dsymbol *d) override;
+    void visit(AttribDeclaration *atd) override;
+    void visit(ConditionalDeclaration *cd) override;
+    void visit(StaticForeachDeclaration *sfd) override;
 };
 
-extern bool hasStaticCtorOrDtor(Dsymbol* d);
+extern bool hasStaticCtorOrDtor(Dsymbol *d);
 
-extern bool isFuncHidden(ClassDeclaration* cd, FuncDeclaration* fd);
+extern bool isFuncHidden(ClassDeclaration *cd, FuncDeclaration *fd);
 
-extern void lowerNonArrayAggregate(StaticForeach* sfe, Scope* sc);
+extern void lowerNonArrayAggregate(StaticForeach *sfe, Scope *sc);
 
 class NrvoWalker final : public StatementRewriteWalker
 {
 public:
     using StatementRewriteWalker::visit;
-    FuncDeclaration* fd;
-    Scope* sc;
-    void visit(ReturnStatement* s) override;
-    void visit(TryFinallyStatement* s) override;
+    FuncDeclaration *fd;
+    Scope *sc;
+    void visit(ReturnStatement *s) override;
+    void visit(TryFinallyStatement *s) override;
 };
 
-extern bool onlyOneMain(FuncDeclaration* fd);
+extern bool onlyOneMain(FuncDeclaration *fd);
 
 class NOGCVisitor final : public StoppableVisitor
 {
 public:
     using StoppableVisitor::visit;
-    FuncDeclaration* f;
+    FuncDeclaration *f;
     bool checkOnly;
     bool err;
     bool nogcExceptions;
-    void doCond(Expression* exp);
-    void visit(Expression* e) override;
-    void visit(DeclarationExp* e) override;
-    void visit(CallExp* e) override;
-    void visit(ArrayLiteralExp* e) override;
-    void visit(AssocArrayLiteralExp* e) override;
-    void visit(NewExp* e) override;
-    void visit(DeleteExp* e) override;
-    void visit(IndexExp* e) override;
-    void visit(AssignExp* e) override;
-    void visit(CatAssignExp* e) override;
-    void visit(CatExp* e) override;
+    void doCond(Expression *exp);
+    void visit(Expression *e) override;
+    void visit(DeclarationExp *e) override;
+    void visit(CallExp *e) override;
+    void visit(ArrayLiteralExp *e) override;
+    void visit(AssocArrayLiteralExp *e) override;
+    void visit(NewExp *e) override;
+    void visit(DeleteExp *e) override;
+    void visit(IndexExp *e) override;
+    void visit(AssignExp *e) override;
+    void visit(CatAssignExp *e) override;
+    void visit(CatExp *e) override;
 };
 
 class Objc
@@ -7610,26 +7682,26 @@ class Objc
 public:
     static void _init();
     static void deinitialize();
-    virtual void setObjc(ClassDeclaration* cd) = 0;
-    virtual void setObjc(InterfaceDeclaration* ) = 0;
-    virtual const char* toPrettyChars(ClassDeclaration* classDeclaration, bool qualifyTypes) const = 0;
-    virtual void setSelector(FuncDeclaration* , Scope* sc) = 0;
-    virtual void validateSelector(FuncDeclaration* fd) = 0;
-    virtual void checkLinkage(FuncDeclaration* fd) = 0;
-    virtual bool isVirtual(const FuncDeclaration* const fd) const = 0;
-    virtual void setAsOptional(FuncDeclaration* functionDeclaration, Scope* sc) const = 0;
-    virtual void validateOptional(FuncDeclaration* functionDeclaration) const = 0;
-    virtual ClassDeclaration* getParent(FuncDeclaration* fd, ClassDeclaration* cd) const = 0;
-    virtual void addToClassMethodList(FuncDeclaration* fd, ClassDeclaration* cd) const = 0;
-    virtual AggregateDeclaration* isThis(FuncDeclaration* funcDeclaration) const = 0;
-    virtual VarDeclaration* createSelectorParameter(FuncDeclaration* fd, Scope* sc) const = 0;
-    virtual void setMetaclass(InterfaceDeclaration* interfaceDeclaration, Scope* sc) const = 0;
-    virtual void setMetaclass(ClassDeclaration* classDeclaration, Scope* sc) const = 0;
-    virtual ClassDeclaration* getRuntimeMetaclass(ClassDeclaration* classDeclaration) const = 0;
-    virtual void addSymbols(AttribDeclaration* attribDeclaration, Array<ClassDeclaration* >* classes, Array<ClassDeclaration* >* categories) const = 0;
-    virtual void addSymbols(ClassDeclaration* classDeclaration, Array<ClassDeclaration* >* classes, Array<ClassDeclaration* >* categories) const = 0;
-    virtual void checkOffsetof(Expression* expression, AggregateDeclaration* aggregateDeclaration) const = 0;
-    virtual void checkTupleof(Expression* expression, TypeClass* type) const = 0;
+    virtual void setObjc(ClassDeclaration *cd) = 0;
+    virtual void setObjc(InterfaceDeclaration *) = 0;
+    virtual const char *toPrettyChars(ClassDeclaration *classDeclaration, bool qualifyTypes) const = 0;
+    virtual void setSelector(FuncDeclaration *, Scope *sc) = 0;
+    virtual void validateSelector(FuncDeclaration *fd) = 0;
+    virtual void checkLinkage(FuncDeclaration *fd) = 0;
+    virtual bool isVirtual(const FuncDeclaration *const fd) const = 0;
+    virtual void setAsOptional(FuncDeclaration *functionDeclaration, Scope *sc) const = 0;
+    virtual void validateOptional(FuncDeclaration *functionDeclaration) const = 0;
+    virtual ClassDeclaration *getParent(FuncDeclaration *fd, ClassDeclaration *cd) const = 0;
+    virtual void addToClassMethodList(FuncDeclaration *fd, ClassDeclaration *cd) const = 0;
+    virtual AggregateDeclaration *isThis(FuncDeclaration *funcDeclaration) const = 0;
+    virtual VarDeclaration *createSelectorParameter(FuncDeclaration *fd, Scope *sc) const = 0;
+    virtual void setMetaclass(InterfaceDeclaration *interfaceDeclaration, Scope *sc) const = 0;
+    virtual void setMetaclass(ClassDeclaration *classDeclaration, Scope *sc) const = 0;
+    virtual ClassDeclaration *getRuntimeMetaclass(ClassDeclaration *classDeclaration) const = 0;
+    virtual void addSymbols(AttribDeclaration *attribDeclaration, Array<ClassDeclaration *> *classes, Array<ClassDeclaration *> *categories) const = 0;
+    virtual void addSymbols(ClassDeclaration *classDeclaration, Array<ClassDeclaration *> *classes, Array<ClassDeclaration *> *categories) const = 0;
+    virtual void checkOffsetof(Expression *expression, AggregateDeclaration *aggregateDeclaration) const = 0;
+    virtual void checkTupleof(Expression *expression, TypeClass *type) const = 0;
 };
 
 struct Target final
@@ -7659,15 +7731,15 @@ struct Target final
     TargetC c;
     TargetCPP cpp;
     TargetObjC objc;
-    _d_dynamicArray< const char > architectureName;
+    _d_dynamicArray<const char> architectureName;
     CPU cpu;
     bool isAArch64;
     bool isX86_64;
     bool isX86;
     bool isLP64;
-    _d_dynamicArray< const char > obj_ext;
-    _d_dynamicArray< const char > lib_ext;
-    _d_dynamicArray< const char > dll_ext;
+    _d_dynamicArray<const char> obj_ext;
+    _d_dynamicArray<const char> lib_ext;
+    _d_dynamicArray<const char> dll_ext;
     bool run_noext;
     template <typename T>
     struct FPTypeProperties final
@@ -7688,25 +7760,28 @@ struct Target final
         }
     };
 
-    FPTypeProperties<float > FloatProperties;
-    FPTypeProperties<double > DoubleProperties;
-    FPTypeProperties<_d_real > RealProperties;
+    FPTypeProperties<float> FloatProperties;
+    FPTypeProperties<double> DoubleProperties;
+    FPTypeProperties<_d_real> RealProperties;
+
 private:
-    Type* tvalist;
-    const Param* params;
+    Type *tvalist;
+    const Param *params;
+
 public:
-    void _init(const Param& params);
+    void _init(const Param &params);
     void setCPU();
     void deinitialize();
-    uint32_t alignsize(Type* type);
-    uint32_t fieldalign(Type* type);
-    Type* va_listType(Loc loc, Scope* sc);
-    int32_t isVectorTypeSupported(int32_t sz, Type* type);
-    bool isVectorOpSupported(Type* type, EXP op, Type* t2 = nullptr);
+    uint32_t alignsize(Type *type);
+    uint32_t fieldalign(Type *type);
+    Type *va_listType(Loc loc, Scope *sc);
+    int32_t isVectorTypeSupported(int32_t sz, Type *type);
+    bool isVectorOpSupported(Type *type, EXP op, Type *t2 = nullptr);
     LINK systemLinkage();
-    TypeTuple* toArgTypes(Type* t);
-    bool isReturnOnStack(TypeFunction* tf, bool needsThis);
-    bool preferPassByRef(Type* t);
+    TypeTuple *toArgTypes(Type *t);
+    bool isReturnOnStack(TypeFunction *tf, bool needsThis);
+    bool preferPassByRef(Type *t);
+
 private:
     enum class TargetInfoKeys
     {
@@ -7718,481 +7793,480 @@ private:
     };
 
 public:
-    Expression* getTargetInfo(const char* name, Loc loc);
-    bool isCalleeDestroyingArgs(TypeFunction* tf);
-    bool libraryObjectMonitors(FuncDeclaration* fd, Statement* fbody);
+    Expression *getTargetInfo(const char *name, Loc loc);
+    bool isCalleeDestroyingArgs(TypeFunction *tf);
+    bool libraryObjectMonitors(FuncDeclaration *fd, Statement *fbody);
     bool supportsLinkerDirective() const;
-    Target() :
-        osMajor(),
-        ptrsize(),
-        realsize(),
-        realpad(),
-        realalignsize(),
-        classinfosize(),
-        maxStaticDataSize(),
-        c(),
-        cpp(),
-        objc(),
-        architectureName(),
-        isAArch64(),
-        isX86_64(),
-        isX86(),
-        isLP64(),
-        obj_ext(),
-        lib_ext(),
-        dll_ext(),
-        run_noext(),
-        FloatProperties(),
-        DoubleProperties(),
-        RealProperties(),
-        tvalist(),
-        params()
+    Target() : osMajor(),
+               ptrsize(),
+               realsize(),
+               realpad(),
+               realalignsize(),
+               classinfosize(),
+               maxStaticDataSize(),
+               c(),
+               cpp(),
+               objc(),
+               architectureName(),
+               isAArch64(),
+               isX86_64(),
+               isX86(),
+               isLP64(),
+               obj_ext(),
+               lib_ext(),
+               dll_ext(),
+               run_noext(),
+               FloatProperties(),
+               DoubleProperties(),
+               RealProperties(),
+               tvalist(),
+               params()
     {
     }
-    Target(OS os, uint8_t osMajor = 0u, uint8_t ptrsize = 0u, uint8_t realsize = 0u, uint8_t realpad = 0u, uint8_t realalignsize = 0u, uint8_t classinfosize = 0u, uint64_t maxStaticDataSize = 0LLU, TargetC c = TargetC(), TargetCPP cpp = TargetCPP(), TargetObjC objc = TargetObjC(), _d_dynamicArray< const char > architectureName = {}, CPU cpu = (CPU)0u, bool isAArch64 = false, bool isX86_64 = false, bool isX86 = false, bool isLP64 = false, _d_dynamicArray< const char > obj_ext = {}, _d_dynamicArray< const char > lib_ext = {}, _d_dynamicArray< const char > dll_ext = {}, bool run_noext = false, FPTypeProperties<float > FloatProperties = FPTypeProperties<float >(), FPTypeProperties<double > DoubleProperties = FPTypeProperties<double >(), FPTypeProperties<_d_real > RealProperties = FPTypeProperties<_d_real >(), Type* tvalist = nullptr, const Param* params = nullptr) :
-        os(os),
-        osMajor(osMajor),
-        ptrsize(ptrsize),
-        realsize(realsize),
-        realpad(realpad),
-        realalignsize(realalignsize),
-        classinfosize(classinfosize),
-        maxStaticDataSize(maxStaticDataSize),
-        c(c),
-        cpp(cpp),
-        objc(objc),
-        architectureName(architectureName),
-        cpu(cpu),
-        isAArch64(isAArch64),
-        isX86_64(isX86_64),
-        isX86(isX86),
-        isLP64(isLP64),
-        obj_ext(obj_ext),
-        lib_ext(lib_ext),
-        dll_ext(dll_ext),
-        run_noext(run_noext),
-        FloatProperties(FloatProperties),
-        DoubleProperties(DoubleProperties),
-        RealProperties(RealProperties),
-        tvalist(tvalist),
-        params(params)
-        {}
+    Target(OS os, uint8_t osMajor = 0u, uint8_t ptrsize = 0u, uint8_t realsize = 0u, uint8_t realpad = 0u, uint8_t realalignsize = 0u, uint8_t classinfosize = 0u, uint64_t maxStaticDataSize = 0LLU, TargetC c = TargetC(), TargetCPP cpp = TargetCPP(), TargetObjC objc = TargetObjC(), _d_dynamicArray<const char> architectureName = {}, CPU cpu = (CPU)0u, bool isAArch64 = false, bool isX86_64 = false, bool isX86 = false, bool isLP64 = false, _d_dynamicArray<const char> obj_ext = {}, _d_dynamicArray<const char> lib_ext = {}, _d_dynamicArray<const char> dll_ext = {}, bool run_noext = false, FPTypeProperties<float> FloatProperties = FPTypeProperties<float>(), FPTypeProperties<double> DoubleProperties = FPTypeProperties<double>(), FPTypeProperties<_d_real> RealProperties = FPTypeProperties<_d_real>(), Type *tvalist = nullptr, const Param *params = nullptr) : os(os),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             osMajor(osMajor),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ptrsize(ptrsize),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             realsize(realsize),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             realpad(realpad),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             realalignsize(realalignsize),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             classinfosize(classinfosize),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             maxStaticDataSize(maxStaticDataSize),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             c(c),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             cpp(cpp),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             objc(objc),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             architectureName(architectureName),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             cpu(cpu),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             isAArch64(isAArch64),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             isX86_64(isX86_64),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             isX86(isX86),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             isLP64(isLP64),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             obj_ext(obj_ext),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             lib_ext(lib_ext),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             dll_ext(dll_ext),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             run_noext(run_noext),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             FloatProperties(FloatProperties),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             DoubleProperties(DoubleProperties),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             RealProperties(RealProperties),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             tvalist(tvalist),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             params(params)
+    {
+    }
 };
 
 extern Target target;
 
-extern Type* getTypeInfoType(Loc loc, Type* t, Scope* sc);
+extern Type *getTypeInfoType(Loc loc, Type *t, Scope *sc);
 
 class SemanticTimeTransitiveVisitor : public SemanticTimePermissiveVisitor
 {
 public:
     using SemanticTimePermissiveVisitor::visit;
-    void visit(ExpStatement* s) override;
-    void visit(MixinStatement* s) override;
-    void visit(CompoundStatement* s) override;
-    virtual void visitVarDecl(VarDeclaration* v);
-    void visit(CompoundDeclarationStatement* s) override;
-    void visit(ScopeStatement* s) override;
-    void visit(WhileStatement* s) override;
-    void visit(DoStatement* s) override;
-    void visit(ForStatement* s) override;
-    void visit(ForeachStatement* s) override;
-    void visit(ForeachRangeStatement* s) override;
-    void visit(StaticForeachStatement* s) override;
-    void visit(IfStatement* s) override;
-    void visit(ConditionalStatement* s) override;
-    void visit(PragmaStatement* s) override;
-    void visit(StaticAssertStatement* s) override;
-    void visit(SwitchStatement* s) override;
-    void visit(CaseStatement* s) override;
-    void visit(CaseRangeStatement* s) override;
-    void visit(DefaultStatement* s) override;
-    void visit(GotoCaseStatement* s) override;
-    void visit(ReturnStatement* s) override;
-    void visit(SynchronizedStatement* s) override;
-    void visit(WithStatement* s) override;
-    void visit(TryCatchStatement* s) override;
-    void visit(TryFinallyStatement* s) override;
-    void visit(ScopeGuardStatement* s) override;
-    void visit(ThrowStatement* s) override;
-    void visit(LabelStatement* s) override;
-    void visit(ImportStatement* s) override;
-    virtual void visit(Catch* c);
-    virtual void visitType(Type* t);
-    virtual void visitFunctionType(TypeFunction* t, TemplateDeclaration* td);
-    void visit(TypeVector* t) override;
-    void visit(TypeSArray* t) override;
-    void visit(TypeDArray* t) override;
-    void visit(TypeAArray* t) override;
-    void visit(TypePointer* t) override;
-    void visit(TypeReference* t) override;
-    void visit(TypeFunction* t) override;
-    void visit(TypeDelegate* t) override;
-    virtual void visitTypeQualified(TypeQualified* t);
-    void visit(TypeIdentifier* t) override;
-    void visit(TypeInstance* t) override;
-    void visit(TypeTypeof* t) override;
-    void visit(TypeReturn* t) override;
-    void visit(TypeTuple* t) override;
-    void visit(TypeSlice* t) override;
-    void visit(TypeTraits* t) override;
-    void visit(TypeMixin* t) override;
-    void visit(StaticAssert* s) override;
-    void visit(EnumMember* em) override;
-    virtual void visitAttribDeclaration(AttribDeclaration* d);
-    void visit(AttribDeclaration* d) override;
-    void visit(StorageClassDeclaration* d) override;
-    void visit(DeprecatedDeclaration* d) override;
-    void visit(LinkDeclaration* d) override;
-    void visit(CPPMangleDeclaration* d) override;
-    void visit(VisibilityDeclaration* d) override;
-    void visit(AlignDeclaration* d) override;
-    void visit(AnonDeclaration* d) override;
-    void visit(PragmaDeclaration* d) override;
-    void visit(ConditionalDeclaration* d) override;
-    void visit(MixinDeclaration* d) override;
-    void visit(UserAttributeDeclaration* d) override;
-    virtual void visitFuncBody(FuncDeclaration* f);
-    virtual void visitBaseClasses(ClassDeclaration* d);
-    virtual bool visitEponymousMember(TemplateDeclaration* d);
-    virtual void visitTemplateParameters(Array<TemplateParameter* >* parameters);
-    void visit(TemplateDeclaration* d) override;
-    virtual void visitObject(RootObject* oarg);
-    virtual void visitTiargs(TemplateInstance* ti);
-    void visit(TemplateInstance* ti) override;
-    void visit(TemplateMixin* tm) override;
-    void visit(EnumDeclaration* d) override;
-    void visit(Nspace* d) override;
-    void visit(StructDeclaration* d) override;
-    void visit(UnionDeclaration* d) override;
-    void visit(ClassDeclaration* d) override;
-    void visit(InterfaceDeclaration* d) override;
-    void visit(AliasDeclaration* d) override;
-    void visit(AliasAssign* d) override;
-    void visit(VarDeclaration* d) override;
-    void visit(FuncDeclaration* f) override;
-    void visit(FuncLiteralDeclaration* f) override;
-    void visit(PostBlitDeclaration* d) override;
-    void visit(DtorDeclaration* d) override;
-    void visit(CtorDeclaration* d) override;
-    void visit(StaticCtorDeclaration* d) override;
-    void visit(StaticDtorDeclaration* d) override;
-    void visit(InvariantDeclaration* d) override;
-    void visit(UnitTestDeclaration* d) override;
-    void visit(NewDeclaration* d) override;
-    void visit(StructInitializer* si) override;
-    void visit(ArrayInitializer* ai) override;
-    void visit(ExpInitializer* ei) override;
-    void visit(CInitializer* ci) override;
-    void visit(ArrayLiteralExp* e) override;
-    void visit(AssocArrayLiteralExp* e) override;
-    void visit(TypeExp* e) override;
-    void visit(ScopeExp* e) override;
-    void visit(NewExp* e) override;
-    void visit(NewAnonClassExp* e) override;
-    void visit(TupleExp* e) override;
-    void visit(FuncExp* e) override;
-    void visit(DeclarationExp* e) override;
-    void visit(TypeidExp* e) override;
-    void visit(TraitsExp* e) override;
-    void visit(IsExp* e) override;
-    void visit(UnaExp* e) override;
-    void visit(BinExp* e) override;
-    void visit(MixinExp* e) override;
-    void visit(ImportExp* e) override;
-    void visit(AssertExp* e) override;
-    void visit(DotIdExp* e) override;
-    void visit(DotTemplateInstanceExp* e) override;
-    void visit(CallExp* e) override;
-    void visit(PtrExp* e) override;
-    void visit(DeleteExp* e) override;
-    void visit(CastExp* e) override;
-    void visit(IntervalExp* e) override;
-    void visit(ArrayExp* e) override;
-    void visit(PostExp* e) override;
-    void visit(CondExp* e) override;
-    void visit(GenericExp* e) override;
-    void visit(ThrowExp* e) override;
-    void visit(TemplateTypeParameter* tp) override;
-    void visit(TemplateThisParameter* tp) override;
-    void visit(TemplateAliasParameter* tp) override;
-    void visit(TemplateValueParameter* tp) override;
-    void visit(StaticIfCondition* c) override;
-    void visit(Parameter* p) override;
-    void visit(Module* m) override;
-    void visit(PeelStatement* s) override;
-    void visit(UnrolledLoopStatement* s) override;
-    void visit(DebugStatement* s) override;
-    void visit(ForwardingStatement* s) override;
-    void visit(StructLiteralExp* e) override;
-    void visit(ClassReferenceExp* e) override;
-    void visit(CompoundLiteralExp* e) override;
-    void visit(DotTemplateExp* e) override;
-    void visit(DotVarExp* e) override;
-    void visit(DelegateExp* e) override;
-    void visit(DotTypeExp* e) override;
-    void visit(VectorExp* e) override;
-    void visit(VectorArrayExp* e) override;
-    void visit(SliceExp* e) override;
-    void visit(ArrayLengthExp* e) override;
-    void visit(DelegatePtrExp* e) override;
-    void visit(DelegateFuncptrExp* e) override;
-    void visit(DotExp* e) override;
-    void visit(IndexExp* e) override;
-    void visit(RemoveExp* e) override;
-    void visit(LoweredAssignExp* e) override;
+    void visit(ExpStatement *s) override;
+    void visit(MixinStatement *s) override;
+    void visit(CompoundStatement *s) override;
+    virtual void visitVarDecl(VarDeclaration *v);
+    void visit(CompoundDeclarationStatement *s) override;
+    void visit(ScopeStatement *s) override;
+    void visit(WhileStatement *s) override;
+    void visit(DoStatement *s) override;
+    void visit(ForStatement *s) override;
+    void visit(ForeachStatement *s) override;
+    void visit(ForeachRangeStatement *s) override;
+    void visit(StaticForeachStatement *s) override;
+    void visit(IfStatement *s) override;
+    void visit(ConditionalStatement *s) override;
+    void visit(PragmaStatement *s) override;
+    void visit(StaticAssertStatement *s) override;
+    void visit(SwitchStatement *s) override;
+    void visit(CaseStatement *s) override;
+    void visit(CaseRangeStatement *s) override;
+    void visit(DefaultStatement *s) override;
+    void visit(GotoCaseStatement *s) override;
+    void visit(ReturnStatement *s) override;
+    void visit(SynchronizedStatement *s) override;
+    void visit(WithStatement *s) override;
+    void visit(TryCatchStatement *s) override;
+    void visit(TryFinallyStatement *s) override;
+    void visit(ScopeGuardStatement *s) override;
+    void visit(ThrowStatement *s) override;
+    void visit(LabelStatement *s) override;
+    void visit(ImportStatement *s) override;
+    virtual void visit(Catch *c);
+    virtual void visitType(Type *t);
+    virtual void visitFunctionType(TypeFunction *t, TemplateDeclaration *td);
+    void visit(TypeVector *t) override;
+    void visit(TypeSArray *t) override;
+    void visit(TypeDArray *t) override;
+    void visit(TypeAArray *t) override;
+    void visit(TypePointer *t) override;
+    void visit(TypeReference *t) override;
+    void visit(TypeFunction *t) override;
+    void visit(TypeDelegate *t) override;
+    virtual void visitTypeQualified(TypeQualified *t);
+    void visit(TypeIdentifier *t) override;
+    void visit(TypeInstance *t) override;
+    void visit(TypeTypeof *t) override;
+    void visit(TypeReturn *t) override;
+    void visit(TypeTuple *t) override;
+    void visit(TypeSlice *t) override;
+    void visit(TypeTraits *t) override;
+    void visit(TypeMixin *t) override;
+    void visit(StaticAssert *s) override;
+    void visit(EnumMember *em) override;
+    virtual void visitAttribDeclaration(AttribDeclaration *d);
+    void visit(AttribDeclaration *d) override;
+    void visit(StorageClassDeclaration *d) override;
+    void visit(DeprecatedDeclaration *d) override;
+    void visit(LinkDeclaration *d) override;
+    void visit(CPPMangleDeclaration *d) override;
+    void visit(VisibilityDeclaration *d) override;
+    void visit(AlignDeclaration *d) override;
+    void visit(AnonDeclaration *d) override;
+    void visit(PragmaDeclaration *d) override;
+    void visit(ConditionalDeclaration *d) override;
+    void visit(MixinDeclaration *d) override;
+    void visit(UserAttributeDeclaration *d) override;
+    virtual void visitFuncBody(FuncDeclaration *f);
+    virtual void visitBaseClasses(ClassDeclaration *d);
+    virtual bool visitEponymousMember(TemplateDeclaration *d);
+    virtual void visitTemplateParameters(Array<TemplateParameter *> *parameters);
+    void visit(TemplateDeclaration *d) override;
+    virtual void visitObject(RootObject *oarg);
+    virtual void visitTiargs(TemplateInstance *ti);
+    void visit(TemplateInstance *ti) override;
+    void visit(TemplateMixin *tm) override;
+    void visit(EnumDeclaration *d) override;
+    void visit(Nspace *d) override;
+    void visit(StructDeclaration *d) override;
+    void visit(UnionDeclaration *d) override;
+    void visit(ClassDeclaration *d) override;
+    void visit(InterfaceDeclaration *d) override;
+    void visit(AliasDeclaration *d) override;
+    void visit(AliasAssign *d) override;
+    void visit(VarDeclaration *d) override;
+    void visit(FuncDeclaration *f) override;
+    void visit(FuncLiteralDeclaration *f) override;
+    void visit(PostBlitDeclaration *d) override;
+    void visit(DtorDeclaration *d) override;
+    void visit(CtorDeclaration *d) override;
+    void visit(StaticCtorDeclaration *d) override;
+    void visit(StaticDtorDeclaration *d) override;
+    void visit(InvariantDeclaration *d) override;
+    void visit(UnitTestDeclaration *d) override;
+    void visit(NewDeclaration *d) override;
+    void visit(StructInitializer *si) override;
+    void visit(ArrayInitializer *ai) override;
+    void visit(ExpInitializer *ei) override;
+    void visit(CInitializer *ci) override;
+    void visit(ArrayLiteralExp *e) override;
+    void visit(AssocArrayLiteralExp *e) override;
+    void visit(TypeExp *e) override;
+    void visit(ScopeExp *e) override;
+    void visit(NewExp *e) override;
+    void visit(NewAnonClassExp *e) override;
+    void visit(TupleExp *e) override;
+    void visit(FuncExp *e) override;
+    void visit(DeclarationExp *e) override;
+    void visit(TypeidExp *e) override;
+    void visit(TraitsExp *e) override;
+    void visit(IsExp *e) override;
+    void visit(UnaExp *e) override;
+    void visit(BinExp *e) override;
+    void visit(MixinExp *e) override;
+    void visit(ImportExp *e) override;
+    void visit(AssertExp *e) override;
+    void visit(DotIdExp *e) override;
+    void visit(DotTemplateInstanceExp *e) override;
+    void visit(CallExp *e) override;
+    void visit(PtrExp *e) override;
+    void visit(DeleteExp *e) override;
+    void visit(CastExp *e) override;
+    void visit(IntervalExp *e) override;
+    void visit(ArrayExp *e) override;
+    void visit(PostExp *e) override;
+    void visit(CondExp *e) override;
+    void visit(GenericExp *e) override;
+    void visit(ThrowExp *e) override;
+    void visit(TemplateTypeParameter *tp) override;
+    void visit(TemplateThisParameter *tp) override;
+    void visit(TemplateAliasParameter *tp) override;
+    void visit(TemplateValueParameter *tp) override;
+    void visit(StaticIfCondition *c) override;
+    void visit(Parameter *p) override;
+    void visit(Module *m) override;
+    void visit(PeelStatement *s) override;
+    void visit(UnrolledLoopStatement *s) override;
+    void visit(DebugStatement *s) override;
+    void visit(ForwardingStatement *s) override;
+    void visit(StructLiteralExp *e) override;
+    void visit(ClassReferenceExp *e) override;
+    void visit(CompoundLiteralExp *e) override;
+    void visit(DotTemplateExp *e) override;
+    void visit(DotVarExp *e) override;
+    void visit(DelegateExp *e) override;
+    void visit(DotTypeExp *e) override;
+    void visit(VectorExp *e) override;
+    void visit(VectorArrayExp *e) override;
+    void visit(SliceExp *e) override;
+    void visit(ArrayLengthExp *e) override;
+    void visit(DelegatePtrExp *e) override;
+    void visit(DelegateFuncptrExp *e) override;
+    void visit(DotExp *e) override;
+    void visit(IndexExp *e) override;
+    void visit(RemoveExp *e) override;
+    void visit(LoweredAssignExp *e) override;
 };
 
 template <typename AST>
-class PermissiveVisitor : public ParseTimeVisitor<AST >
+class PermissiveVisitor : public ParseTimeVisitor<AST>
 {
 public:
-    typedef ParseTimeVisitor<AST > visit;
-    virtual void visit(typename AST::Dsymbol ) override;
-    virtual void visit(typename AST::Parameter ) override;
-    virtual void visit(typename AST::Statement ) override;
-    virtual void visit(typename AST::Type ) override;
-    virtual void visit(typename AST::Expression ) override;
-    virtual void visit(typename AST::TemplateParameter ) override;
-    virtual void visit(typename AST::Condition ) override;
-    virtual void visit(typename AST::Initializer ) override;
+    typedef ParseTimeVisitor<AST> visit;
+    virtual void visit(typename AST::Dsymbol) override;
+    virtual void visit(typename AST::Parameter) override;
+    virtual void visit(typename AST::Statement) override;
+    virtual void visit(typename AST::Type) override;
+    virtual void visit(typename AST::Expression) override;
+    virtual void visit(typename AST::TemplateParameter) override;
+    virtual void visit(typename AST::Condition) override;
+    virtual void visit(typename AST::Initializer) override;
 };
 
 template <typename AST>
-class StrictVisitor : public ParseTimeVisitor<AST >
+class StrictVisitor : public ParseTimeVisitor<AST>
 {
 public:
-    typedef ParseTimeVisitor<AST > visit;
-    virtual void visit(typename AST::Dsymbol ) override;
-    virtual void visit(typename AST::AliasThis ) override;
-    virtual void visit(typename AST::Declaration ) override;
-    virtual void visit(typename AST::ScopeDsymbol ) override;
-    virtual void visit(typename AST::Import ) override;
-    virtual void visit(typename AST::AttribDeclaration ) override;
-    virtual void visit(typename AST::StaticAssert ) override;
-    virtual void visit(typename AST::DebugSymbol ) override;
-    virtual void visit(typename AST::VersionSymbol ) override;
-    virtual void visit(typename AST::VarDeclaration ) override;
-    virtual void visit(typename AST::FuncDeclaration ) override;
-    virtual void visit(typename AST::AliasDeclaration ) override;
-    virtual void visit(typename AST::AliasAssign ) override;
-    virtual void visit(typename AST::TupleDeclaration ) override;
-    virtual void visit(typename AST::FuncLiteralDeclaration ) override;
-    virtual void visit(typename AST::PostBlitDeclaration ) override;
-    virtual void visit(typename AST::CtorDeclaration ) override;
-    virtual void visit(typename AST::DtorDeclaration ) override;
-    virtual void visit(typename AST::InvariantDeclaration ) override;
-    virtual void visit(typename AST::UnitTestDeclaration ) override;
-    virtual void visit(typename AST::NewDeclaration ) override;
-    virtual void visit(typename AST::StaticCtorDeclaration ) override;
-    virtual void visit(typename AST::StaticDtorDeclaration ) override;
-    virtual void visit(typename AST::SharedStaticCtorDeclaration ) override;
-    virtual void visit(typename AST::SharedStaticDtorDeclaration ) override;
-    virtual void visit(typename AST::Package ) override;
-    virtual void visit(typename AST::EnumDeclaration ) override;
-    virtual void visit(typename AST::AggregateDeclaration ) override;
-    virtual void visit(typename AST::TemplateDeclaration ) override;
-    virtual void visit(typename AST::TemplateInstance ) override;
-    virtual void visit(typename AST::Nspace ) override;
-    virtual void visit(typename AST::MixinDeclaration ) override;
-    virtual void visit(typename AST::UserAttributeDeclaration ) override;
-    virtual void visit(typename AST::LinkDeclaration ) override;
-    virtual void visit(typename AST::AnonDeclaration ) override;
-    virtual void visit(typename AST::AlignDeclaration ) override;
-    virtual void visit(typename AST::CPPMangleDeclaration ) override;
-    virtual void visit(typename AST::VisibilityDeclaration ) override;
-    virtual void visit(typename AST::PragmaDeclaration ) override;
-    virtual void visit(typename AST::StorageClassDeclaration ) override;
-    virtual void visit(typename AST::ConditionalDeclaration ) override;
-    virtual void visit(typename AST::DeprecatedDeclaration ) override;
-    virtual void visit(typename AST::StaticIfDeclaration ) override;
-    virtual void visit(typename AST::EnumMember ) override;
-    virtual void visit(typename AST::Module ) override;
-    virtual void visit(typename AST::StructDeclaration ) override;
-    virtual void visit(typename AST::UnionDeclaration ) override;
-    virtual void visit(typename AST::ClassDeclaration ) override;
-    virtual void visit(typename AST::InterfaceDeclaration ) override;
-    virtual void visit(typename AST::TemplateMixin ) override;
-    virtual void visit(typename AST::Parameter ) override;
-    virtual void visit(typename AST::Statement ) override;
-    virtual void visit(typename AST::ImportStatement ) override;
-    virtual void visit(typename AST::ScopeStatement ) override;
-    virtual void visit(typename AST::ReturnStatement ) override;
-    virtual void visit(typename AST::LabelStatement ) override;
-    virtual void visit(typename AST::StaticAssertStatement ) override;
-    virtual void visit(typename AST::MixinStatement ) override;
-    virtual void visit(typename AST::WhileStatement ) override;
-    virtual void visit(typename AST::ForStatement ) override;
-    virtual void visit(typename AST::DoStatement ) override;
-    virtual void visit(typename AST::ForeachRangeStatement ) override;
-    virtual void visit(typename AST::ForeachStatement ) override;
-    virtual void visit(typename AST::IfStatement ) override;
-    virtual void visit(typename AST::ScopeGuardStatement ) override;
-    virtual void visit(typename AST::ConditionalStatement ) override;
-    virtual void visit(typename AST::PragmaStatement ) override;
-    virtual void visit(typename AST::SwitchStatement ) override;
-    virtual void visit(typename AST::CaseRangeStatement ) override;
-    virtual void visit(typename AST::CaseStatement ) override;
-    virtual void visit(typename AST::DefaultStatement ) override;
-    virtual void visit(typename AST::BreakStatement ) override;
-    virtual void visit(typename AST::ContinueStatement ) override;
-    virtual void visit(typename AST::GotoDefaultStatement ) override;
-    virtual void visit(typename AST::GotoCaseStatement ) override;
-    virtual void visit(typename AST::GotoStatement ) override;
-    virtual void visit(typename AST::SynchronizedStatement ) override;
-    virtual void visit(typename AST::WithStatement ) override;
-    virtual void visit(typename AST::TryCatchStatement ) override;
-    virtual void visit(typename AST::TryFinallyStatement ) override;
-    virtual void visit(typename AST::ThrowStatement ) override;
-    virtual void visit(typename AST::AsmStatement ) override;
-    virtual void visit(typename AST::ExpStatement ) override;
-    virtual void visit(typename AST::CompoundStatement ) override;
-    virtual void visit(typename AST::CompoundDeclarationStatement ) override;
-    virtual void visit(typename AST::CompoundAsmStatement ) override;
-    virtual void visit(typename AST::InlineAsmStatement ) override;
-    virtual void visit(typename AST::Type ) override;
-    virtual void visit(typename AST::TypeBasic ) override;
-    virtual void visit(typename AST::TypeError ) override;
-    virtual void visit(typename AST::TypeNull ) override;
-    virtual void visit(typename AST::TypeNoreturn ) override;
-    virtual void visit(typename AST::TypeVector ) override;
-    virtual void visit(typename AST::TypeEnum ) override;
-    virtual void visit(typename AST::TypeTuple ) override;
-    virtual void visit(typename AST::TypeClass ) override;
-    virtual void visit(typename AST::TypeStruct ) override;
-    virtual void visit(typename AST::TypeNext ) override;
-    virtual void visit(typename AST::TypeReference ) override;
-    virtual void visit(typename AST::TypeSlice ) override;
-    virtual void visit(typename AST::TypeDelegate ) override;
-    virtual void visit(typename AST::TypePointer ) override;
-    virtual void visit(typename AST::TypeFunction ) override;
-    virtual void visit(typename AST::TypeArray ) override;
-    virtual void visit(typename AST::TypeDArray ) override;
-    virtual void visit(typename AST::TypeAArray ) override;
-    virtual void visit(typename AST::TypeSArray ) override;
-    virtual void visit(typename AST::TypeQualified ) override;
-    virtual void visit(typename AST::TypeTraits ) override;
-    virtual void visit(typename AST::TypeMixin ) override;
-    virtual void visit(typename AST::TypeIdentifier ) override;
-    virtual void visit(typename AST::TypeReturn ) override;
-    virtual void visit(typename AST::TypeTypeof ) override;
-    virtual void visit(typename AST::TypeInstance ) override;
-    virtual void visit(typename AST::Expression ) override;
-    virtual void visit(typename AST::DeclarationExp ) override;
-    virtual void visit(typename AST::IntegerExp ) override;
-    virtual void visit(typename AST::NewAnonClassExp ) override;
-    virtual void visit(typename AST::IsExp ) override;
-    virtual void visit(typename AST::RealExp ) override;
-    virtual void visit(typename AST::NullExp ) override;
-    virtual void visit(typename AST::TypeidExp ) override;
-    virtual void visit(typename AST::TraitsExp ) override;
-    virtual void visit(typename AST::StringExp ) override;
-    virtual void visit(typename AST::InterpExp ) override;
-    virtual void visit(typename AST::NewExp ) override;
-    virtual void visit(typename AST::AssocArrayLiteralExp ) override;
-    virtual void visit(typename AST::ArrayLiteralExp ) override;
-    virtual void visit(typename AST::FuncExp ) override;
-    virtual void visit(typename AST::IntervalExp ) override;
-    virtual void visit(typename AST::TypeExp ) override;
-    virtual void visit(typename AST::ScopeExp ) override;
-    virtual void visit(typename AST::IdentifierExp ) override;
-    virtual void visit(typename AST::UnaExp ) override;
-    virtual void visit(typename AST::DefaultInitExp ) override;
-    virtual void visit(typename AST::BinExp ) override;
-    virtual void visit(typename AST::DsymbolExp ) override;
-    virtual void visit(typename AST::TemplateExp ) override;
-    virtual void visit(typename AST::SymbolExp ) override;
-    virtual void visit(typename AST::VarExp ) override;
-    virtual void visit(typename AST::TupleExp ) override;
-    virtual void visit(typename AST::DollarExp ) override;
-    virtual void visit(typename AST::ThisExp ) override;
-    virtual void visit(typename AST::SuperExp ) override;
-    virtual void visit(typename AST::AddrExp ) override;
-    virtual void visit(typename AST::PreExp ) override;
-    virtual void visit(typename AST::PtrExp ) override;
-    virtual void visit(typename AST::NegExp ) override;
-    virtual void visit(typename AST::UAddExp ) override;
-    virtual void visit(typename AST::NotExp ) override;
-    virtual void visit(typename AST::ComExp ) override;
-    virtual void visit(typename AST::DeleteExp ) override;
-    virtual void visit(typename AST::CastExp ) override;
-    virtual void visit(typename AST::CallExp ) override;
-    virtual void visit(typename AST::DotIdExp ) override;
-    virtual void visit(typename AST::AssertExp ) override;
-    virtual void visit(typename AST::ThrowExp ) override;
-    virtual void visit(typename AST::MixinExp ) override;
-    virtual void visit(typename AST::ImportExp ) override;
-    virtual void visit(typename AST::DotTemplateInstanceExp ) override;
-    virtual void visit(typename AST::ArrayExp ) override;
-    virtual void visit(typename AST::FuncInitExp ) override;
-    virtual void visit(typename AST::PrettyFuncInitExp ) override;
-    virtual void visit(typename AST::FileInitExp ) override;
-    virtual void visit(typename AST::LineInitExp ) override;
-    virtual void visit(typename AST::ModuleInitExp ) override;
-    virtual void visit(typename AST::CommaExp ) override;
-    virtual void visit(typename AST::PostExp ) override;
-    virtual void visit(typename AST::PowExp ) override;
-    virtual void visit(typename AST::MulExp ) override;
-    virtual void visit(typename AST::DivExp ) override;
-    virtual void visit(typename AST::ModExp ) override;
-    virtual void visit(typename AST::AddExp ) override;
-    virtual void visit(typename AST::MinExp ) override;
-    virtual void visit(typename AST::CatExp ) override;
-    virtual void visit(typename AST::ShlExp ) override;
-    virtual void visit(typename AST::ShrExp ) override;
-    virtual void visit(typename AST::UshrExp ) override;
-    virtual void visit(typename AST::EqualExp ) override;
-    virtual void visit(typename AST::InExp ) override;
-    virtual void visit(typename AST::IdentityExp ) override;
-    virtual void visit(typename AST::CmpExp ) override;
-    virtual void visit(typename AST::AndExp ) override;
-    virtual void visit(typename AST::XorExp ) override;
-    virtual void visit(typename AST::OrExp ) override;
-    virtual void visit(typename AST::LogicalExp ) override;
-    virtual void visit(typename AST::CondExp ) override;
-    virtual void visit(typename AST::AssignExp ) override;
-    virtual void visit(typename AST::BinAssignExp ) override;
-    virtual void visit(typename AST::AddAssignExp ) override;
-    virtual void visit(typename AST::MinAssignExp ) override;
-    virtual void visit(typename AST::MulAssignExp ) override;
-    virtual void visit(typename AST::DivAssignExp ) override;
-    virtual void visit(typename AST::ModAssignExp ) override;
-    virtual void visit(typename AST::PowAssignExp ) override;
-    virtual void visit(typename AST::AndAssignExp ) override;
-    virtual void visit(typename AST::OrAssignExp ) override;
-    virtual void visit(typename AST::XorAssignExp ) override;
-    virtual void visit(typename AST::ShlAssignExp ) override;
-    virtual void visit(typename AST::ShrAssignExp ) override;
-    virtual void visit(typename AST::UshrAssignExp ) override;
-    virtual void visit(typename AST::CatAssignExp ) override;
-    virtual void visit(typename AST::CatElemAssignExp ) override;
-    virtual void visit(typename AST::CatDcharAssignExp ) override;
-    virtual void visit(typename AST::GenericExp ) override;
-    virtual void visit(typename AST::TemplateParameter ) override;
-    virtual void visit(typename AST::TemplateAliasParameter ) override;
-    virtual void visit(typename AST::TemplateTypeParameter ) override;
-    virtual void visit(typename AST::TemplateTupleParameter ) override;
-    virtual void visit(typename AST::TemplateValueParameter ) override;
-    virtual void visit(typename AST::TemplateThisParameter ) override;
-    virtual void visit(typename AST::Condition ) override;
-    virtual void visit(typename AST::StaticIfCondition ) override;
-    virtual void visit(typename AST::DVCondition ) override;
-    virtual void visit(typename AST::DebugCondition ) override;
-    virtual void visit(typename AST::VersionCondition ) override;
-    virtual void visit(typename AST::Initializer ) override;
-    virtual void visit(typename AST::ExpInitializer ) override;
-    virtual void visit(typename AST::StructInitializer ) override;
-    virtual void visit(typename AST::ArrayInitializer ) override;
-    virtual void visit(typename AST::VoidInitializer ) override;
-    virtual void visit(typename AST::DefaultInitializer ) override;
-    virtual void visit(typename AST::CInitializer ) override;
+    typedef ParseTimeVisitor<AST> visit;
+    virtual void visit(typename AST::Dsymbol) override;
+    virtual void visit(typename AST::AliasThis) override;
+    virtual void visit(typename AST::Declaration) override;
+    virtual void visit(typename AST::ScopeDsymbol) override;
+    virtual void visit(typename AST::Import) override;
+    virtual void visit(typename AST::AttribDeclaration) override;
+    virtual void visit(typename AST::StaticAssert) override;
+    virtual void visit(typename AST::DebugSymbol) override;
+    virtual void visit(typename AST::VersionSymbol) override;
+    virtual void visit(typename AST::VarDeclaration) override;
+    virtual void visit(typename AST::FuncDeclaration) override;
+    virtual void visit(typename AST::AliasDeclaration) override;
+    virtual void visit(typename AST::AliasAssign) override;
+    virtual void visit(typename AST::TupleDeclaration) override;
+    virtual void visit(typename AST::FuncLiteralDeclaration) override;
+    virtual void visit(typename AST::PostBlitDeclaration) override;
+    virtual void visit(typename AST::CtorDeclaration) override;
+    virtual void visit(typename AST::DtorDeclaration) override;
+    virtual void visit(typename AST::InvariantDeclaration) override;
+    virtual void visit(typename AST::UnitTestDeclaration) override;
+    virtual void visit(typename AST::NewDeclaration) override;
+    virtual void visit(typename AST::StaticCtorDeclaration) override;
+    virtual void visit(typename AST::StaticDtorDeclaration) override;
+    virtual void visit(typename AST::SharedStaticCtorDeclaration) override;
+    virtual void visit(typename AST::SharedStaticDtorDeclaration) override;
+    virtual void visit(typename AST::Package) override;
+    virtual void visit(typename AST::EnumDeclaration) override;
+    virtual void visit(typename AST::AggregateDeclaration) override;
+    virtual void visit(typename AST::TemplateDeclaration) override;
+    virtual void visit(typename AST::TemplateInstance) override;
+    virtual void visit(typename AST::Nspace) override;
+    virtual void visit(typename AST::MixinDeclaration) override;
+    virtual void visit(typename AST::UserAttributeDeclaration) override;
+    virtual void visit(typename AST::LinkDeclaration) override;
+    virtual void visit(typename AST::AnonDeclaration) override;
+    virtual void visit(typename AST::AlignDeclaration) override;
+    virtual void visit(typename AST::CPPMangleDeclaration) override;
+    virtual void visit(typename AST::VisibilityDeclaration) override;
+    virtual void visit(typename AST::PragmaDeclaration) override;
+    virtual void visit(typename AST::StorageClassDeclaration) override;
+    virtual void visit(typename AST::ConditionalDeclaration) override;
+    virtual void visit(typename AST::DeprecatedDeclaration) override;
+    virtual void visit(typename AST::StaticIfDeclaration) override;
+    virtual void visit(typename AST::EnumMember) override;
+    virtual void visit(typename AST::Module) override;
+    virtual void visit(typename AST::StructDeclaration) override;
+    virtual void visit(typename AST::UnionDeclaration) override;
+    virtual void visit(typename AST::ClassDeclaration) override;
+    virtual void visit(typename AST::InterfaceDeclaration) override;
+    virtual void visit(typename AST::TemplateMixin) override;
+    virtual void visit(typename AST::Parameter) override;
+    virtual void visit(typename AST::Statement) override;
+    virtual void visit(typename AST::ImportStatement) override;
+    virtual void visit(typename AST::ScopeStatement) override;
+    virtual void visit(typename AST::ReturnStatement) override;
+    virtual void visit(typename AST::LabelStatement) override;
+    virtual void visit(typename AST::StaticAssertStatement) override;
+    virtual void visit(typename AST::MixinStatement) override;
+    virtual void visit(typename AST::WhileStatement) override;
+    virtual void visit(typename AST::ForStatement) override;
+    virtual void visit(typename AST::DoStatement) override;
+    virtual void visit(typename AST::ForeachRangeStatement) override;
+    virtual void visit(typename AST::ForeachStatement) override;
+    virtual void visit(typename AST::IfStatement) override;
+    virtual void visit(typename AST::ScopeGuardStatement) override;
+    virtual void visit(typename AST::ConditionalStatement) override;
+    virtual void visit(typename AST::PragmaStatement) override;
+    virtual void visit(typename AST::SwitchStatement) override;
+    virtual void visit(typename AST::CaseRangeStatement) override;
+    virtual void visit(typename AST::CaseStatement) override;
+    virtual void visit(typename AST::DefaultStatement) override;
+    virtual void visit(typename AST::BreakStatement) override;
+    virtual void visit(typename AST::ContinueStatement) override;
+    virtual void visit(typename AST::GotoDefaultStatement) override;
+    virtual void visit(typename AST::GotoCaseStatement) override;
+    virtual void visit(typename AST::GotoStatement) override;
+    virtual void visit(typename AST::SynchronizedStatement) override;
+    virtual void visit(typename AST::WithStatement) override;
+    virtual void visit(typename AST::TryCatchStatement) override;
+    virtual void visit(typename AST::TryFinallyStatement) override;
+    virtual void visit(typename AST::ThrowStatement) override;
+    virtual void visit(typename AST::AsmStatement) override;
+    virtual void visit(typename AST::ExpStatement) override;
+    virtual void visit(typename AST::CompoundStatement) override;
+    virtual void visit(typename AST::CompoundDeclarationStatement) override;
+    virtual void visit(typename AST::CompoundAsmStatement) override;
+    virtual void visit(typename AST::InlineAsmStatement) override;
+    virtual void visit(typename AST::Type) override;
+    virtual void visit(typename AST::TypeBasic) override;
+    virtual void visit(typename AST::TypeError) override;
+    virtual void visit(typename AST::TypeNull) override;
+    virtual void visit(typename AST::TypeNoreturn) override;
+    virtual void visit(typename AST::TypeVector) override;
+    virtual void visit(typename AST::TypeEnum) override;
+    virtual void visit(typename AST::TypeTuple) override;
+    virtual void visit(typename AST::TypeClass) override;
+    virtual void visit(typename AST::TypeStruct) override;
+    virtual void visit(typename AST::TypeNext) override;
+    virtual void visit(typename AST::TypeReference) override;
+    virtual void visit(typename AST::TypeSlice) override;
+    virtual void visit(typename AST::TypeDelegate) override;
+    virtual void visit(typename AST::TypePointer) override;
+    virtual void visit(typename AST::TypeFunction) override;
+    virtual void visit(typename AST::TypeArray) override;
+    virtual void visit(typename AST::TypeDArray) override;
+    virtual void visit(typename AST::TypeAArray) override;
+    virtual void visit(typename AST::TypeSArray) override;
+    virtual void visit(typename AST::TypeQualified) override;
+    virtual void visit(typename AST::TypeTraits) override;
+    virtual void visit(typename AST::TypeMixin) override;
+    virtual void visit(typename AST::TypeIdentifier) override;
+    virtual void visit(typename AST::TypeReturn) override;
+    virtual void visit(typename AST::TypeTypeof) override;
+    virtual void visit(typename AST::TypeInstance) override;
+    virtual void visit(typename AST::Expression) override;
+    virtual void visit(typename AST::DeclarationExp) override;
+    virtual void visit(typename AST::IntegerExp) override;
+    virtual void visit(typename AST::NewAnonClassExp) override;
+    virtual void visit(typename AST::IsExp) override;
+    virtual void visit(typename AST::RealExp) override;
+    virtual void visit(typename AST::NullExp) override;
+    virtual void visit(typename AST::TypeidExp) override;
+    virtual void visit(typename AST::TraitsExp) override;
+    virtual void visit(typename AST::StringExp) override;
+    virtual void visit(typename AST::InterpExp) override;
+    virtual void visit(typename AST::NewExp) override;
+    virtual void visit(typename AST::AssocArrayLiteralExp) override;
+    virtual void visit(typename AST::ArrayLiteralExp) override;
+    virtual void visit(typename AST::FuncExp) override;
+    virtual void visit(typename AST::IntervalExp) override;
+    virtual void visit(typename AST::TypeExp) override;
+    virtual void visit(typename AST::ScopeExp) override;
+    virtual void visit(typename AST::IdentifierExp) override;
+    virtual void visit(typename AST::UnaExp) override;
+    virtual void visit(typename AST::DefaultInitExp) override;
+    virtual void visit(typename AST::BinExp) override;
+    virtual void visit(typename AST::DsymbolExp) override;
+    virtual void visit(typename AST::TemplateExp) override;
+    virtual void visit(typename AST::SymbolExp) override;
+    virtual void visit(typename AST::VarExp) override;
+    virtual void visit(typename AST::TupleExp) override;
+    virtual void visit(typename AST::DollarExp) override;
+    virtual void visit(typename AST::ThisExp) override;
+    virtual void visit(typename AST::SuperExp) override;
+    virtual void visit(typename AST::AddrExp) override;
+    virtual void visit(typename AST::PreExp) override;
+    virtual void visit(typename AST::PtrExp) override;
+    virtual void visit(typename AST::NegExp) override;
+    virtual void visit(typename AST::UAddExp) override;
+    virtual void visit(typename AST::NotExp) override;
+    virtual void visit(typename AST::ComExp) override;
+    virtual void visit(typename AST::DeleteExp) override;
+    virtual void visit(typename AST::CastExp) override;
+    virtual void visit(typename AST::CallExp) override;
+    virtual void visit(typename AST::DotIdExp) override;
+    virtual void visit(typename AST::AssertExp) override;
+    virtual void visit(typename AST::ThrowExp) override;
+    virtual void visit(typename AST::MixinExp) override;
+    virtual void visit(typename AST::ImportExp) override;
+    virtual void visit(typename AST::DotTemplateInstanceExp) override;
+    virtual void visit(typename AST::ArrayExp) override;
+    virtual void visit(typename AST::FuncInitExp) override;
+    virtual void visit(typename AST::PrettyFuncInitExp) override;
+    virtual void visit(typename AST::FileInitExp) override;
+    virtual void visit(typename AST::LineInitExp) override;
+    virtual void visit(typename AST::ModuleInitExp) override;
+    virtual void visit(typename AST::CommaExp) override;
+    virtual void visit(typename AST::PostExp) override;
+    virtual void visit(typename AST::PowExp) override;
+    virtual void visit(typename AST::MulExp) override;
+    virtual void visit(typename AST::DivExp) override;
+    virtual void visit(typename AST::ModExp) override;
+    virtual void visit(typename AST::AddExp) override;
+    virtual void visit(typename AST::MinExp) override;
+    virtual void visit(typename AST::CatExp) override;
+    virtual void visit(typename AST::ShlExp) override;
+    virtual void visit(typename AST::ShrExp) override;
+    virtual void visit(typename AST::UshrExp) override;
+    virtual void visit(typename AST::EqualExp) override;
+    virtual void visit(typename AST::InExp) override;
+    virtual void visit(typename AST::IdentityExp) override;
+    virtual void visit(typename AST::CmpExp) override;
+    virtual void visit(typename AST::AndExp) override;
+    virtual void visit(typename AST::XorExp) override;
+    virtual void visit(typename AST::OrExp) override;
+    virtual void visit(typename AST::LogicalExp) override;
+    virtual void visit(typename AST::CondExp) override;
+    virtual void visit(typename AST::AssignExp) override;
+    virtual void visit(typename AST::BinAssignExp) override;
+    virtual void visit(typename AST::AddAssignExp) override;
+    virtual void visit(typename AST::MinAssignExp) override;
+    virtual void visit(typename AST::MulAssignExp) override;
+    virtual void visit(typename AST::DivAssignExp) override;
+    virtual void visit(typename AST::ModAssignExp) override;
+    virtual void visit(typename AST::PowAssignExp) override;
+    virtual void visit(typename AST::AndAssignExp) override;
+    virtual void visit(typename AST::OrAssignExp) override;
+    virtual void visit(typename AST::XorAssignExp) override;
+    virtual void visit(typename AST::ShlAssignExp) override;
+    virtual void visit(typename AST::ShrAssignExp) override;
+    virtual void visit(typename AST::UshrAssignExp) override;
+    virtual void visit(typename AST::CatAssignExp) override;
+    virtual void visit(typename AST::CatElemAssignExp) override;
+    virtual void visit(typename AST::CatDcharAssignExp) override;
+    virtual void visit(typename AST::GenericExp) override;
+    virtual void visit(typename AST::TemplateParameter) override;
+    virtual void visit(typename AST::TemplateAliasParameter) override;
+    virtual void visit(typename AST::TemplateTypeParameter) override;
+    virtual void visit(typename AST::TemplateTupleParameter) override;
+    virtual void visit(typename AST::TemplateValueParameter) override;
+    virtual void visit(typename AST::TemplateThisParameter) override;
+    virtual void visit(typename AST::Condition) override;
+    virtual void visit(typename AST::StaticIfCondition) override;
+    virtual void visit(typename AST::DVCondition) override;
+    virtual void visit(typename AST::DebugCondition) override;
+    virtual void visit(typename AST::VersionCondition) override;
+    virtual void visit(typename AST::Initializer) override;
+    virtual void visit(typename AST::ExpInitializer) override;
+    virtual void visit(typename AST::StructInitializer) override;
+    virtual void visit(typename AST::ArrayInitializer) override;
+    virtual void visit(typename AST::VoidInitializer) override;
+    virtual void visit(typename AST::DefaultInitializer) override;
+    virtual void visit(typename AST::CInitializer) override;
 };
 
 extern _d_real creall(complex_t x);
 
 extern _d_real cimagl(complex_t x);
 
-extern void browse(const char* url);
+extern void browse(const char *url);
 
 enum class IdentifierTable
 {
@@ -8204,18 +8278,17 @@ enum class IdentifierTable
 
 struct IdentifierCharLookup final
 {
-    bool(*isStart)(char32_t );
-    bool(*isContinue)(char32_t );
+    bool (*isStart)(char32_t);
+    bool (*isContinue)(char32_t);
     static IdentifierCharLookup forTable(IdentifierTable table);
-    IdentifierCharLookup() :
-        isStart(),
-        isContinue()
+    IdentifierCharLookup() : isStart(),
+                             isContinue()
     {
     }
-    IdentifierCharLookup(bool(*isStart)(char32_t ), bool(*isContinue)(char32_t ) = nullptr) :
-        isStart(isStart),
-        isContinue(isContinue)
-        {}
+    IdentifierCharLookup(bool (*isStart)(char32_t), bool (*isContinue)(char32_t) = nullptr) : isStart(isStart),
+                                                                                              isContinue(isContinue)
+    {
+    }
 };
 
 extern bool isAnyIdentifierCharacter(char32_t c);
@@ -8224,9 +8297,15 @@ extern bool isAnyStart(char32_t c);
 
 extern bool isAnyContinue(char32_t c);
 
-enum : int32_t { LS = 8232 };
+enum : int32_t
+{
+    LS = 8232
+};
 
-enum : int32_t { PS = 8233 };
+enum : int32_t
+{
+    PS = 8233
+};
 
 extern bool isoctal(const char c);
 
@@ -8244,27 +8323,27 @@ extern bool c_isxdigit(const int32_t c);
 
 extern bool c_isalnum(const int32_t c);
 
-extern void error(Loc loc, const char* format, ...);
+extern void error(Loc loc, const char *format, ...);
 
-extern void error(const char* filename, uint32_t linnum, uint32_t charnum, const char* format, ...);
+extern void error(const char *filename, uint32_t linnum, uint32_t charnum, const char *format, ...);
 
-extern void errorBackend(const char* filename, uint32_t linnum, uint32_t charnum, const char* format, ...);
+extern void errorBackend(const char *filename, uint32_t linnum, uint32_t charnum, const char *format, ...);
 
-extern void errorSupplemental(Loc loc, const char* format, ...);
+extern void errorSupplemental(Loc loc, const char *format, ...);
 
-extern void warning(Loc loc, const char* format, ...);
+extern void warning(Loc loc, const char *format, ...);
 
-extern void warningSupplemental(Loc loc, const char* format, ...);
+extern void warningSupplemental(Loc loc, const char *format, ...);
 
-extern void deprecation(Loc loc, const char* format, ...);
+extern void deprecation(Loc loc, const char *format, ...);
 
-extern void deprecationSupplemental(Loc loc, const char* format, ...);
+extern void deprecationSupplemental(Loc loc, const char *format, ...);
 
-extern void message(Loc loc, const char* format, ...);
+extern void message(Loc loc, const char *format, ...);
 
-extern void message(const char* format, ...);
+extern void message(const char *format, ...);
 
-extern void tip(const char* format, ...);
+extern void tip(const char *format, ...);
 
 extern void fatal();
 
@@ -8274,30 +8353,29 @@ struct Output final
 {
     bool doOutput;
     bool fullOutput;
-    _d_dynamicArray< const char > dir;
-    _d_dynamicArray< const char > name;
-    Array<const char* > files;
-    OutBuffer* buffer;
+    _d_dynamicArray<const char> dir;
+    _d_dynamicArray<const char> name;
+    Array<const char *> files;
+    OutBuffer *buffer;
     int32_t bufferLines;
-    Output() :
-        doOutput(),
-        fullOutput(),
-        dir(),
-        name(),
-        files(),
-        buffer(),
-        bufferLines()
+    Output() : doOutput(),
+               fullOutput(),
+               dir(),
+               name(),
+               files(),
+               buffer(),
+               bufferLines()
     {
     }
-    Output(bool doOutput, bool fullOutput = false, _d_dynamicArray< const char > dir = {}, _d_dynamicArray< const char > name = {}, Array<const char* > files = Array<const char* >(), OutBuffer* buffer = nullptr, int32_t bufferLines = 0) :
-        doOutput(doOutput),
-        fullOutput(fullOutput),
-        dir(dir),
-        name(name),
-        files(files),
-        buffer(buffer),
-        bufferLines(bufferLines)
-        {}
+    Output(bool doOutput, bool fullOutput = false, _d_dynamicArray<const char> dir = {}, _d_dynamicArray<const char> name = {}, Array<const char *> files = Array<const char *>(), OutBuffer *buffer = nullptr, int32_t bufferLines = 0) : doOutput(doOutput),
+                                                                                                                                                                                                                                           fullOutput(fullOutput),
+                                                                                                                                                                                                                                           dir(dir),
+                                                                                                                                                                                                                                           name(name),
+                                                                                                                                                                                                                                           files(files),
+                                                                                                                                                                                                                                           buffer(buffer),
+                                                                                                                                                                                                                                           bufferLines(bufferLines)
+    {
+    }
 };
 
 struct Help final
@@ -8312,31 +8390,30 @@ struct Help final
     bool preview;
     bool externStd;
     bool hc;
-    Help() :
-        manual(),
-        usage(),
-        mcpu(),
-        transition(),
-        check(),
-        checkAction(),
-        revert(),
-        preview(),
-        externStd(),
-        hc()
+    Help() : manual(),
+             usage(),
+             mcpu(),
+             transition(),
+             check(),
+             checkAction(),
+             revert(),
+             preview(),
+             externStd(),
+             hc()
     {
     }
-    Help(bool manual, bool usage = false, bool mcpu = false, bool transition = false, bool check = false, bool checkAction = false, bool revert = false, bool preview = false, bool externStd = false, bool hc = false) :
-        manual(manual),
-        usage(usage),
-        mcpu(mcpu),
-        transition(transition),
-        check(check),
-        checkAction(checkAction),
-        revert(revert),
-        preview(preview),
-        externStd(externStd),
-        hc(hc)
-        {}
+    Help(bool manual, bool usage = false, bool mcpu = false, bool transition = false, bool check = false, bool checkAction = false, bool revert = false, bool preview = false, bool externStd = false, bool hc = false) : manual(manual),
+                                                                                                                                                                                                                          usage(usage),
+                                                                                                                                                                                                                          mcpu(mcpu),
+                                                                                                                                                                                                                          transition(transition),
+                                                                                                                                                                                                                          check(check),
+                                                                                                                                                                                                                          checkAction(checkAction),
+                                                                                                                                                                                                                          revert(revert),
+                                                                                                                                                                                                                          preview(preview),
+                                                                                                                                                                                                                          externStd(externStd),
+                                                                                                                                                                                                                          hc(hc)
+    {
+    }
 };
 
 struct Verbose final
@@ -8359,56 +8436,54 @@ struct Verbose final
     uint32_t errorLimit;
     uint32_t errorSupplementLimit;
     uint32_t errorSupplementCount();
-    Verbose() :
-        verbose(),
-        showColumns(),
-        tls(),
-        templates(),
-        templatesListInstances(),
-        gc(),
-        field(),
-        complex(true),
-        vin(),
-        showGaggedErrors(),
-        logo(),
-        color(),
-        cov(),
-        messageStyle((MessageStyle)0u),
-        errorLimit(20u),
-        errorSupplementLimit(6u)
+    Verbose() : verbose(),
+                showColumns(),
+                tls(),
+                templates(),
+                templatesListInstances(),
+                gc(),
+                field(),
+                complex(true),
+                vin(),
+                showGaggedErrors(),
+                logo(),
+                color(),
+                cov(),
+                messageStyle((MessageStyle)0u),
+                errorLimit(20u),
+                errorSupplementLimit(6u)
     {
     }
-    Verbose(bool verbose, bool showColumns = false, bool tls = false, bool templates = false, bool templatesListInstances = false, bool gc = false, bool field = false, bool complex = true, bool vin = false, bool showGaggedErrors = false, bool logo = false, bool color = false, bool cov = false, ErrorPrintMode errorPrintMode = (ErrorPrintMode)0u, MessageStyle messageStyle = (MessageStyle)0u, uint32_t errorLimit = 20u, uint32_t errorSupplementLimit = 6u) :
-        verbose(verbose),
-        showColumns(showColumns),
-        tls(tls),
-        templates(templates),
-        templatesListInstances(templatesListInstances),
-        gc(gc),
-        field(field),
-        complex(complex),
-        vin(vin),
-        showGaggedErrors(showGaggedErrors),
-        logo(logo),
-        color(color),
-        cov(cov),
-        errorPrintMode(errorPrintMode),
-        messageStyle(messageStyle),
-        errorLimit(errorLimit),
-        errorSupplementLimit(errorSupplementLimit)
-        {}
+    Verbose(bool verbose, bool showColumns = false, bool tls = false, bool templates = false, bool templatesListInstances = false, bool gc = false, bool field = false, bool complex = true, bool vin = false, bool showGaggedErrors = false, bool logo = false, bool color = false, bool cov = false, ErrorPrintMode errorPrintMode = (ErrorPrintMode)0u, MessageStyle messageStyle = (MessageStyle)0u, uint32_t errorLimit = 20u, uint32_t errorSupplementLimit = 6u) : verbose(verbose),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          showColumns(showColumns),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          tls(tls),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          templates(templates),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          templatesListInstances(templatesListInstances),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          gc(gc),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          field(field),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          complex(complex),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          vin(vin),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          showGaggedErrors(showGaggedErrors),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          logo(logo),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          color(color),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          cov(cov),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          errorPrintMode(errorPrintMode),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          messageStyle(messageStyle),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          errorLimit(errorLimit),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          errorSupplementLimit(errorSupplementLimit)
+    {
+    }
 };
 
 struct ImportPathInfo final
 {
-    const char* path;
-    ImportPathInfo() :
-        path()
+    const char *path;
+    ImportPathInfo() : path()
     {
     }
-    ImportPathInfo(const char* path) :
-        path(path)
-        {}
+    ImportPathInfo(const char *path) : path(path)
+    {
+    }
 };
 
 struct Param final
@@ -8466,13 +8541,13 @@ struct Param final
     CHECKACTION checkAction;
     CLIIdentifierTable dIdentifierTable;
     CLIIdentifierTable cIdentifierTable;
-    _d_dynamicArray< const char > argv0;
-    Array<const char* > modFileAliasStrings;
-    Array<ImportPathInfo > imppath;
-    Array<const char* > fileImppath;
-    _d_dynamicArray< const char > objdir;
-    _d_dynamicArray< const char > objname;
-    _d_dynamicArray< const char > libname;
+    _d_dynamicArray<const char> argv0;
+    Array<const char *> modFileAliasStrings;
+    Array<ImportPathInfo> imppath;
+    Array<const char *> fileImppath;
+    _d_dynamicArray<const char> objdir;
+    _d_dynamicArray<const char> objname;
+    _d_dynamicArray<const char> libname;
     Output ddoc;
     Output dihdr;
     Output cxxhdr;
@@ -8483,202 +8558,201 @@ struct Param final
     Output moduleDeps;
     bool debugEnabled;
     bool run;
-    Array<const char* > runargs;
-    Array<const char* > cppswitches;
-    const char* cpp;
-    Array<const char* > objfiles;
-    Array<const char* > linkswitches;
-    Array<bool > linkswitchIsForCC;
-    Array<const char* > libfiles;
-    Array<const char* > dllfiles;
-    _d_dynamicArray< const char > deffile;
-    _d_dynamicArray< const char > resfile;
-    _d_dynamicArray< const char > exefile;
-    _d_dynamicArray< const char > mapfile;
+    Array<const char *> runargs;
+    Array<const char *> cppswitches;
+    const char *cpp;
+    Array<const char *> objfiles;
+    Array<const char *> linkswitches;
+    Array<bool> linkswitchIsForCC;
+    Array<const char *> libfiles;
+    Array<const char *> dllfiles;
+    _d_dynamicArray<const char> deffile;
+    _d_dynamicArray<const char> resfile;
+    _d_dynamicArray<const char> exefile;
+    _d_dynamicArray<const char> mapfile;
     bool fullyQualifiedObjectFiles;
     bool timeTrace;
     uint32_t timeTraceGranularityUs;
-    const char* timeTraceFile;
+    const char *timeTraceFile;
     bool parsingUnittestsRequired();
-    Param() :
-        obj(true),
-        readStdin(),
-        multiobj(),
-        trace(),
-        tracegc(),
-        vcg_ast(),
-        useDeprecated((DiagnosticReporting)1u),
-        useUnitTests(),
-        useInline(false),
-        release(),
-        preservePaths(),
-        useWarnings((DiagnosticReporting)2u),
-        cov(),
-        covPercent(),
-        ctfe_cov(false),
-        ignoreUnsupportedPragmas(true),
-        useModuleInfo(true),
-        useTypeInfo(true),
-        useExceptions(true),
-        useGC(true),
-        betterC(),
-        addMain(),
-        allInst(),
-        bitfields(),
-        cplusplus((CppStdRevision)201103u),
-        help(),
-        v(),
-        useDIP25((FeatureState)2u),
-        ehnogc(),
-        useDIP1021(),
-        fixAliasThis(),
-        previewIn(),
-        inclusiveInContracts(),
-        shortenedMethods(true),
-        fixImmutableConv(),
-        fix16997(true),
-        useInvariants((CHECKENABLE)0u),
-        useIn((CHECKENABLE)0u),
-        useOut((CHECKENABLE)0u),
-        useArrayBounds((CHECKENABLE)0u),
-        useAssert((CHECKENABLE)0u),
-        useSwitchError((CHECKENABLE)0u),
-        boundscheck((CHECKENABLE)0u),
-        checkAction((CHECKACTION)0u),
-        dIdentifierTable((CLIIdentifierTable)0u),
-        cIdentifierTable((CLIIdentifierTable)0u),
-        argv0(),
-        modFileAliasStrings(),
-        imppath(),
-        fileImppath(),
-        objdir(),
-        objname(),
-        libname(),
-        ddoc(),
-        dihdr(),
-        cxxhdr(),
-        json(),
-        makeDeps(),
-        mixinOut(),
-        moduleDeps(),
-        debugEnabled(),
-        run(),
-        runargs(),
-        cppswitches(),
-        cpp(),
-        objfiles(),
-        linkswitches(),
-        linkswitchIsForCC(),
-        libfiles(),
-        dllfiles(),
-        deffile(),
-        resfile(),
-        exefile(),
-        mapfile(),
-        fullyQualifiedObjectFiles(),
-        timeTrace(false),
-        timeTraceGranularityUs(500u),
-        timeTraceFile()
+    Param() : obj(true),
+              readStdin(),
+              multiobj(),
+              trace(),
+              tracegc(),
+              vcg_ast(),
+              useDeprecated((DiagnosticReporting)1u),
+              useUnitTests(),
+              useInline(false),
+              release(),
+              preservePaths(),
+              useWarnings((DiagnosticReporting)2u),
+              cov(),
+              covPercent(),
+              ctfe_cov(false),
+              ignoreUnsupportedPragmas(true),
+              useModuleInfo(true),
+              useTypeInfo(true),
+              useExceptions(true),
+              useGC(true),
+              betterC(),
+              addMain(),
+              allInst(),
+              bitfields(),
+              cplusplus((CppStdRevision)201103u),
+              help(),
+              v(),
+              useDIP25((FeatureState)2u),
+              ehnogc(),
+              useDIP1021(),
+              fixAliasThis(),
+              previewIn(),
+              inclusiveInContracts(),
+              shortenedMethods(true),
+              fixImmutableConv(),
+              fix16997(true),
+              useInvariants((CHECKENABLE)0u),
+              useIn((CHECKENABLE)0u),
+              useOut((CHECKENABLE)0u),
+              useArrayBounds((CHECKENABLE)0u),
+              useAssert((CHECKENABLE)0u),
+              useSwitchError((CHECKENABLE)0u),
+              boundscheck((CHECKENABLE)0u),
+              checkAction((CHECKACTION)0u),
+              dIdentifierTable((CLIIdentifierTable)0u),
+              cIdentifierTable((CLIIdentifierTable)0u),
+              argv0(),
+              modFileAliasStrings(),
+              imppath(),
+              fileImppath(),
+              objdir(),
+              objname(),
+              libname(),
+              ddoc(),
+              dihdr(),
+              cxxhdr(),
+              json(),
+              makeDeps(),
+              mixinOut(),
+              moduleDeps(),
+              debugEnabled(),
+              run(),
+              runargs(),
+              cppswitches(),
+              cpp(),
+              objfiles(),
+              linkswitches(),
+              linkswitchIsForCC(),
+              libfiles(),
+              dllfiles(),
+              deffile(),
+              resfile(),
+              exefile(),
+              mapfile(),
+              fullyQualifiedObjectFiles(),
+              timeTrace(false),
+              timeTraceGranularityUs(500u),
+              timeTraceFile()
     {
     }
-    Param(bool obj, bool readStdin = false, bool multiobj = false, bool trace = false, bool tracegc = false, bool vcg_ast = false, DiagnosticReporting useDeprecated = (DiagnosticReporting)1u, bool useUnitTests = false, bool useInline = false, bool release = false, bool preservePaths = false, DiagnosticReporting useWarnings = (DiagnosticReporting)2u, bool cov = false, uint8_t covPercent = 0u, bool ctfe_cov = false, bool ignoreUnsupportedPragmas = true, bool useModuleInfo = true, bool useTypeInfo = true, bool useExceptions = true, bool useGC = true, bool betterC = false, bool addMain = false, bool allInst = false, bool bitfields = false, CppStdRevision cplusplus = (CppStdRevision)201103u, Help help = Help(), Verbose v = Verbose(), FeatureState useDIP25 = (FeatureState)2u, FeatureState useDIP1000 = (FeatureState)0u, bool ehnogc = false, bool useDIP1021 = false, FeatureState fieldwise = (FeatureState)0u, bool fixAliasThis = false, FeatureState rvalueRefParam = (FeatureState)0u, FeatureState safer = (FeatureState)0u, FeatureState noSharedAccess = (FeatureState)0u, bool previewIn = false, bool inclusiveInContracts = false, bool shortenedMethods = true, bool fixImmutableConv = false, bool fix16997 = true, FeatureState dtorFields = (FeatureState)0u, FeatureState systemVariables = (FeatureState)0u, CHECKENABLE useInvariants = (CHECKENABLE)0u, CHECKENABLE useIn = (CHECKENABLE)0u, CHECKENABLE useOut = (CHECKENABLE)0u, CHECKENABLE useArrayBounds = (CHECKENABLE)0u, CHECKENABLE useAssert = (CHECKENABLE)0u, CHECKENABLE useSwitchError = (CHECKENABLE)0u, CHECKENABLE boundscheck = (CHECKENABLE)0u, CHECKACTION checkAction = (CHECKACTION)0u, CLIIdentifierTable dIdentifierTable = (CLIIdentifierTable)0u, CLIIdentifierTable cIdentifierTable = (CLIIdentifierTable)0u, _d_dynamicArray< const char > argv0 = {}, Array<const char* > modFileAliasStrings = Array<const char* >(), Array<ImportPathInfo > imppath = Array<ImportPathInfo >(), Array<const char* > fileImppath = Array<const char* >(), _d_dynamicArray< const char > objdir = {}, _d_dynamicArray< const char > objname = {}, _d_dynamicArray< const char > libname = {}, Output ddoc = Output(), Output dihdr = Output(), Output cxxhdr = Output(), Output json = Output(), JsonFieldFlags jsonFieldFlags = (JsonFieldFlags)0u, Output makeDeps = Output(), Output mixinOut = Output(), Output moduleDeps = Output(), bool debugEnabled = false, bool run = false, Array<const char* > runargs = Array<const char* >(), Array<const char* > cppswitches = Array<const char* >(), const char* cpp = nullptr, Array<const char* > objfiles = Array<const char* >(), Array<const char* > linkswitches = Array<const char* >(), Array<bool > linkswitchIsForCC = Array<bool >(), Array<const char* > libfiles = Array<const char* >(), Array<const char* > dllfiles = Array<const char* >(), _d_dynamicArray< const char > deffile = {}, _d_dynamicArray< const char > resfile = {}, _d_dynamicArray< const char > exefile = {}, _d_dynamicArray< const char > mapfile = {}, bool fullyQualifiedObjectFiles = false, bool timeTrace = false, uint32_t timeTraceGranularityUs = 500u, const char* timeTraceFile = nullptr) :
-        obj(obj),
-        readStdin(readStdin),
-        multiobj(multiobj),
-        trace(trace),
-        tracegc(tracegc),
-        vcg_ast(vcg_ast),
-        useDeprecated(useDeprecated),
-        useUnitTests(useUnitTests),
-        useInline(useInline),
-        release(release),
-        preservePaths(preservePaths),
-        useWarnings(useWarnings),
-        cov(cov),
-        covPercent(covPercent),
-        ctfe_cov(ctfe_cov),
-        ignoreUnsupportedPragmas(ignoreUnsupportedPragmas),
-        useModuleInfo(useModuleInfo),
-        useTypeInfo(useTypeInfo),
-        useExceptions(useExceptions),
-        useGC(useGC),
-        betterC(betterC),
-        addMain(addMain),
-        allInst(allInst),
-        bitfields(bitfields),
-        cplusplus(cplusplus),
-        help(help),
-        v(v),
-        useDIP25(useDIP25),
-        useDIP1000(useDIP1000),
-        ehnogc(ehnogc),
-        useDIP1021(useDIP1021),
-        fieldwise(fieldwise),
-        fixAliasThis(fixAliasThis),
-        rvalueRefParam(rvalueRefParam),
-        safer(safer),
-        noSharedAccess(noSharedAccess),
-        previewIn(previewIn),
-        inclusiveInContracts(inclusiveInContracts),
-        shortenedMethods(shortenedMethods),
-        fixImmutableConv(fixImmutableConv),
-        fix16997(fix16997),
-        dtorFields(dtorFields),
-        systemVariables(systemVariables),
-        useInvariants(useInvariants),
-        useIn(useIn),
-        useOut(useOut),
-        useArrayBounds(useArrayBounds),
-        useAssert(useAssert),
-        useSwitchError(useSwitchError),
-        boundscheck(boundscheck),
-        checkAction(checkAction),
-        dIdentifierTable(dIdentifierTable),
-        cIdentifierTable(cIdentifierTable),
-        argv0(argv0),
-        modFileAliasStrings(modFileAliasStrings),
-        imppath(imppath),
-        fileImppath(fileImppath),
-        objdir(objdir),
-        objname(objname),
-        libname(libname),
-        ddoc(ddoc),
-        dihdr(dihdr),
-        cxxhdr(cxxhdr),
-        json(json),
-        jsonFieldFlags(jsonFieldFlags),
-        makeDeps(makeDeps),
-        mixinOut(mixinOut),
-        moduleDeps(moduleDeps),
-        debugEnabled(debugEnabled),
-        run(run),
-        runargs(runargs),
-        cppswitches(cppswitches),
-        cpp(cpp),
-        objfiles(objfiles),
-        linkswitches(linkswitches),
-        linkswitchIsForCC(linkswitchIsForCC),
-        libfiles(libfiles),
-        dllfiles(dllfiles),
-        deffile(deffile),
-        resfile(resfile),
-        exefile(exefile),
-        mapfile(mapfile),
-        fullyQualifiedObjectFiles(fullyQualifiedObjectFiles),
-        timeTrace(timeTrace),
-        timeTraceGranularityUs(timeTraceGranularityUs),
-        timeTraceFile(timeTraceFile)
-        {}
+    Param(bool obj, bool readStdin = false, bool multiobj = false, bool trace = false, bool tracegc = false, bool vcg_ast = false, DiagnosticReporting useDeprecated = (DiagnosticReporting)1u, bool useUnitTests = false, bool useInline = false, bool release = false, bool preservePaths = false, DiagnosticReporting useWarnings = (DiagnosticReporting)2u, bool cov = false, uint8_t covPercent = 0u, bool ctfe_cov = false, bool ignoreUnsupportedPragmas = true, bool useModuleInfo = true, bool useTypeInfo = true, bool useExceptions = true, bool useGC = true, bool betterC = false, bool addMain = false, bool allInst = false, bool bitfields = false, CppStdRevision cplusplus = (CppStdRevision)201103u, Help help = Help(), Verbose v = Verbose(), FeatureState useDIP25 = (FeatureState)2u, FeatureState useDIP1000 = (FeatureState)0u, bool ehnogc = false, bool useDIP1021 = false, FeatureState fieldwise = (FeatureState)0u, bool fixAliasThis = false, FeatureState rvalueRefParam = (FeatureState)0u, FeatureState safer = (FeatureState)0u, FeatureState noSharedAccess = (FeatureState)0u, bool previewIn = false, bool inclusiveInContracts = false, bool shortenedMethods = true, bool fixImmutableConv = false, bool fix16997 = true, FeatureState dtorFields = (FeatureState)0u, FeatureState systemVariables = (FeatureState)0u, CHECKENABLE useInvariants = (CHECKENABLE)0u, CHECKENABLE useIn = (CHECKENABLE)0u, CHECKENABLE useOut = (CHECKENABLE)0u, CHECKENABLE useArrayBounds = (CHECKENABLE)0u, CHECKENABLE useAssert = (CHECKENABLE)0u, CHECKENABLE useSwitchError = (CHECKENABLE)0u, CHECKENABLE boundscheck = (CHECKENABLE)0u, CHECKACTION checkAction = (CHECKACTION)0u, CLIIdentifierTable dIdentifierTable = (CLIIdentifierTable)0u, CLIIdentifierTable cIdentifierTable = (CLIIdentifierTable)0u, _d_dynamicArray<const char> argv0 = {}, Array<const char *> modFileAliasStrings = Array<const char *>(), Array<ImportPathInfo> imppath = Array<ImportPathInfo>(), Array<const char *> fileImppath = Array<const char *>(), _d_dynamicArray<const char> objdir = {}, _d_dynamicArray<const char> objname = {}, _d_dynamicArray<const char> libname = {}, Output ddoc = Output(), Output dihdr = Output(), Output cxxhdr = Output(), Output json = Output(), JsonFieldFlags jsonFieldFlags = (JsonFieldFlags)0u, Output makeDeps = Output(), Output mixinOut = Output(), Output moduleDeps = Output(), bool debugEnabled = false, bool run = false, Array<const char *> runargs = Array<const char *>(), Array<const char *> cppswitches = Array<const char *>(), const char *cpp = nullptr, Array<const char *> objfiles = Array<const char *>(), Array<const char *> linkswitches = Array<const char *>(), Array<bool> linkswitchIsForCC = Array<bool>(), Array<const char *> libfiles = Array<const char *>(), Array<const char *> dllfiles = Array<const char *>(), _d_dynamicArray<const char> deffile = {}, _d_dynamicArray<const char> resfile = {}, _d_dynamicArray<const char> exefile = {}, _d_dynamicArray<const char> mapfile = {}, bool fullyQualifiedObjectFiles = false, bool timeTrace = false, uint32_t timeTraceGranularityUs = 500u, const char *timeTraceFile = nullptr) : obj(obj),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           readStdin(readStdin),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           multiobj(multiobj),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           trace(trace),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           tracegc(tracegc),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           vcg_ast(vcg_ast),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useDeprecated(useDeprecated),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useUnitTests(useUnitTests),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useInline(useInline),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           release(release),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           preservePaths(preservePaths),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useWarnings(useWarnings),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           cov(cov),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           covPercent(covPercent),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ctfe_cov(ctfe_cov),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ignoreUnsupportedPragmas(ignoreUnsupportedPragmas),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useModuleInfo(useModuleInfo),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useTypeInfo(useTypeInfo),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useExceptions(useExceptions),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useGC(useGC),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           betterC(betterC),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           addMain(addMain),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           allInst(allInst),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           bitfields(bitfields),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           cplusplus(cplusplus),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           help(help),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           v(v),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useDIP25(useDIP25),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useDIP1000(useDIP1000),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ehnogc(ehnogc),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useDIP1021(useDIP1021),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           fieldwise(fieldwise),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           fixAliasThis(fixAliasThis),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           rvalueRefParam(rvalueRefParam),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           safer(safer),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           noSharedAccess(noSharedAccess),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           previewIn(previewIn),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           inclusiveInContracts(inclusiveInContracts),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           shortenedMethods(shortenedMethods),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           fixImmutableConv(fixImmutableConv),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           fix16997(fix16997),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           dtorFields(dtorFields),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           systemVariables(systemVariables),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useInvariants(useInvariants),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useIn(useIn),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useOut(useOut),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useArrayBounds(useArrayBounds),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useAssert(useAssert),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           useSwitchError(useSwitchError),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           boundscheck(boundscheck),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           checkAction(checkAction),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           dIdentifierTable(dIdentifierTable),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           cIdentifierTable(cIdentifierTable),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           argv0(argv0),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           modFileAliasStrings(modFileAliasStrings),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           imppath(imppath),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           fileImppath(fileImppath),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           objdir(objdir),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           objname(objname),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           libname(libname),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ddoc(ddoc),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           dihdr(dihdr),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           cxxhdr(cxxhdr),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           json(json),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           jsonFieldFlags(jsonFieldFlags),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           makeDeps(makeDeps),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           mixinOut(mixinOut),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           moduleDeps(moduleDeps),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           debugEnabled(debugEnabled),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           run(run),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           runargs(runargs),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           cppswitches(cppswitches),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           cpp(cpp),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           objfiles(objfiles),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           linkswitches(linkswitches),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           linkswitchIsForCC(linkswitchIsForCC),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           libfiles(libfiles),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           dllfiles(dllfiles),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           deffile(deffile),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           resfile(resfile),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           exefile(exefile),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           mapfile(mapfile),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           fullyQualifiedObjectFiles(fullyQualifiedObjectFiles),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           timeTrace(timeTrace),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           timeTraceGranularityUs(timeTraceGranularityUs),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           timeTraceFile(timeTraceFile)
+    {
+    }
 };
 
 struct Global final
 {
-    _d_dynamicArray< const char > inifilename;
-    _d_dynamicArray< const char > copyright;
-    _d_dynamicArray< const char > written;
-    Array<ImportPathInfo > path;
-    Array<const char* > importPaths;
-    Array<const char* > filePath;
+    _d_dynamicArray<const char> inifilename;
+    _d_dynamicArray<const char> copyright;
+    _d_dynamicArray<const char> written;
+    Array<ImportPathInfo> path;
+    Array<const char *> importPaths;
+    Array<const char *> filePath;
     char datetime[26LLU];
     CompileEnv compileEnv;
     Param params;
@@ -8688,468 +8762,470 @@ struct Global final
     uint32_t gag;
     uint32_t gaggedErrors;
     uint32_t gaggedWarnings;
-    void* console;
-    Array<Identifier* > versionids;
-    Array<Identifier* > debugids;
+    void *console;
+    Array<Identifier *> versionids;
+    Array<Identifier *> debugids;
     bool hasMainFunction;
     uint32_t varSequenceNumber;
-    FileManager* fileManager;
-    enum : int32_t { recursionLimit = 500 };
+    FileManager *fileManager;
+    enum : int32_t
+    {
+        recursionLimit = 500
+    };
 
-    ErrorSink* errorSink;
-    ErrorSink* errorSinkNull;
-    DArray<uint8_t >(*preprocess)(FileName , Loc , OutBuffer& );
+    ErrorSink *errorSink;
+    ErrorSink *errorSinkNull;
+    DArray<uint8_t> (*preprocess)(FileName, Loc, OutBuffer &);
     uint32_t startGagging();
     bool endGagging(uint32_t oldGagged);
     void increaseErrorCount();
     void _init();
     void plugErrorSinks();
     uint32_t versionNumber();
-    const char* const versionChars();
-    Global() :
-        inifilename(),
-        copyright(73, "Copyright (C) 1999-2025 by The D Language Foundation, All Rights Reserved"),
-        written(24, "written by Walter Bright"),
-        path(),
-        importPaths(),
-        filePath(),
-        compileEnv(),
-        params(),
-        errors(),
-        deprecations(),
-        warnings(),
-        gag(),
-        gaggedErrors(),
-        gaggedWarnings(),
-        console(),
-        versionids(),
-        debugids(),
-        hasMainFunction(),
-        varSequenceNumber(1u),
-        fileManager(),
-        errorSink(),
-        errorSinkNull(),
-        preprocess()
+    const char *const versionChars();
+    Global() : inifilename(),
+               copyright(73, "Copyright (C) 1999-2025 by The D Language Foundation, All Rights Reserved"),
+               written(24, "written by Walter Bright"),
+               path(),
+               importPaths(),
+               filePath(),
+               compileEnv(),
+               params(),
+               errors(),
+               deprecations(),
+               warnings(),
+               gag(),
+               gaggedErrors(),
+               gaggedWarnings(),
+               console(),
+               versionids(),
+               debugids(),
+               hasMainFunction(),
+               varSequenceNumber(1u),
+               fileManager(),
+               errorSink(),
+               errorSinkNull(),
+               preprocess()
     {
     }
-    Global(_d_dynamicArray< const char > inifilename, _d_dynamicArray< const char > copyright = { 73, "Copyright (C) 1999-2025 by The D Language Foundation, All Rights Reserved" }, _d_dynamicArray< const char > written = { 24, "written by Walter Bright" }, Array<ImportPathInfo > path = Array<ImportPathInfo >(), Array<const char* > importPaths = Array<const char* >(), Array<const char* > filePath = Array<const char* >(), CompileEnv compileEnv = CompileEnv(), Param params = Param(), uint32_t errors = 0u, uint32_t deprecations = 0u, uint32_t warnings = 0u, uint32_t gag = 0u, uint32_t gaggedErrors = 0u, uint32_t gaggedWarnings = 0u, void* console = nullptr, Array<Identifier* > versionids = Array<Identifier* >(), Array<Identifier* > debugids = Array<Identifier* >(), bool hasMainFunction = false, uint32_t varSequenceNumber = 1u, FileManager* fileManager = nullptr, ErrorSink* errorSink = nullptr, ErrorSink* errorSinkNull = nullptr, DArray<uint8_t >(*preprocess)(FileName , Loc , OutBuffer& ) = nullptr) :
-        inifilename(inifilename),
-        copyright(copyright),
-        written(written),
-        path(path),
-        importPaths(importPaths),
-        filePath(filePath),
-        compileEnv(compileEnv),
-        params(params),
-        errors(errors),
-        deprecations(deprecations),
-        warnings(warnings),
-        gag(gag),
-        gaggedErrors(gaggedErrors),
-        gaggedWarnings(gaggedWarnings),
-        console(console),
-        versionids(versionids),
-        debugids(debugids),
-        hasMainFunction(hasMainFunction),
-        varSequenceNumber(varSequenceNumber),
-        fileManager(fileManager),
-        errorSink(errorSink),
-        errorSinkNull(errorSinkNull),
-        preprocess(preprocess)
-        {}
+    Global(_d_dynamicArray<const char> inifilename, _d_dynamicArray<const char> copyright = {73, "Copyright (C) 1999-2025 by The D Language Foundation, All Rights Reserved"}, _d_dynamicArray<const char> written = {24, "written by Walter Bright"}, Array<ImportPathInfo> path = Array<ImportPathInfo>(), Array<const char *> importPaths = Array<const char *>(), Array<const char *> filePath = Array<const char *>(), CompileEnv compileEnv = CompileEnv(), Param params = Param(), uint32_t errors = 0u, uint32_t deprecations = 0u, uint32_t warnings = 0u, uint32_t gag = 0u, uint32_t gaggedErrors = 0u, uint32_t gaggedWarnings = 0u, void *console = nullptr, Array<Identifier *> versionids = Array<Identifier *>(), Array<Identifier *> debugids = Array<Identifier *>(), bool hasMainFunction = false, uint32_t varSequenceNumber = 1u, FileManager *fileManager = nullptr, ErrorSink *errorSink = nullptr, ErrorSink *errorSinkNull = nullptr, DArray<uint8_t> (*preprocess)(FileName, Loc, OutBuffer &) = nullptr) : inifilename(inifilename),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      copyright(copyright),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      written(written),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      path(path),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      importPaths(importPaths),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      filePath(filePath),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      compileEnv(compileEnv),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      params(params),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      errors(errors),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      deprecations(deprecations),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      warnings(warnings),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      gag(gag),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      gaggedErrors(gaggedErrors),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      gaggedWarnings(gaggedWarnings),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      console(console),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      versionids(versionids),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      debugids(debugids),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      hasMainFunction(hasMainFunction),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      varSequenceNumber(varSequenceNumber),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      fileManager(fileManager),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      errorSink(errorSink),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      errorSinkNull(errorSinkNull),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      preprocess(preprocess)
+    {
+    }
 };
 
 extern Global global;
 
 struct Id final
 {
-    static Identifier* IUnknown;
-    static Identifier* Object;
-    static Identifier* object;
-    static Identifier* _size_t;
-    static Identifier* _ptrdiff_t;
-    static Identifier* string;
-    static Identifier* wstring;
-    static Identifier* dstring;
-    static Identifier* max;
-    static Identifier* min;
-    static Identifier* This;
-    static Identifier* _super;
-    static Identifier* ctor;
-    static Identifier* dtor;
-    static Identifier* cppdtor;
-    static Identifier* ticppdtor;
-    static Identifier* postblit;
-    static Identifier* classInvariant;
-    static Identifier* unitTest;
-    static Identifier* require;
-    static Identifier* ensure;
-    static Identifier* capture;
-    static Identifier* this2;
-    static Identifier* _init;
-    static Identifier* _mangleof;
-    static Identifier* stringof;
-    static Identifier* _tupleof;
-    static Identifier* length;
-    static Identifier* remove;
-    static Identifier* ptr;
-    static Identifier* array;
-    static Identifier* funcptr;
-    static Identifier* dollar;
-    static Identifier* ctfe;
-    static Identifier* offset;
-    static Identifier* bitoffsetof;
-    static Identifier* bitwidth;
-    static Identifier* ModuleInfo;
-    static Identifier* ClassInfo;
-    static Identifier* classinfo;
-    static Identifier* typeinfo;
-    static Identifier* outer;
-    static Identifier* Exception;
-    static Identifier* RTInfo;
-    static Identifier* Throwable;
-    static Identifier* Error;
-    static Identifier* withSym;
-    static Identifier* result;
-    static Identifier* returnLabel;
-    static Identifier* line;
-    static Identifier* empty;
-    static Identifier* dotdotdot;
-    static Identifier* p;
-    static Identifier* gate;
-    static Identifier* cpp_type_info_ptr;
-    static Identifier* _unittest;
-    static Identifier* _body;
-    static Identifier* printf;
-    static Identifier* scanf;
-    static Identifier* TypeInfo;
-    static Identifier* TypeInfo_Class;
-    static Identifier* TypeInfo_Interface;
-    static Identifier* TypeInfo_Struct;
-    static Identifier* TypeInfo_Enum;
-    static Identifier* TypeInfo_Pointer;
-    static Identifier* TypeInfo_Vector;
-    static Identifier* TypeInfo_Array;
-    static Identifier* TypeInfo_StaticArray;
-    static Identifier* TypeInfo_AssociativeArray;
-    static Identifier* TypeInfo_Function;
-    static Identifier* TypeInfo_Delegate;
-    static Identifier* TypeInfo_Tuple;
-    static Identifier* TypeInfo_Const;
-    static Identifier* TypeInfo_Invariant;
-    static Identifier* TypeInfo_Shared;
-    static Identifier* TypeInfo_Wild;
-    static Identifier* elements;
-    static Identifier* _arguments_typeinfo;
-    static Identifier* _arguments;
-    static Identifier* _argptr;
-    static Identifier* destroy;
-    static Identifier* xopEquals;
-    static Identifier* xopCmp;
-    static Identifier* xtoHash;
-    static Identifier* Entry;
-    static Identifier* LINE;
-    static Identifier* FILE;
-    static Identifier* MODULE;
-    static Identifier* FUNCTION;
-    static Identifier* PRETTY_FUNCTION;
-    static Identifier* DATE;
-    static Identifier* TIME;
-    static Identifier* TIMESTAMP;
-    static Identifier* VENDOR;
-    static Identifier* VERSIONX;
-    static Identifier* EOFX;
-    static Identifier* nan;
-    static Identifier* infinity;
-    static Identifier* dig;
-    static Identifier* epsilon;
-    static Identifier* mant_dig;
-    static Identifier* max_10_exp;
-    static Identifier* max_exp;
-    static Identifier* min_10_exp;
-    static Identifier* min_exp;
-    static Identifier* min_normal;
-    static Identifier* re;
-    static Identifier* im;
-    static Identifier* C;
-    static Identifier* D;
-    static Identifier* Windows;
-    static Identifier* System;
-    static Identifier* Objective;
-    static Identifier* exit;
-    static Identifier* success;
-    static Identifier* failure;
-    static Identifier* keys;
-    static Identifier* values;
-    static Identifier* rehash;
-    static Identifier* future;
-    static Identifier* property;
-    static Identifier* nogc;
-    static Identifier* live;
-    static Identifier* safe;
-    static Identifier* trusted;
-    static Identifier* system;
-    static Identifier* disable;
-    static Identifier* _dollar;
-    static Identifier* opEquals;
-    static Identifier* opCmp;
-    static Identifier* opAssign;
-    static Identifier* opIndex;
-    static Identifier* opIndexAssign;
-    static Identifier* opSlice;
-    static Identifier* opSliceAssign;
-    static Identifier* opCall;
-    static Identifier* opCast;
-    static Identifier* opDispatch;
-    static Identifier* opDollar;
-    static Identifier* opUnary;
-    static Identifier* opIndexUnary;
-    static Identifier* opSliceUnary;
-    static Identifier* opBinary;
-    static Identifier* opBinaryRight;
-    static Identifier* opOpAssign;
-    static Identifier* opIndexOpAssign;
-    static Identifier* opSliceOpAssign;
-    static Identifier* classNew;
-    static Identifier* classDelete;
-    static Identifier* apply;
-    static Identifier* applyReverse;
-    static Identifier* Fempty;
-    static Identifier* Ffront;
-    static Identifier* Fback;
-    static Identifier* FpopFront;
-    static Identifier* FpopBack;
-    static Identifier* aaLen;
-    static Identifier* aaKeys;
-    static Identifier* aaValues;
-    static Identifier* aaRehash;
-    static Identifier* _aaAsStruct;
-    static Identifier* monitorenter;
-    static Identifier* monitorexit;
-    static Identifier* criticalenter;
-    static Identifier* criticalexit;
-    static Identifier* _d_delThrowable;
-    static Identifier* _d_newThrowable;
-    static Identifier* _d_newclassT;
-    static Identifier* _d_newclassTTrace;
-    static Identifier* _d_newitemT;
-    static Identifier* _d_newitemTTrace;
-    static Identifier* _d_newarrayT;
-    static Identifier* _d_newarrayTTrace;
-    static Identifier* _d_newarraymTX;
-    static Identifier* _d_newarraymTXTrace;
-    static Identifier* _d_assert_fail;
-    static Identifier* dup;
-    static Identifier* _aaApply;
-    static Identifier* _aaApply2;
-    static Identifier* _d_arrayctor;
-    static Identifier* _d_arraysetctor;
-    static Identifier* _d_arraysetassign;
-    static Identifier* _d_arrayassign_l;
-    static Identifier* _d_arrayassign_r;
-    static Identifier* imported;
-    static Identifier* InterpolationHeader;
-    static Identifier* InterpolationFooter;
-    static Identifier* InterpolatedLiteral;
-    static Identifier* InterpolatedExpression;
-    static Identifier* Pinline;
-    static Identifier* lib;
-    static Identifier* linkerDirective;
-    static Identifier* mangle;
-    static Identifier* msg;
-    static Identifier* startaddress;
-    static Identifier* crt_constructor;
-    static Identifier* crt_destructor;
-    static Identifier* tohash;
-    static Identifier* tostring;
-    static Identifier* getmembers;
-    static Identifier* main;
-    static Identifier* WinMain;
-    static Identifier* DllMain;
-    static Identifier* CMain;
-    static Identifier* rt_init;
-    static Identifier* _d_HookTraceImpl;
-    static Identifier* _d_arraysetlengthTImpl;
-    static Identifier* _d_arraysetlengthT;
-    static Identifier* _d_arraysetlengthTTrace;
-    static Identifier* _d_arrayappendT;
-    static Identifier* _d_arrayappendTTrace;
-    static Identifier* _d_arrayappendcTX;
-    static Identifier* _d_arrayappendcTXTrace;
-    static Identifier* _d_arraycatnTX;
-    static Identifier* _d_arraycatnTXTrace;
-    static Identifier* stdc;
-    static Identifier* stdarg;
-    static Identifier* va_start;
-    static Identifier* std;
-    static Identifier* core;
-    static Identifier* internal;
-    static Identifier* config;
-    static Identifier* c_complex_float;
-    static Identifier* c_complex_double;
-    static Identifier* c_complex_real;
-    static Identifier* etc;
-    static Identifier* attribute;
-    static Identifier* atomic;
-    static Identifier* atomicOp;
-    static Identifier* math;
-    static Identifier* sin;
-    static Identifier* cos;
-    static Identifier* tan;
-    static Identifier* _sqrt;
-    static Identifier* _pow;
-    static Identifier* atan2;
-    static Identifier* rint;
-    static Identifier* ldexp;
-    static Identifier* rndtol;
-    static Identifier* exp;
-    static Identifier* expm1;
-    static Identifier* exp2;
-    static Identifier* yl2x;
-    static Identifier* yl2xp1;
-    static Identifier* log;
-    static Identifier* log2;
-    static Identifier* log10;
-    static Identifier* round;
-    static Identifier* floor;
-    static Identifier* trunc;
-    static Identifier* fmax;
-    static Identifier* fmin;
-    static Identifier* fma;
-    static Identifier* isnan;
-    static Identifier* isInfinity;
-    static Identifier* isfinite;
-    static Identifier* ceil;
-    static Identifier* copysign;
-    static Identifier* fabs;
-    static Identifier* toPrec;
-    static Identifier* simd;
-    static Identifier* bitop;
-    static Identifier* bsf;
-    static Identifier* bsr;
-    static Identifier* btc;
-    static Identifier* btr;
-    static Identifier* bts;
-    static Identifier* bswap;
-    static Identifier* volatileLoad;
-    static Identifier* volatileStore;
-    static Identifier* _popcnt;
-    static Identifier* inp;
-    static Identifier* inpl;
-    static Identifier* inpw;
-    static Identifier* outp;
-    static Identifier* outpl;
-    static Identifier* outpw;
-    static Identifier* builtinsModuleName;
-    static Identifier* ctfeWrite;
-    static Identifier* isAbstractClass;
-    static Identifier* isArithmetic;
-    static Identifier* isAssociativeArray;
-    static Identifier* isBitfield;
-    static Identifier* isFinalClass;
-    static Identifier* isTemplate;
-    static Identifier* isPOD;
-    static Identifier* isDeprecated;
-    static Identifier* isDisabled;
-    static Identifier* isFuture;
-    static Identifier* isNested;
-    static Identifier* isFloating;
-    static Identifier* isIntegral;
-    static Identifier* isScalar;
-    static Identifier* isStaticArray;
-    static Identifier* isUnsigned;
-    static Identifier* isVirtualFunction;
-    static Identifier* isVirtualMethod;
-    static Identifier* isAbstractFunction;
-    static Identifier* isFinalFunction;
-    static Identifier* isOverrideFunction;
-    static Identifier* isStaticFunction;
-    static Identifier* isModule;
-    static Identifier* isPackage;
-    static Identifier* isRef;
-    static Identifier* isOut;
-    static Identifier* isLazy;
-    static Identifier* isCOMClass;
-    static Identifier* hasMember;
-    static Identifier* identifier;
-    static Identifier* fullyQualifiedName;
-    static Identifier* getBitfieldOffset;
-    static Identifier* getBitfieldWidth;
-    static Identifier* getProtection;
-    static Identifier* getVisibility;
-    static Identifier* parent;
-    static Identifier* child;
-    static Identifier* getMember;
-    static Identifier* getOverloads;
-    static Identifier* getVirtualFunctions;
-    static Identifier* getVirtualMethods;
-    static Identifier* classInstanceSize;
-    static Identifier* classInstanceAlignment;
-    static Identifier* allMembers;
-    static Identifier* derivedMembers;
-    static Identifier* isSame;
-    static Identifier* compiles;
-    static Identifier* getAliasThis;
-    static Identifier* getAttributes;
-    static Identifier* getFunctionAttributes;
-    static Identifier* getFunctionVariadicStyle;
-    static Identifier* getParameterStorageClasses;
-    static Identifier* getLinkage;
-    static Identifier* getUnitTests;
-    static Identifier* getVirtualIndex;
-    static Identifier* getPointerBitmap;
-    static Identifier* initSymbol;
-    static Identifier* getCppNamespaces;
-    static Identifier* isReturnOnStack;
-    static Identifier* isZeroInit;
-    static Identifier* getTargetInfo;
-    static Identifier* getLocation;
-    static Identifier* hasPostblit;
-    static Identifier* hasCopyConstructor;
-    static Identifier* hasMoveConstructor;
-    static Identifier* isCopyable;
-    static Identifier* toType;
-    static Identifier* parameters;
-    static Identifier* allocator;
-    static Identifier* basic_string;
-    static Identifier* basic_istream;
-    static Identifier* basic_ostream;
-    static Identifier* basic_iostream;
-    static Identifier* char_traits;
-    static Identifier* udaGNUAbiTag;
-    static Identifier* udaSelector;
-    static Identifier* udaOptional;
-    static Identifier* udaMustUse;
-    static Identifier* udaStandalone;
-    static Identifier* TRUE;
-    static Identifier* FALSE;
-    static Identifier* ImportC;
-    static Identifier* dllimport;
-    static Identifier* dllexport;
-    static Identifier* naked;
-    static Identifier* thread;
-    static Identifier* vector_size;
-    static Identifier* always_inline;
-    static Identifier* noinline;
-    static Identifier* noreturn;
-    static Identifier* _nothrow;
-    static Identifier* _deprecated;
-    static Identifier* _align;
-    static Identifier* aligned;
-    static Identifier* importc_builtins;
-    static Identifier* builtin_va_list;
-    static Identifier* builtin_va_arg;
-    static Identifier* va_list_tag;
-    static Identifier* va_arg;
-    static Identifier* pack;
-    static Identifier* show;
-    static Identifier* push;
-    static Identifier* pop;
-    static Identifier* _pure;
-    static Identifier* define;
-    static Identifier* undef;
-    static Identifier* ident;
-    static Identifier* packed;
+    static Identifier *IUnknown;
+    static Identifier *Object;
+    static Identifier *object;
+    static Identifier *_size_t;
+    static Identifier *_ptrdiff_t;
+    static Identifier *string;
+    static Identifier *wstring;
+    static Identifier *dstring;
+    static Identifier *max;
+    static Identifier *min;
+    static Identifier *This;
+    static Identifier *_super;
+    static Identifier *ctor;
+    static Identifier *dtor;
+    static Identifier *cppdtor;
+    static Identifier *ticppdtor;
+    static Identifier *postblit;
+    static Identifier *classInvariant;
+    static Identifier *unitTest;
+    static Identifier *require;
+    static Identifier *ensure;
+    static Identifier *capture;
+    static Identifier *this2;
+    static Identifier *_init;
+    static Identifier *_mangleof;
+    static Identifier *stringof;
+    static Identifier *_tupleof;
+    static Identifier *length;
+    static Identifier *remove;
+    static Identifier *ptr;
+    static Identifier *array;
+    static Identifier *funcptr;
+    static Identifier *dollar;
+    static Identifier *ctfe;
+    static Identifier *offset;
+    static Identifier *bitoffsetof;
+    static Identifier *bitwidth;
+    static Identifier *ModuleInfo;
+    static Identifier *ClassInfo;
+    static Identifier *classinfo;
+    static Identifier *typeinfo;
+    static Identifier *outer;
+    static Identifier *Exception;
+    static Identifier *RTInfo;
+    static Identifier *Throwable;
+    static Identifier *Error;
+    static Identifier *withSym;
+    static Identifier *result;
+    static Identifier *returnLabel;
+    static Identifier *line;
+    static Identifier *empty;
+    static Identifier *dotdotdot;
+    static Identifier *p;
+    static Identifier *gate;
+    static Identifier *cpp_type_info_ptr;
+    static Identifier *_unittest;
+    static Identifier *_body;
+    static Identifier *printf;
+    static Identifier *scanf;
+    static Identifier *TypeInfo;
+    static Identifier *TypeInfo_Class;
+    static Identifier *TypeInfo_Interface;
+    static Identifier *TypeInfo_Struct;
+    static Identifier *TypeInfo_Enum;
+    static Identifier *TypeInfo_Pointer;
+    static Identifier *TypeInfo_Vector;
+    static Identifier *TypeInfo_Array;
+    static Identifier *TypeInfo_StaticArray;
+    static Identifier *TypeInfo_AssociativeArray;
+    static Identifier *TypeInfo_Function;
+    static Identifier *TypeInfo_Delegate;
+    static Identifier *TypeInfo_Tuple;
+    static Identifier *TypeInfo_Const;
+    static Identifier *TypeInfo_Invariant;
+    static Identifier *TypeInfo_Shared;
+    static Identifier *TypeInfo_Wild;
+    static Identifier *elements;
+    static Identifier *_arguments_typeinfo;
+    static Identifier *_arguments;
+    static Identifier *_argptr;
+    static Identifier *destroy;
+    static Identifier *xopEquals;
+    static Identifier *xopCmp;
+    static Identifier *xtoHash;
+    static Identifier *Entry;
+    static Identifier *LINE;
+    static Identifier *FILE;
+    static Identifier *MODULE;
+    static Identifier *FUNCTION;
+    static Identifier *PRETTY_FUNCTION;
+    static Identifier *DATE;
+    static Identifier *TIME;
+    static Identifier *TIMESTAMP;
+    static Identifier *VENDOR;
+    static Identifier *VERSIONX;
+    static Identifier *EOFX;
+    static Identifier *nan;
+    static Identifier *infinity;
+    static Identifier *dig;
+    static Identifier *epsilon;
+    static Identifier *mant_dig;
+    static Identifier *max_10_exp;
+    static Identifier *max_exp;
+    static Identifier *min_10_exp;
+    static Identifier *min_exp;
+    static Identifier *min_normal;
+    static Identifier *re;
+    static Identifier *im;
+    static Identifier *C;
+    static Identifier *D;
+    static Identifier *Windows;
+    static Identifier *System;
+    static Identifier *Objective;
+    static Identifier *exit;
+    static Identifier *success;
+    static Identifier *failure;
+    static Identifier *keys;
+    static Identifier *values;
+    static Identifier *rehash;
+    static Identifier *future;
+    static Identifier *property;
+    static Identifier *nogc;
+    static Identifier *live;
+    static Identifier *safe;
+    static Identifier *trusted;
+    static Identifier *system;
+    static Identifier *disable;
+    static Identifier *_dollar;
+    static Identifier *opEquals;
+    static Identifier *opCmp;
+    static Identifier *opAssign;
+    static Identifier *opIndex;
+    static Identifier *opIndexAssign;
+    static Identifier *opSlice;
+    static Identifier *opSliceAssign;
+    static Identifier *opCall;
+    static Identifier *opCast;
+    static Identifier *opDispatch;
+    static Identifier *opDollar;
+    static Identifier *opUnary;
+    static Identifier *opIndexUnary;
+    static Identifier *opSliceUnary;
+    static Identifier *opBinary;
+    static Identifier *opBinaryRight;
+    static Identifier *opOpAssign;
+    static Identifier *opIndexOpAssign;
+    static Identifier *opSliceOpAssign;
+    static Identifier *classNew;
+    static Identifier *classDelete;
+    static Identifier *apply;
+    static Identifier *applyReverse;
+    static Identifier *Fempty;
+    static Identifier *Ffront;
+    static Identifier *Fback;
+    static Identifier *FpopFront;
+    static Identifier *FpopBack;
+    static Identifier *aaLen;
+    static Identifier *aaKeys;
+    static Identifier *aaValues;
+    static Identifier *aaRehash;
+    static Identifier *_aaAsStruct;
+    static Identifier *monitorenter;
+    static Identifier *monitorexit;
+    static Identifier *criticalenter;
+    static Identifier *criticalexit;
+    static Identifier *_d_delThrowable;
+    static Identifier *_d_newThrowable;
+    static Identifier *_d_newclassT;
+    static Identifier *_d_newclassTTrace;
+    static Identifier *_d_newitemT;
+    static Identifier *_d_newitemTTrace;
+    static Identifier *_d_newarrayT;
+    static Identifier *_d_newarrayTTrace;
+    static Identifier *_d_newarraymTX;
+    static Identifier *_d_newarraymTXTrace;
+    static Identifier *_d_assert_fail;
+    static Identifier *dup;
+    static Identifier *_aaApply;
+    static Identifier *_aaApply2;
+    static Identifier *_d_arrayctor;
+    static Identifier *_d_arraysetctor;
+    static Identifier *_d_arraysetassign;
+    static Identifier *_d_arrayassign_l;
+    static Identifier *_d_arrayassign_r;
+    static Identifier *imported;
+    static Identifier *InterpolationHeader;
+    static Identifier *InterpolationFooter;
+    static Identifier *InterpolatedLiteral;
+    static Identifier *InterpolatedExpression;
+    static Identifier *Pinline;
+    static Identifier *lib;
+    static Identifier *linkerDirective;
+    static Identifier *mangle;
+    static Identifier *msg;
+    static Identifier *startaddress;
+    static Identifier *crt_constructor;
+    static Identifier *crt_destructor;
+    static Identifier *tohash;
+    static Identifier *tostring;
+    static Identifier *getmembers;
+    static Identifier *main;
+    static Identifier *WinMain;
+    static Identifier *DllMain;
+    static Identifier *CMain;
+    static Identifier *rt_init;
+    static Identifier *_d_HookTraceImpl;
+    static Identifier *_d_arraysetlengthTImpl;
+    static Identifier *_d_arraysetlengthT;
+    static Identifier *_d_arraysetlengthTTrace;
+    static Identifier *_d_arrayappendT;
+    static Identifier *_d_arrayappendTTrace;
+    static Identifier *_d_arrayappendcTX;
+    static Identifier *_d_arrayappendcTXTrace;
+    static Identifier *_d_arraycatnTX;
+    static Identifier *_d_arraycatnTXTrace;
+    static Identifier *stdc;
+    static Identifier *stdarg;
+    static Identifier *va_start;
+    static Identifier *std;
+    static Identifier *core;
+    static Identifier *internal;
+    static Identifier *config;
+    static Identifier *c_complex_float;
+    static Identifier *c_complex_double;
+    static Identifier *c_complex_real;
+    static Identifier *etc;
+    static Identifier *attribute;
+    static Identifier *atomic;
+    static Identifier *atomicOp;
+    static Identifier *math;
+    static Identifier *sin;
+    static Identifier *cos;
+    static Identifier *tan;
+    static Identifier *_sqrt;
+    static Identifier *_pow;
+    static Identifier *atan2;
+    static Identifier *rint;
+    static Identifier *ldexp;
+    static Identifier *rndtol;
+    static Identifier *exp;
+    static Identifier *expm1;
+    static Identifier *exp2;
+    static Identifier *yl2x;
+    static Identifier *yl2xp1;
+    static Identifier *log;
+    static Identifier *log2;
+    static Identifier *log10;
+    static Identifier *round;
+    static Identifier *floor;
+    static Identifier *trunc;
+    static Identifier *fmax;
+    static Identifier *fmin;
+    static Identifier *fma;
+    static Identifier *isnan;
+    static Identifier *isInfinity;
+    static Identifier *isfinite;
+    static Identifier *ceil;
+    static Identifier *copysign;
+    static Identifier *fabs;
+    static Identifier *toPrec;
+    static Identifier *simd;
+    static Identifier *bitop;
+    static Identifier *bsf;
+    static Identifier *bsr;
+    static Identifier *btc;
+    static Identifier *btr;
+    static Identifier *bts;
+    static Identifier *bswap;
+    static Identifier *volatileLoad;
+    static Identifier *volatileStore;
+    static Identifier *_popcnt;
+    static Identifier *inp;
+    static Identifier *inpl;
+    static Identifier *inpw;
+    static Identifier *outp;
+    static Identifier *outpl;
+    static Identifier *outpw;
+    static Identifier *builtinsModuleName;
+    static Identifier *ctfeWrite;
+    static Identifier *isAbstractClass;
+    static Identifier *isArithmetic;
+    static Identifier *isAssociativeArray;
+    static Identifier *isBitfield;
+    static Identifier *isFinalClass;
+    static Identifier *isTemplate;
+    static Identifier *isPOD;
+    static Identifier *isDeprecated;
+    static Identifier *isDisabled;
+    static Identifier *isFuture;
+    static Identifier *isNested;
+    static Identifier *isFloating;
+    static Identifier *isIntegral;
+    static Identifier *isScalar;
+    static Identifier *isStaticArray;
+    static Identifier *isUnsigned;
+    static Identifier *isVirtualFunction;
+    static Identifier *isVirtualMethod;
+    static Identifier *isAbstractFunction;
+    static Identifier *isFinalFunction;
+    static Identifier *isOverrideFunction;
+    static Identifier *isStaticFunction;
+    static Identifier *isModule;
+    static Identifier *isPackage;
+    static Identifier *isRef;
+    static Identifier *isOut;
+    static Identifier *isLazy;
+    static Identifier *isCOMClass;
+    static Identifier *hasMember;
+    static Identifier *identifier;
+    static Identifier *fullyQualifiedName;
+    static Identifier *getBitfieldOffset;
+    static Identifier *getBitfieldWidth;
+    static Identifier *getProtection;
+    static Identifier *getVisibility;
+    static Identifier *parent;
+    static Identifier *child;
+    static Identifier *getMember;
+    static Identifier *getOverloads;
+    static Identifier *getVirtualFunctions;
+    static Identifier *getVirtualMethods;
+    static Identifier *classInstanceSize;
+    static Identifier *classInstanceAlignment;
+    static Identifier *allMembers;
+    static Identifier *derivedMembers;
+    static Identifier *isSame;
+    static Identifier *compiles;
+    static Identifier *getAliasThis;
+    static Identifier *getAttributes;
+    static Identifier *getFunctionAttributes;
+    static Identifier *getFunctionVariadicStyle;
+    static Identifier *getParameterStorageClasses;
+    static Identifier *getLinkage;
+    static Identifier *getUnitTests;
+    static Identifier *getVirtualIndex;
+    static Identifier *getPointerBitmap;
+    static Identifier *initSymbol;
+    static Identifier *getCppNamespaces;
+    static Identifier *isReturnOnStack;
+    static Identifier *isZeroInit;
+    static Identifier *getTargetInfo;
+    static Identifier *getLocation;
+    static Identifier *hasPostblit;
+    static Identifier *hasCopyConstructor;
+    static Identifier *hasMoveConstructor;
+    static Identifier *isCopyable;
+    static Identifier *toType;
+    static Identifier *parameters;
+    static Identifier *allocator;
+    static Identifier *basic_string;
+    static Identifier *basic_istream;
+    static Identifier *basic_ostream;
+    static Identifier *basic_iostream;
+    static Identifier *char_traits;
+    static Identifier *udaGNUAbiTag;
+    static Identifier *udaSelector;
+    static Identifier *udaOptional;
+    static Identifier *udaMustUse;
+    static Identifier *udaStandalone;
+    static Identifier *TRUE;
+    static Identifier *FALSE;
+    static Identifier *ImportC;
+    static Identifier *dllimport;
+    static Identifier *dllexport;
+    static Identifier *naked;
+    static Identifier *thread;
+    static Identifier *vector_size;
+    static Identifier *always_inline;
+    static Identifier *noinline;
+    static Identifier *noreturn;
+    static Identifier *_nothrow;
+    static Identifier *_deprecated;
+    static Identifier *_align;
+    static Identifier *aligned;
+    static Identifier *importc_builtins;
+    static Identifier *builtin_va_list;
+    static Identifier *builtin_va_arg;
+    static Identifier *va_list_tag;
+    static Identifier *va_arg;
+    static Identifier *pack;
+    static Identifier *show;
+    static Identifier *push;
+    static Identifier *pop;
+    static Identifier *_pure;
+    static Identifier *define;
+    static Identifier *undef;
+    static Identifier *ident;
+    static Identifier *packed;
     static void initialize();
     Id()
     {
@@ -9160,27 +9236,28 @@ class Identifier final : public RootObject
 {
     const int32_t value;
     const bool isAnonymous_;
-    const _d_dynamicArray< const char > name;
+    const _d_dynamicArray<const char> name;
+
 public:
-    static Identifier* create(const char* name);
-    const char* toChars() const override;
+    static Identifier *create(const char *name);
+    const char *toChars() const override;
     int32_t getValue() const;
     bool isAnonymous() const;
-    const char* toHChars2() const;
+    const char *toHChars2() const;
     DYNCAST dyncast() const override;
-    static Identifier* generateId(const char* prefix, size_t length, size_t suffix);
-    static Identifier* idPool(const char* s, uint32_t len);
-    static bool isValidIdentifier(const char* str);
+    static Identifier *generateId(const char *prefix, size_t length, size_t suffix);
+    static Identifier *idPool(const char *s, uint32_t len);
+    static bool isValidIdentifier(const char *str);
 };
 
 struct Token final
 {
-    Token* next;
+    Token *next;
     Loc loc;
-    const char* ptr;
+    const char *ptr;
     TOK value;
-    _d_dynamicArray< const char > blockComment;
-    _d_dynamicArray< const char > lineComment;
+    _d_dynamicArray<const char> blockComment;
+    _d_dynamicArray<const char> lineComment;
     union
     {
         int64_t intvalue;
@@ -9190,47 +9267,52 @@ struct Token final
         {
             union
             {
-                const char* ustring;
-                InterpolatedSet* interpolatedSet;
+                const char *ustring;
+                InterpolatedSet *interpolatedSet;
             };
             uint32_t len;
             uint8_t postfix;
         };
-        Identifier* ident;
+        Identifier *ident;
     };
-    void setString(const char* ptr, size_t length);
-    void setString(const OutBuffer& buf);
+    void setString(const char *ptr, size_t length);
+    void setString(const OutBuffer &buf);
     void setString();
-    const char* toChars() const;
-    static const char* toChars(TOK value);
-    Token() :
-        next(),
-        loc(),
-        ptr(),
-        blockComment(),
-        lineComment()
+    const char *toChars() const;
+    static const char *toChars(TOK value);
+    Token() : next(),
+              loc(),
+              ptr(),
+              blockComment(),
+              lineComment()
     {
     }
-    Token(Token* next, Loc loc = Loc(), const char* ptr = nullptr, TOK value = (TOK)0u, _d_dynamicArray< const char > blockComment = {}, _d_dynamicArray< const char > lineComment = {}) :
-        next(next),
-        loc(loc),
-        ptr(ptr),
-        value(value),
-        blockComment(blockComment),
-        lineComment(lineComment)
-        {}
+    Token(Token *next, Loc loc = Loc(), const char *ptr = nullptr, TOK value = (TOK)0u, _d_dynamicArray<const char> blockComment = {}, _d_dynamicArray<const char> lineComment = {}) : next(next),
+                                                                                                                                                                                       loc(loc),
+                                                                                                                                                                                       ptr(ptr),
+                                                                                                                                                                                       value(value),
+                                                                                                                                                                                       blockComment(blockComment),
+                                                                                                                                                                                       lineComment(lineComment)
+    {
+    }
 };
 
 using real_t = longdouble;
 
 struct CTFloat final
 {
-    enum : bool { yl2x_supported = true };
+    enum : bool
+    {
+        yl2x_supported = true
+    };
 
-    enum : bool { yl2xp1_supported = true };
+    enum : bool
+    {
+        yl2xp1_supported = true
+    };
 
-    static void yl2x(const _d_real* const x, const _d_real* const y, _d_real* res);
-    static void yl2xp1(const _d_real* const x, const _d_real* const y, _d_real* res);
+    static void yl2x(const _d_real *const x, const _d_real *const y, _d_real *res);
+    static void yl2xp1(const _d_real *const x, const _d_real *const y, _d_real *res);
     static _d_real sin(_d_real x);
     static _d_real cos(_d_real x);
     static _d_real tan(_d_real x);
@@ -9257,8 +9339,8 @@ struct CTFloat final
     static bool isNaN(_d_real r);
     static bool isSNaN(_d_real r);
     static bool isInfinity(_d_real r);
-    static _d_real parse(const char* literal, bool& isOutOfRange);
-    static int32_t sprint(char* str, size_t size, char fmt, _d_real x);
+    static _d_real parse(const char *literal, bool &isOutOfRange);
+    static int32_t sprint(char *str, size_t size, char fmt, _d_real x);
     static _d_real zero;
     static _d_real one;
     static _d_real minusone;
@@ -9271,17 +9353,17 @@ struct CTFloat final
 
 struct Port final
 {
-    static int32_t memicmp(const char* const s1, const char* const s2, size_t n);
-    static char* strupr(char* s);
-    static bool isFloat32LiteralOutOfRange(const char* s);
-    static bool isFloat64LiteralOutOfRange(const char* s);
-    static void writelongLE(uint32_t value, void* buffer);
-    static uint32_t readlongLE(const void* const buffer);
-    static void writelongBE(uint32_t value, void* buffer);
-    static uint32_t readlongBE(const void* const buffer);
-    static uint32_t readwordLE(const void* const buffer);
-    static uint32_t readwordBE(const void* const buffer);
-    static void valcpy(void* dst, uint64_t val, size_t size);
+    static int32_t memicmp(const char *const s1, const char *const s2, size_t n);
+    static char *strupr(char *s);
+    static bool isFloat32LiteralOutOfRange(const char *s);
+    static bool isFloat64LiteralOutOfRange(const char *s);
+    static void writelongLE(uint32_t value, void *buffer);
+    static uint32_t readlongLE(const void *const buffer);
+    static void writelongBE(uint32_t value, void *buffer);
+    static uint32_t readlongBE(const void *const buffer);
+    static uint32_t readwordLE(const void *const buffer);
+    static uint32_t readwordBE(const void *const buffer);
+    static void valcpy(void *dst, uint64_t val, size_t size);
     Port()
     {
     }
@@ -9289,21 +9371,21 @@ struct Port final
 
 struct Mem final
 {
-    static char* xstrdup(const char* s);
-    static void xfree(void* p);
-    static void* xmalloc(size_t size);
-    static void* xmalloc_noscan(size_t size);
-    static void* xcalloc(size_t size, size_t n);
-    static void* xcalloc_noscan(size_t size, size_t n);
-    static void* xrealloc(void* p, size_t size);
-    static void* xrealloc_noscan(void* p, size_t size);
-    static void* error();
-    static void* check(void* p);
+    static char *xstrdup(const char *s);
+    static void xfree(void *p);
+    static void *xmalloc(size_t size);
+    static void *xmalloc_noscan(size_t size);
+    static void *xcalloc(size_t size, size_t n);
+    static void *xcalloc_noscan(size_t size, size_t n);
+    static void *xrealloc(void *p, size_t size);
+    static void *xrealloc_noscan(void *p, size_t size);
+    static void *error();
+    static void *check(void *p);
     static bool _isGCEnabled;
     static bool isGCEnabled();
     static void disableGC();
-    static void addRange(const void* p, size_t size);
-    static void removeRange(const void* p);
+    static void addRange(const void *p, size_t size);
+    static void removeRange(const void *p);
     Mem()
     {
     }
@@ -9311,10 +9393,10 @@ struct Mem final
 
 extern const Mem mem;
 
-extern "C" void* _d_allocmemory(size_t m_size);
+extern "C" void *_d_allocmemory(size_t m_size);
 
-extern "C" Object* _d_newclass(const TypeInfo_Class* const ci);
+extern "C" Object *_d_newclass(const TypeInfo_Class *const ci);
 
-extern "C" void* _d_newitemT(TypeInfo* ti);
+extern "C" void *_d_newitemT(TypeInfo *ti);
 
-extern "C" void* _d_newitemiT(TypeInfo* ti);
+extern "C" void *_d_newitemiT(TypeInfo *ti);

@@ -3288,7 +3288,7 @@ struct ArgumentList
     }
 }
 
-struct ArgumentLabel
+extern (C++) struct ArgumentLabel
 {
     Identifier name;    // name of the argument
     Loc loc;            // location of the argument
