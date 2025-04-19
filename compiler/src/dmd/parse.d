@@ -9010,8 +9010,22 @@ class Parser(AST, Lexer = dmd.lexer.Lexer) : Lexer
                 AST.Expressions* args = new AST.Expressions();
                 AST.Identifiers* names = new AST.Identifiers(); 
                 ArgumentLabel[] argLabels;
+                // writeln("Call for: ");
                 parseNamedArguments(args, names, &argLabels);
+
+                // writeln("Names Length: ", names.length);
+                // foreach(i, name; *names){
+                //     writeln("Name: ", name);
+                //     writeln("Arg: ", (*args)[i]);
+                // }
+                // writeln("");
+
                 e = new AST.CallExp(loc, e, args, names, argLabels);
+
+                // writeln("AFTER CONSTRUCTION");
+                // writeln((*e.names).length);        // print names length
+                // writeln(e.argLabels.length);       // print argLabels length
+
                 continue;
 
             case TOK.leftBracket:
@@ -9473,19 +9487,32 @@ class Parser(AST, Lexer = dmd.lexer.Lexer) : Lexer
                 auto ident = token.ident;
                 check(TOK.identifier);
                 check(TOK.colon);
-                if (names)
+                if (names){
+                    // writeln("Adding named argument %s", ident.toChars());
                     names.push(ident);
+                }
                 else
                     error(loc, "named arguments not allowed here");
-                if (argLabels)
+                if (argLabels){
+                    // writeln("Adding argument label %s", ident.toChars());
                     (*argLabels) ~= ArgumentLabel(ident, loc);
+                }
             }
             else
             {
+                // int num = 0;
                 if (names)
+                {
+                    // num++;
+                    // writeln("Adding unnamed name");
                     names.push(null);
-                if (argLabels)
+                }
+                if (argLabels){
+                    // num++;
+                    // writeln("Adding unnamed argument label");
                     (*argLabels) ~= ArgumentLabel(null, Loc.init);
+                }
+                // writeln("num: ", num);
             }
 
             auto arg = parseAssignExp();
