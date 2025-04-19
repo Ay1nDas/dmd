@@ -22,3 +22,7 @@ union U
 immutable U u = U(i: 2);
 
 static assert(u.i == 2);
+
+void main()
+{
+}

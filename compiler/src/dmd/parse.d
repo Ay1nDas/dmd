@@ -9008,9 +9008,10 @@ class Parser(AST, Lexer = dmd.lexer.Lexer) : Lexer
 
             case TOK.leftParenthesis:
                 AST.Expressions* args = new AST.Expressions();
+                AST.Identifiers* names = new AST.Identifiers(); 
                 ArgumentLabel[] argLabels;
-                parseNamedArguments(args, null, &argLabels);
-                e = new AST.CallExp(loc, e, args, argLabels);
+                parseNamedArguments(args, names, &argLabels);
+                e = new AST.CallExp(loc, e, args, names, argLabels);
                 continue;
 
             case TOK.leftBracket:
@@ -9474,16 +9475,16 @@ class Parser(AST, Lexer = dmd.lexer.Lexer) : Lexer
                 check(TOK.colon);
                 if (names)
                     names.push(ident);
-                else if (argLabels)
-                    (*argLabels) ~= ArgumentLabel(ident, loc);
                 else
                     error(loc, "named arguments not allowed here");
+                if (argLabels)
+                    (*argLabels) ~= ArgumentLabel(ident, loc);
             }
             else
             {
                 if (names)
                     names.push(null);
-                else if (argLabels)
+                if (argLabels)
                     (*argLabels) ~= ArgumentLabel(null, Loc.init);
             }
 

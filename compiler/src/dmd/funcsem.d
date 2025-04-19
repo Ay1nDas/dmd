@@ -14,6 +14,7 @@
 module dmd.funcsem;
 
 import core.stdc.stdio;
+import std.stdio;
 
 import dmd.aggregate;
 import dmd.arraytypes;
@@ -1562,8 +1563,11 @@ FuncDeclaration resolveFuncCall(Loc loc, Scope* sc, Dsymbol s,
     functionResolve(m, s, loc, sc, tiargs, tthis, argumentList);
     auto orig_s = s;
 
+    // writeln(m.last, " ", m.lastf, " ", m.nextf, " ", m.count);
+
     if (m.last > MATCH.nomatch && m.lastf)
     {
+            // writeln("here");
         if (m.count == 1) // exactly one match
         {
             if (!(flags & FuncResolveFlag.quiet))
@@ -1651,6 +1655,7 @@ FuncDeclaration resolveFuncCall(Loc loc, Scope* sc, Dsymbol s,
 
     if (!fd)
     {
+        // writeln(":((");
         // all of overloads are templates
         if (td)
         {
