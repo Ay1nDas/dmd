@@ -1515,7 +1515,7 @@ Returns: list of expressions ordered to the struct's fields, or `null` on error
 */
 Expressions* resolveStructLiteralNamedArgs(StructDeclaration sd, Type t, Scope* sc,
     Loc iloc, Identifier[] argNames, scope Expression delegate(size_t i, Type fieldType) getExp,
-    scope Loc delegate(size_t i) getArgLoc, 
+    scope Loc delegate(size_t i) getArgLoc,
     scope Loc delegate(size_t i) getNameLoc
 )
 {

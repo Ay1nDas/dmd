@@ -81,7 +81,7 @@ inout(Expression) lastComma(inout Expression e)
  *     The arrays will be modified to:
  *         `exps =  [10, 20, 30, 40]`
  *         `names = [null, "pair", null, "single"]`
- *     Where names is an array can be extracted from argLabels[i].name. 
+ *     Where names is an array can be extracted from argLabels[i].name.
  *
  * Params:
  *     exps  = array of Expressions
