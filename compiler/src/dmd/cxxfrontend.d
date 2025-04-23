@@ -256,7 +256,7 @@ Expression getDefaultValue(EnumDeclaration ed, Loc loc)
 /***********************************************************
  * expression.d
  */
-void expandTuples(Expressions* exps, Argumentlabels* argLabels = null)
+void expandTuples(Expressions* exps, ArgumentLabels* argLabels = null)
 {
     return dmd.expression.expandTuples(exps, argLabels);
 }
