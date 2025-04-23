@@ -171,7 +171,8 @@ Initializer initializerSemantic(Initializer init, Scope* sc, ref Type tx, NeedIn
                 return ex;
             }
 
-            auto elements = resolveStructLiteralNamedArgs(sd, t, sc, i.loc, i.field[], &getExp, (size_t j) => i.value[j].loc);
+            auto elements = resolveStructLiteralNamedArgs(sd, t, sc, i.loc, i.field[], &getExp, (size_t j) => i.value[j].loc, (size_t j) => i.value[j].loc);
+            //Keeping both the getArgLoc and getNameLoc same as i.field doesn't have a .loc value here.
             if (!elements)
                 return err();
 
@@ -1513,8 +1514,9 @@ Params:
 Returns: list of expressions ordered to the struct's fields, or `null` on error
 */
 Expressions* resolveStructLiteralNamedArgs(StructDeclaration sd, Type t, Scope* sc,
-    Loc iloc, Identifier[] names, scope Expression delegate(size_t i, Type fieldType) getExp,
-    scope Loc delegate(size_t i) getArgLoc, scope Loc delegate(size_t i) getNameLoc = null
+    Loc iloc, Identifier[] argNames, scope Expression delegate(size_t i, Type fieldType) getExp,
+    scope Loc delegate(size_t i) getArgLoc, 
+    scope Loc delegate(size_t i) getNameLoc
 )
 {
     //expandTuples for non-identity arguments?
@@ -1528,12 +1530,10 @@ Expressions* resolveStructLiteralNamedArgs(StructDeclaration sd, Type t, Scope* 
     // TODO: this part is slightly different from StructLiteralExp::semantic.
     bool errors = false;
     size_t fieldi = 0;
-    foreach (j, id; names)
+    foreach (j, id; argNames)
     {
         const argLoc = getArgLoc(j);
-        Loc nameLoc = argLoc;
-        if(getNameLoc !is null)
-            nameLoc = getNameLoc(j);
+        const nameLoc = getNameLoc(j);
         if (id)
         {
             // Determine `fieldi` that `id` matches

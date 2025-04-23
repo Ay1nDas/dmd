@@ -81,42 +81,44 @@ inout(Expression) lastComma(inout Expression e)
  *     The arrays will be modified to:
  *         `exps =  [10, 20, 30, 40]`
  *         `names = [null, "pair", null, "single"]`
+ *     Where names is an array can be extracted from argLabels[i].name. 
  *
  * Params:
  *     exps  = array of Expressions
- *     names = optional array of names corresponding to Expressions
+ *  names(now replaced with argLabels) = optional array of names corresponding to Expressions
+ *     argLabels = optional array of argumentLabels(name and it's location) corresponding to Expressions
  */
-void expandTuples(Expressions* exps, Identifiers* names = null)
+void expandTuples(Expressions* exps, ArgumentLabels* argLabels = null)
 {
     //printf("expandTuples()\n");
     if (exps is null)
         return;
 
-    if (names)
+    if (argLabels)
     {
-        if (exps.length != names.length)
+        if (exps.length != argLabels.length)
         {
-            printf("exps.length = %d, names.length = %d\n", cast(int) exps.length, cast(int) names.length);
-            printf("exps = %s, names = %s\n", exps.toChars(), names.toChars());
+            printf("exps.length = %d, argLabels.length = %d\n", cast(int) exps.length, cast(int) argLabels.length);
+            printf("exps = %s, argLabels = %s\n", exps.toChars(), extractNames(argLabels).toChars());
             if (exps.length > 0)
                 printf("%s\n", (*exps)[0].loc.toChars());
             assert(0);
         }
     }
 
-    // At `index`, a tuple of length `length` is expanded. Insert corresponding nulls in `names`.
-    void expandNames(size_t index, size_t length)
+    // At `index`, a tuple of length `length` is expanded. Insert corresponding nulls in name attribute `argLabels`.
+    void expandArgLabels(size_t index, size_t length)
     {
-        if (names)
+        if (argLabels)
         {
             if (length == 0)
             {
-                names.remove(index);
+                argLabels.remove(index);
                 return;
             }
             foreach (i; 1 .. length)
             {
-                names.insert(index + i, cast(Identifier) null);
+                argLabels.insert(index + i, ArgumentLabel(cast(Identifier) null, Loc.init));
             }
         }
     }
@@ -135,7 +137,7 @@ void expandTuples(Expressions* exps, Identifiers* names = null)
                 if (!tt.arguments || tt.arguments.length == 0)
                 {
                     exps.remove(i);
-                    expandNames(i, 0);
+                    expandArgLabels(i, 0);
                     if (i == exps.length)
                         return;
                 }
@@ -146,7 +148,7 @@ void expandTuples(Expressions* exps, Identifiers* names = null)
                     foreach (j, a; *tt.arguments)
                         (*texps)[j] = new TypeExp(e.loc, a.type);
                     exps.insert(i, texps);
-                    expandNames(i, texps.length);
+                    expandArgLabels(i, texps.length);
                 }
                 i--;
                 continue;
@@ -159,7 +161,7 @@ void expandTuples(Expressions* exps, Identifiers* names = null)
             TupleExp te = cast(TupleExp)arg;
             exps.remove(i); // remove arg
             exps.insert(i, te.exps); // replace with tuple contents
-            expandNames(i, te.exps.length);
+            expandArgLabels(i, te.exps.length);
             if (i == exps.length)
                 return; // empty tuple, no more arguments
             (*exps)[i] = Expression.combine(te.e0, (*exps)[i]);
@@ -2445,7 +2447,7 @@ extern (C++) final class NewExp : Expression
     Expression thisexp;         // if !=null, 'this' for class being allocated
     Type newtype;
     Expressions* arguments;     // Array of Expression's
-    Identifiers* names;         // Array of names corresponding to expressions
+    ArgumentLabels* argLabels;         // Array of names corresponding to expressions
     Expression placement;       // if !=null, then PlacementExpression
 
     Expression argprefix;       // expression to be evaluated just before arguments[]
@@ -2455,18 +2457,19 @@ extern (C++) final class NewExp : Expression
 
     Expression lowering;        // lowered druntime hook: `_d_new{class,itemT}`
 
-    /// Puts the `arguments` and `names` into an `ArgumentList` for easily passing them around.
+    /// Puts the `arguments` and `argLabels` into an `ArgumentList` for easily passing them around.
     /// The fields are still separate for backwards compatibility
-    extern (D) ArgumentList argumentList() { return ArgumentList(arguments, names); }
 
-    extern (D) this(Loc loc, Expression placement, Expression thisexp, Type newtype, Expressions* arguments, Identifiers* names = null) @safe
+    extern (D) ArgumentList argumentList() { return ArgumentList(arguments, argLabels); }
+
+    extern (D) this(Loc loc, Expression placement, Expression thisexp, Type newtype, Expressions* arguments, ArgumentLabels* argLabels = null) @safe
     {
         super(loc, EXP.new_);
         this.placement = placement;
         this.thisexp = thisexp;
         this.newtype = newtype;
         this.arguments = arguments;
-        this.names = names;
+        this.argLabels = argLabels;
     }
 
     static NewExp create(Loc loc, Expression placement, Expression thisexp, Type newtype, Expressions* arguments) @safe
@@ -2481,7 +2484,7 @@ extern (C++) final class NewExp : Expression
             thisexp ? thisexp.syntaxCopy() : null,
             newtype.syntaxCopy(),
             arraySyntaxCopy(arguments),
-            names ? names.copy() : null);
+            argLabels ? argLabels.copy() : null);
     }
 
     override void accept(Visitor v)
@@ -3271,35 +3274,50 @@ extern (C++) final class DotTypeExp : UnaExp
 struct ArgumentList
 {
     Expressions* arguments; // function arguments
-    Identifiers* names;     // named argument identifiers
+    // Identifiers* names;     // named argument identifiers
+    ArgumentLabels* argLabels; // named argument labels
 
     size_t length() const @nogc nothrow pure @safe { return arguments ? arguments.length : 0; }
 
     /// Returns: whether this argument list contains any named arguments
-    bool hasNames() const @nogc nothrow pure @safe
+    bool hasArgNames() const @nogc nothrow pure @safe
     {
-        if (names is null)
+        if (argLabels is null)
             return false;
-        foreach (name; *names)
-            if (name !is null)
+        foreach (argLabel; *argLabels)
+            if (argLabel.name !is null)
                 return true;
 
         return false;
     }
 }
 
+// A list of argument labels
+// Contains both name and location of the name for an expression.
 struct ArgumentLabel
 {
     Identifier name;    // name of the argument
-    Loc loc;            // location of the argument
+    Loc loc;            // location of the name
  }
+
+//Gets all the names of the argument labels from a list of expressions
+// and returns them in a new list. The list is not owned by the caller.
+ Identifiers* extractNames(ArgumentLabels* argLabels)
+{
+    auto names = new Identifiers();
+    names.reserve(argLabels.length);
+
+    foreach (argLabel; *argLabels)
+        names.push(argLabel.name);
+
+    return names;
+}
 
 /***********************************************************
  */
 extern (C++) final class CallExp : UnaExp
 {
     Expressions* arguments; // function arguments
-    Identifiers* names;     // named argument identifiers
     ArgumentLabels *argLabels; // named argument labels
     FuncDeclaration f;      // symbol to call
     bool directcall;        // true if a virtual call is devirtualized
@@ -3308,15 +3326,14 @@ extern (C++) final class CallExp : UnaExp
     bool isUfcsRewrite;     /// the first argument was pushed in here by a UFCS rewrite
     VarDeclaration vthis2;  // container for multi-context
 
-    /// Puts the `arguments` and `names` into an `ArgumentList` for easily passing them around.
+    /// Puts the `arguments` and `argLabels` into an `ArgumentList` for easily passing them around.
     /// The fields are still separate for backwards compatibility
-    extern (D) ArgumentList argumentList() { return ArgumentList(arguments, names); }
+    extern (D) ArgumentList argumentList() { return ArgumentList(arguments, argLabels); }
 
-    extern (D) this(Loc loc, Expression e, Expressions* exps, Identifiers* names = null, ArgumentLabels *argLabels = null) @safe
+    extern (D) this(Loc loc, Expression e, Expressions* exps, ArgumentLabels *argLabels = null) @safe
     {
         super(loc, EXP.call, e);
         this.arguments = exps;
-        this.names = names;
         this.argLabels = argLabels;
     }
 
@@ -3384,7 +3401,7 @@ extern (C++) final class CallExp : UnaExp
 
     override CallExp syntaxCopy()
     {
-        return new CallExp(loc, e1.syntaxCopy(), arraySyntaxCopy(arguments), names ? names.copy() : null);
+        return new CallExp(loc, e1.syntaxCopy(), arraySyntaxCopy(arguments), argLabels ? argLabels.copy() : null);
     }
 
     override bool isLvalue()

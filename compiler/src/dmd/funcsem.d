@@ -2050,16 +2050,19 @@ int overrides(FuncDeclaration fd1, FuncDeclaration fd2)
  * Params:
  *  f = first function
  *  g = second function
- *  names = names of parameters
+ *  argLabels = argument Labels of parameters
+ *  argLabels[i].name = name of the i-th parameter
+    *  argLabels[i].loc = location of the argLabels[i].name
  * Returns:
  *      match   'this' is at least as specialized as g
  *      0       g is more specialized than 'this'
  */
-MATCH leastAsSpecialized(FuncDeclaration f, FuncDeclaration g, Identifiers* names)
+MATCH leastAsSpecialized(FuncDeclaration f, FuncDeclaration g, ArgumentLabels* argLabels)
 {
     enum LOG_LEASTAS = 0;
     static if (LOG_LEASTAS)
     {
+        Identifiers *names = extractNames(argLabels);
         import core.stdc.stdio : printf;
         printf("leastAsSpecialized(%s, %s, %s)\n", f.toChars(), g.toChars(), names ? names.toChars() : "null");
         printf("%s, %s\n", f.type.toChars(), g.type.toChars());
@@ -2106,7 +2109,7 @@ MATCH leastAsSpecialized(FuncDeclaration f, FuncDeclaration g, Identifiers* name
         args.push(e);
     }
 
-    MATCH m = callMatch(g, tg, null, ArgumentList(&args, names), 1);
+    MATCH m = callMatch(g, tg, null, ArgumentList(&args, argLabels), 1);
     if (m > MATCH.nomatch)
     {
         /* A variadic parameter list is less specialized than a
