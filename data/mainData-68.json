@@ -1,0 +1,186 @@
+[
+  {
+    "test": "dmd/compiler/performance_test/compile_time/large_test.d",
+    "userTime": 192.95,
+    "sysTime": 2.38,
+    "cpuUse": "192.95",
+    "maxRam": 8026804
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/compile_time/medium_test.d",
+    "userTime": 73.79,
+    "sysTime": 1.08,
+    "cpuUse": "73.79",
+    "maxRam": 3146520
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/compile_time/small_test.d",
+    "userTime": 11.24,
+    "sysTime": 0.31,
+    "cpuUse": "11.24",
+    "maxRam": 557068
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/compile_time/*//main.d",
+    "userTime": 0.00,
+    "sysTime": 0.00,
+    "cpuUse": "0.00",
+    "maxRam": 8832
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/cpu_test/dummy_test.d",
+    "userTime": 0.25,
+    "sysTime": 0.14,
+    "cpuUse": "0.25",
+    "maxRam": 115144
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/cpu_test/*//main.d",
+    "userTime": 0.00,
+    "sysTime": 0.00,
+    "cpuUse": "0.00",
+    "maxRam": 8832
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/file_io/basic_read.d",
+    "userTime": 0.57,
+    "sysTime": 0.13,
+    "cpuUse": "0.57",
+    "maxRam": 129312
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/file_io/basic_write.d",
+    "userTime": 0.37,
+    "sysTime": 0.15,
+    "cpuUse": "0.37",
+    "maxRam": 115240
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/file_io/large_write.d",
+    "userTime": 48.67,
+    "sysTime": 0.35,
+    "cpuUse": "48.67",
+    "maxRam": 677884
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/file_io/small_write.d",
+    "userTime": 6.75,
+    "sysTime": 0.22,
+    "cpuUse": "6.75",
+    "maxRam": 261216
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/file_io/*//main.d",
+    "userTime": 0.00,
+    "sysTime": 0.00,
+    "cpuUse": "0.00",
+    "maxRam": 8960
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/max_ram/optimed_ram.d",
+    "userTime": 0.11,
+    "sysTime": 0.09,
+    "cpuUse": "0.11",
+    "maxRam": 86248
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/max_ram/module_bigheader//main.d",
+    "userTime": 0.06,
+    "sysTime": 0.01,
+    "cpuUse": "0.06",
+    "maxRam": 36044
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/optimisation_test/dummy_test.d",
+    "userTime": 0.25,
+    "sysTime": 0.13,
+    "cpuUse": "0.25",
+    "maxRam": 115308
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/optimisation_test/*//main.d",
+    "userTime": 0.00,
+    "sysTime": 0.00,
+    "cpuUse": "0.00",
+    "maxRam": 8832
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/simple_codes/bare_hello.d",
+    "userTime": 0.10,
+    "sysTime": 0.08,
+    "cpuUse": "0.10",
+    "maxRam": 73836
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/simple_codes/comment.d",
+    "userTime": 0.09,
+    "sysTime": 0.09,
+    "cpuUse": "0.09",
+    "maxRam": 73580
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/simple_codes/empty_main.d",
+    "userTime": 0.12,
+    "sysTime": 0.08,
+    "cpuUse": "0.12",
+    "maxRam": 86196
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/simple_codes/hello.d",
+    "userTime": 0.24,
+    "sysTime": 0.14,
+    "cpuUse": "0.24",
+    "maxRam": 115220
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/simple_codes/imports.d",
+    "userTime": 0.76,
+    "sysTime": 0.28,
+    "cpuUse": "0.76",
+    "maxRam": 214012
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/simple_codes/*//main.d",
+    "userTime": 0.00,
+    "sysTime": 0.00,
+    "cpuUse": "0.00",
+    "maxRam": 9088
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/stress_test/dummy_test.d",
+    "userTime": 0.26,
+    "sysTime": 0.13,
+    "cpuUse": "0.26",
+    "maxRam": 115308
+  }
+,
+  {
+    "test": "dmd/compiler/performance_test/stress_test/*//main.d",
+    "userTime": 0.00,
+    "sysTime": 0.00,
+    "cpuUse": "0.00",
+    "maxRam": 9088
+  }
+
+]
